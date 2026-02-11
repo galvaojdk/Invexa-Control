@@ -17,5 +17,5 @@ databases:
   - name: control-db
     databaseName: invexa_control
     user: invexa_user
-    plan: starter # $7/month, guaranteed resources
+    plan: basic # $7/month
     region: ohio
