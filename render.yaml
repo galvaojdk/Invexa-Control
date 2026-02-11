@@ -6,7 +6,16 @@ services:
     region: ohio
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: control-db
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
     autoDeploy: true
+
+databases:
+  - name: control-db
+    databaseName: invexa_control
+    user: invexa_user
+    plan: starter # $7/month, guaranteed resources
+    region: ohio
