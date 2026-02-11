@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Categorias - Invexa Control{% endblock %}
+{% block header_title %}Gestão de Categorias{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-3">
+    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+        </path>
+    </svg>
+    {{ error }}
+</div>
+{% endif %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Formulário de Cadastro -->
+    <div class="lg:col-span-1">
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-xl sticky top-8">
+            <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Nova Categoria
+            </h3>
+            <form action="/inventory/categories" method="POST" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nome da Categoria</label>
+                    <input type="text" name="name" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                        placeholder="Ex: Embalagens, Ferragens...">
+                </div>
+                <button type="submit"
+                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Salvar Categoria
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de Categorias -->
+    <div class="lg:col-span-2">
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="p-6 border-b border-slate-800 bg-slate-900/30">
+                <h3 class="text-lg font-bold text-white">Categorias Existentes</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-900/50">
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">ID</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Nome
+                            </th>
+                            <th
+                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                                Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        {% for cat in categories %}
+                        <tr class="hover:bg-slate-800/30 transition-colors group">
+                            <td class="px-6 py-4 text-sm font-mono text-slate-500 w-16">#{{ cat.id }}</td>
+                            <td
+                                class="px-6 py-4 text-sm font-medium text-white group-hover:text-emerald-400 transition-colors">
+                                {{ cat.name }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <form action="/inventory/categories/{{ cat.id }}/delete" method="POST" class="inline"
+                                    onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?')">
+                                    <button type="submit"
+                                        class="text-slate-500 hover:text-red-400 text-xs font-bold transition-colors">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center text-slate-500 text-sm italic">Nenhuma
+                                categoria cadastrada.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

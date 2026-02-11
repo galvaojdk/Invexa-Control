@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Seja Premium - Invexa Control{% endblock %}
+{% block header_title %}Planos Premium{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-extrabold text-white mb-4">Escolha o seu plano</h2>
+        <p class="text-slate-400 text-lg">Desbloqueie recursos avançados para gestão profissional.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Free Plan -->
+        <div class="bg-slate-800/30 border border-slate-700 p-8 rounded-3xl flex flex-col">
+            <h3 class="text-xl font-bold text-white mb-2">Plano Grátis</h3>
+            <p class="text-slate-500 text-sm mb-6">Para pequenos negócios ou uso pessoal.</p>
+            <div class="mb-8">
+                <span class="text-4xl font-bold text-white">R$ 0</span>
+                <span class="text-slate-500">/sempre</span>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+                <li class="flex items-center gap-3 text-sm text-slate-300">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Até 50 produtos
+                </li>
+                <li class="flex items-center gap-3 text-sm text-slate-300">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Histórico de 30 dias
+                </li>
+            </ul>
+            <button disabled class="w-full py-3 bg-slate-700 text-slate-400 font-bold rounded-xl cursor-not-allowed">
+                Plano Atual
+            </button>
+        </div>
+
+        <!-- Premium Plan -->
+        <div class="bg-[#0f172a] border-2 border-emerald-500/50 p-8 rounded-3xl flex flex-col relative overflow-hidden">
+            <div
+                class="absolute top-4 right--8 bg-emerald-500 text-white text-[10px] font-extrabold px-12 py-1 rotate-45 transform translate-x-10 translate-y-3">
+                POPULAR
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Plano Ilimitado</h3>
+            <p class="text-slate-500 text-sm mb-6">Gestão completa sem restrições.</p>
+            <div class="mb-8">
+                <span class="text-4xl font-bold text-white">R$ 29,90</span>
+                <span class="text-slate-500">/mes</span>
+            </div>
+            <ul class="space-y-4 mb-8 flex-1">
+                <li class="flex items-center gap-3 text-sm text-slate-300">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Produtos ilimitados
+                </li>
+                <li class="flex items-center gap-3 text-sm text-slate-300">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Relatórios em PDF/Excel
+                </li>
+                <li class="flex items-center gap-3 text-sm text-slate-300">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Alertas por E-mail
+                </li>
+            </ul>
+            <button
+                class="w-full py-3 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]">
+                ASSINAR AGORA 🚀
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

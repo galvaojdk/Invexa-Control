@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invexa Control{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981', // Emerald 500
+                        secondary: '#3B82F6', // Blue 500
+                        dark: '#0f172a', // Slate 900
+                        darker: '#020617', // Slate 950
+                        surface: '#1e293b', // Slate 800
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b1120;
+        }
+    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body
+    class="bg-[#0b1120] text-slate-300 font-sans antialiased h-screen flex overflow-hidden selection:bg-blue-500/30 selection:text-blue-200">
+
+    <!-- Mobile Header -->
+    <div
+        class="md:hidden fixed w-full bg-[#0f172a]/90 backdrop-blur-md z-50 flex justify-center items-center p-4 border-b border-slate-800">
+        <span
+            class="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">Invexa
+            Control</span>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#0f172a] border-r border-slate-800 hidden md:flex flex-col z-20 fixed md:relative h-full"
+        id="sidebar">
+        <div class="p-6 border-b border-slate-800/50">
+            <h1 class="text-2xl font-bold flex items-center gap-2 tracking-tight">
+                <div
+                    class="p-1.5 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg shadow-lg shadow-emerald-500/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">Invexa
+                    Control</span>
+            </h1>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-8 overflow-y-auto">
+            <div>
+                <h3 class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Gestão</h3>
+                <div class="space-y-1">
+                    <a href="/"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                            </path>
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="/inventory"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/inventory' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Produtos
+                    </a>
+                    <a href="/movements"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/movements' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                        Movimentações
+                    </a>
+                    <a href="/receptions"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path.startswith('/receptions') %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Recebimento
+                    </a>
+                    <a href="/inventory/categories"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/inventory/categories' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                            </path>
+                        </svg>
+                        Categorias
+                    </a>
+                    <a href="/reports"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/reports' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        Relatórios
+                    </a>
+                    <a href="/premium/subscribe"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 text-purple-400 hover:bg-purple-900/20 hover:text-purple-300">
+                        <svg class="w-5 h-5 text-purple-500 group-hover:text-purple-300" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                        Seja Premium 🚀
+                    </a>
+                </div>
+            </div>
+
+            {% if user and user.is_admin %}
+            <div>
+                <h3 class="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Admin</h3>
+                <div class="space-y-1">
+                    <a href="/admin/users"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/admin/users' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        Gestão de Usuários
+                    </a>
+                    <a href="/admin/audit"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/admin/audit' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                            </path>
+                        </svg>
+                        Auditoria
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </nav>
+
+        <a href="/profile"
+            class="p-4 border-t border-slate-800/50 bg-slate-900/50 block hover:bg-slate-800/80 transition-all group">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-tr {% if user and user.is_premium %}from-yellow-400 to-amber-600{% else %}from-blue-500 to-purple-600{% endif %} p-[1px]">
+                    <div
+                        class="h-full w-full rounded-full bg-slate-800 flex items-center justify-center text-white font-bold text-xs uppercase group-hover:bg-slate-700 transition-colors">
+                        {{ user.full_name[0] if (user and user.full_name) else 'U' }}</div>
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-white truncate group-hover:text-blue-400 transition-colors">{{
+                        user.full_name if user else 'Usuário' }}</p>
+                    <p
+                        class="text-[10px] {% if user and user.is_premium %}text-yellow-400{% else %}text-emerald-400{% endif %} font-mono">
+                        {% if user and user.is_admin %}ADMIN{% elif user and user.is_premium %}PREMIUM{% else %}FREE{%
+                        endif %}
+                    </p>
+                </div>
+            </div>
+            <a href="/logout"
+                class="block w-full text-center py-2 text-[10px] font-bold text-slate-500 hover:text-red-400 transition-colors border border-slate-700/50 rounded-lg hover:border-red-400/20">Sair
+                do Sistema</a>
+        </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative pt-16 md:pt-0 w-full">
+        <header
+            class="bg-[#0b1120]/80 backdrop-blur border-b border-slate-800 py-4 px-8 flex justify-between items-center hidden md:flex sticky top-0 z-30">
+            <h2 class="text-xl font-bold text-white tracking-wide">{% block header_title %}Visão Geral{% endblock %}
+            </h2>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script>
+        // Sidebar toggle logic here (same as Invexa if needed)
+    </script>
+</body>
+
+</html>

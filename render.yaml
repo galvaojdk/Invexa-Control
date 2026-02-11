@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: invexa-control
+    runtime: docker
+    plan: free
+    region: ohio
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: control-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+    autoDeploy: true
+
+databases:
+  - name: control-db
+    plan: free
+    region: ohio

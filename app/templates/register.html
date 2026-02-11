@@ -1,0 +1,46 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Cadastro - Invexa Control{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[70vh]">
+    <div class="w-full max-w-md bg-[#0f172a] border border-slate-800 rounded-2xl shadow-2xl p-8">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-white">Criar Conta</h2>
+            <p class="text-slate-400 mt-2">Comece a gerenciar seu almoxarifado agora.</p>
+        </div>
+
+        <form action="/register" method="POST" class="space-y-6">
+            <div>
+                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">Nome
+                    Completo</label>
+                <input type="text" name="full_name"
+                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    placeholder="Ex: João Silva" required>
+            </div>
+            <div>
+                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">E-mail</label>
+                <input type="email" name="email"
+                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    placeholder="seu@email.com" required>
+            </div>
+            <div>
+                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">Senha</label>
+                <input type="password" name="password"
+                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    placeholder="••••••••" required>
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">
+                Criar Minha Conta
+            </button>
+        </form>
+
+        <div class="mt-8 text-center pt-6 border-t border-slate-800">
+            <p class="text-sm text-slate-400">Já tem uma conta? <a href="/login"
+                    class="text-blue-400 font-bold hover:text-blue-300 transition-colors">Fazer Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

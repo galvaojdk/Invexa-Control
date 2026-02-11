@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Invexa Control{% endblock %}
+{% block header_title %}Visão Geral do Estoque{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Products -->
+    <div
+        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-blue-500/50 transition-all group">
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+            </div>
+        </div>
+        <p class="text-slate-400 text-sm font-medium">Produtos Cadastrados</p>
+        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.total_products }}</h3>
+    </div>
+
+    <!-- Low Stock -->
+    <div
+        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-red-500/50 transition-all group">
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2 bg-red-500/10 rounded-lg text-red-400 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+        <p class="text-slate-400 text-sm font-medium">Estoque Crítico</p>
+        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.low_stock }}</h3>
+    </div>
+
+    <!-- Recent Movements -->
+    <div
+        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-emerald-500/50 transition-all group">
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+            </div>
+        </div>
+        <p class="text-slate-400 text-sm font-medium">Movimentações (Hoje)</p>
+        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.movements_today }}</h3>
+    </div>
+
+    <!-- Active Categories -->
+    <div
+        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-purple-500/50 transition-all group">
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2 bg-purple-500/10 rounded-lg text-purple-400 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+        <p class="text-slate-400 text-sm font-medium">Categorias</p>
+        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.total_categories }}</h3>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Movements Chart -->
+    <div class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Movimentações (7 Dias)</h3>
+        <div class="relative h-64 w-full">
+            <canvas id="movementsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Categories Chart -->
+    <div class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Distribuição por Categoria</h3>
+        <div class="relative h-64 w-full flex justify-center">
+            <canvas id="categoriesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
+    <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+        <h3 class="text-lg font-bold text-white">Últimas Movimentações</h3>
+        <a href="/movements" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">Ver tudo</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-900/50">
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tipo</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Qtd</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Setor</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Motivo</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+                {% for mov in latest_movements %}
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                    <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ mov.timestamp.strftime('%d/%m %H:%M') }}
+                    </td>
+                    <td class="px-6 py-4 text-sm font-medium text-white">{{ mov.product.name }}</td>
+                    <td class="px-6 py-4">
+                        {% if mov.type.value == 'entrada' %}
+                        <span
+                            class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">ENTRADA</span>
+                        {% else %}
+                        <span
+                            class="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20">SAÍDA</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm font-mono text-white">{{ mov.quantity }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-300">{{ mov.sector or '-' }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-400">{{ mov.reason or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma movimentação
+                        registrada hoje.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Colors configuration
+    const colors = {
+        emerald: {
+            default: 'rgba(16, 185, 129, 0.2)',
+            border: '#10B981'
+        },
+        red: {
+            default: 'rgba(239, 68, 68, 0.2)',
+            border: '#EF4444'
+        },
+        blue: {
+            default: 'rgba(59, 130, 246, 0.2)',
+            border: '#3B82F6'
+        },
+        slate: '#94a3b8'
+    };
+
+    Chart.defaults.color = colors.slate;
+    Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+
+    // Movements Chart
+    const ctxMovements = document.getElementById('movementsChart').getContext('2d');
+    new Chart(ctxMovements, {
+        type: 'line',
+        data: {
+            labels: {{ chart_dates | tojson }},
+        datasets: [
+        {
+            label: 'Entradas',
+            data: {{ chart_entries | tojson }},
+        borderColor: colors.emerald.border,
+        backgroundColor: colors.emerald.default,
+        fill: true,
+        tension: 0.4
+                },
+        {
+            label: 'Saídas',
+            data: {{ chart_exits | tojson }},
+        borderColor: colors.red.border,
+        backgroundColor: colors.red.default,
+        fill: true,
+        tension: 0.4
+                }
+    ]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { precision: 0 }
+            }
+        }
+    }
+    });
+
+    // Categories Chart
+    const ctxCategories = document.getElementById('categoriesChart').getContext('2d');
+    new Chart(ctxCategories, {
+        type: 'doughnut',
+        data: {
+            labels: {{ cat_labels | tojson }},
+        datasets: [{
+            data: {{ cat_counts | tojson }},
+        backgroundColor: [
+            'rgba(59, 130, 246, 0.8)',   // Blue
+            'rgba(16, 185, 129, 0.8)',   // Emerald
+            'rgba(245, 158, 11, 0.8)',   // Amber
+            'rgba(139, 92, 246, 0.8)',   // Violet
+            'rgba(236, 72, 153, 0.8)',   // Pink
+            'rgba(14, 165, 233, 0.8)',   // Sky
+        ],
+        borderWidth: 0
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'right'
+            }
+        }
+    }
+    });
+</script>
+{% endblock %}

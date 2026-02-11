@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Auditoria - Invexa Control{% endblock %}
+{% block header_title %}Registro de Auditoria{% endblock %}
+
+{% block content %}
+<div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+        <div>
+            <h3 class="text-xl font-bold text-white">Histórico do Sistema</h3>
+            <p class="text-sm text-slate-400 mt-1">Acompanhe todas as ações realizadas pelos usuários.</p>
+        </div>
+        <div class="flex gap-2">
+            <span
+                class="px-3 py-1 bg-blue-500/10 text-blue-400 text-xs font-bold rounded-full border border-blue-500/20">Apenas
+                Admin</span>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-900/80">
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data/Hora</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Usuário</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ação</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Recurso</th>
+                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Descrição</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+                {% for log in logs %}
+                <tr class="hover:bg-slate-800/40 transition-all duration-200">
+                    <td class="px-6 py-4 text-sm font-mono text-slate-400">
+                        {{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                                {{ log.user.full_name[0] if log.user.full_name else 'U' }}
+                            </div>
+                            <span class="text-sm text-white font-medium">{{ log.user.full_name or log.user.email
+                                }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if 'CREATE' in log.action or 'ENTRADA' in log.action %}
+                        <span
+                            class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/20 uppercase">{{
+                            log.action }}</span>
+                        {% elif 'DELETE' in log.action or 'SAIDA' in log.action %}
+                        <span
+                            class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded border border-red-500/20 uppercase">{{
+                            log.action }}</span>
+                        {% else %}
+                        <span
+                            class="px-2 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded border border-blue-500/20 uppercase">{{
+                            log.action }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs text-slate-300 font-mono bg-slate-800 px-1.5 py-0.5 rounded">{{
+                            log.resource_type }}</span>
+                        {% if log.resource_id %}
+                        <span class="text-[10px] text-slate-500 ml-1">#{{ log.resource_id }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-300">
+                        {{ log.description }}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm italic">
+                        <div class="flex flex-col items-center gap-2">
+                            <svg class="w-12 h-12 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                            <span>Nenhum registro de auditoria encontrado.</span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
