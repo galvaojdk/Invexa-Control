@@ -16,6 +16,10 @@ from app.api.routers import auth, inventory, movements, receptions, admin, repor
 app = FastAPI(title="Invexa Control")
 
 # Static files and Templates
+# Static files and Templates
+if not os.path.exists("app/static"):
+    os.makedirs("app/static")
+
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
