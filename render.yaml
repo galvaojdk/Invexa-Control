@@ -17,5 +17,5 @@ databases:
   - name: control-db
     databaseName: invexa_control
     user: invexa_user
-    plan: starter # $7/month
+    plan: basic-256mb # ~$7/month (New Flexible Plan)
     region: ohio
