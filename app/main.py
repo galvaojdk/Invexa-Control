@@ -9,13 +9,14 @@ from sqlalchemy import func
 
 from app.core.database import SessionLocal, Base, engine
 
-# Create tables on startup
-Base.metadata.create_all(bind=engine)
-
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement
 from app.api.dependencies import get_db, login_required
 from app.api.routers import auth, inventory, movements, receptions, admin, reports
+from app.models.worker import Worker, Shipment
+
+# Create tables on startup
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Invexa Control")
 
