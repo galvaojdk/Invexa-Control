@@ -50,8 +50,6 @@ async def create_product(
         is_composite=is_composite,
         is_primary=is_primary,
         min_stock=min_stock,
-        is_primary=is_primary,
-        min_stock=min_stock,
         current_stock=0.0 # Force 0 on creation
     )
     db.add(new_product)
