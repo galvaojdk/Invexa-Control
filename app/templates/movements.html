@@ -126,10 +126,62 @@
             <div class="space-y-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Setor / Destino /
                     Origem</label>
-                <input type="text" name="sector"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Ex: TI, Adm, Almoxarifado, Fornecedor X...">
+
+                <div class="flex gap-4 mb-1">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300 hover:text-white">
+                        <input type="radio" name="sector_type" value="internal" checked onchange="toggleSectorInput()"
+                            class="accent-blue-500 w-4 h-4">
+                        Interno / Geral
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300 hover:text-white">
+                        <input type="radio" name="sector_type" value="worker" onchange="toggleSectorInput()"
+                            class="accent-blue-500 w-4 h-4">
+                        Terceirizado
+                    </label>
+                </div>
+
+                <div id="sector_internal_div">
+                    <input type="text" id="sector_input" name="sector"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="Ex: TI, Adm, Almoxarifado, Fornecedor X...">
+                </div>
+
+                <div id="sector_worker_div" class="hidden">
+                    <select id="sector_select" name="sector" disabled
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="">Selecione o Terceirizado...</option>
+                        {% for w in workers %}
+                        <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})</option>
+                        {% endfor %}
+                    </select>
+                    <p class="text-[10px] text-yellow-500/80 mt-1 italic">
+                        * Apenas identifica o setor. Para controle de remessa (envio/retorno), use o menu
+                        <b>Terceirizados</b>.
+                    </p>
+                </div>
             </div>
+
+            <script>
+                function toggleSectorInput() {
+                    const type = document.querySelector('input[name="sector_type"]:checked').value;
+                    const internalDiv = document.getElementById('sector_internal_div');
+                    const workerDiv = document.getElementById('sector_worker_div');
+                    const internalInput = document.getElementById('sector_input');
+                    const workerSelect = document.getElementById('sector_select');
+
+                    if (type === 'internal') {
+                        internalDiv.classList.remove('hidden');
+                        workerDiv.classList.add('hidden');
+                        internalInput.disabled = false;
+                        workerSelect.disabled = true;
+                    } else {
+                        internalDiv.classList.add('hidden');
+                        workerDiv.classList.remove('hidden');
+                        internalInput.disabled = true;
+                        workerSelect.disabled = false;
+                    }
+                }
+            </script>
             <div class="space-y-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Motivo / Observação</label>
                 <textarea name="reason" rows="2"

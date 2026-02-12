@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.models.inventory import Product, Movement, MovementType
 from app.models.user import User
+from app.models.worker import Worker
 from app.api.dependencies import get_db, login_required
 from app.services.inventory_service import InventoryService
 
@@ -16,11 +17,13 @@ templates = Jinja2Templates(directory="app/templates")
 async def movements_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
     movements_list = db.query(Movement).order_by(Movement.timestamp.desc()).all()
     products = db.query(Product).all()
+    workers = db.query(Worker).filter(Worker.active == True).all()
     return templates.TemplateResponse("movements.html", {
         "request": request, 
         "user": user, 
         "movements": movements_list,
-        "products": products
+        "products": products,
+        "workers": workers
     })
 
 @router.post("")
