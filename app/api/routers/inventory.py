@@ -64,6 +64,75 @@ async def create_product(
     ))
     
     db.commit()
+    db.commit()
+    return RedirectResponse(url="/inventory", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/products/{product_id}/update")
+async def update_product(
+    product_id: int,
+    name: str = Form(...),
+    description: str = Form(None),
+    category_id: int = Form(...),
+    unit: str = Form("Und"),
+    is_composite: bool = Form(False),
+    is_primary: bool = Form(False),
+    min_stock: float = Form(0.0),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    product.name = name
+    product.description = description
+    product.category_id = category_id
+    product.unit = unit
+    product.is_composite = is_composite
+    product.is_primary = is_primary
+    product.min_stock = min_stock
+    
+    db.add(AuditLog(
+        user_id=user.id,
+        action="UPDATE_PRODUCT",
+        resource_type="product",
+        resource_id=product.id,
+        description=f"Produto '{name}' atualizado."
+    ))
+    db.commit()
+    return RedirectResponse(url="/inventory", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/products/{product_id}/delete")
+async def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    
+    # Check Verification
+    # 1. Movements
+    mov_count = db.query(Movement).filter(Movement.product_id == product_id).count()
+    if mov_count > 0:
+        raise HTTPException(status_code=400, detail=f"Não é possível excluir: existem {mov_count} movimentações registradas.")
+    
+    # 2. Shipments
+    from app.models.worker import Shipment
+    ship_count = db.query(Shipment).filter(Shipment.product_id == product_id).count()
+    if ship_count > 0:
+        raise HTTPException(status_code=400, detail=f"Não é possível excluir: existem {ship_count} remessas para terceirizados.")
+
+    db.add(AuditLog(
+        user_id=user.id,
+        action="DELETE_PRODUCT",
+        resource_type="product",
+        resource_id=product_id,
+        description=f"Produto '{product.name}' excluído."
+    ))
+    db.delete(product)
+    db.commit()
     return RedirectResponse(url="/inventory", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.get("/export")
@@ -208,3 +277,37 @@ async def delete_category(
     db.delete(category)
     db.commit()
     return RedirectResponse(url="/inventory/categories", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/products/{product_id}")
+async def get_product_details(
+    product_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+        
+    history = db.query(Movement).filter(Movement.product_id == product_id).order_by(Movement.timestamp.desc()).limit(10).all()
+    
+    return {
+        "id": product.id,
+        "sku": product.sku,
+        "name": product.name,
+        "description": product.description,
+        "category": product.category.name if product.category else "-",
+        "unit": product.unit or "un",
+        "current_stock": product.current_stock,
+        "min_stock": product.min_stock,
+        "is_composite": product.is_composite,
+        "is_primary": product.is_primary,
+        "history": [
+            {
+                "type": m.type.value,
+                "quantity": m.quantity,
+                "reason": m.reason,
+                "sector": m.sector or "-",
+                "timestamp": m.timestamp.strftime("%d/%m/%Y %H:%M")
+            } for m in history
+        ]
+    }

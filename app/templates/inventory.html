@@ -82,8 +82,26 @@
                                 {% endif %}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button onclick="viewDetails({{ product.id }})"
-                                class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors">Detalhes</button>
+                            <div class="flex items-center justify-end gap-2">
+                                <button onclick="openEditModal({{ product.id }})"
+                                    class="p-1.5 text-slate-400 hover:text-blue-400 transition-colors" title="Editar">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteProduct({{ product.id }}, '{{ product.name }}')"
+                                    class="p-1.5 text-slate-400 hover:text-red-400 transition-colors" title="Excluir">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                </button>
+                                <button onclick="viewDetails({{ product.id }})"
+                                    class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors ml-2">Detalhes</button>
+                            </div>
                         </td>
                     </tr>
                     {% else %}
@@ -168,6 +186,94 @@
                 <button type="submit"
                     class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 transition-all">
                     Salvar Produto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Editar Produto -->
+<div id="editProductModal"
+    class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div
+        class="bg-[#0f172a] border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white">Editar Produto</h3>
+            <button onclick="closeEditModal()" class="text-slate-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <form id="editProductForm" method="POST" class="p-6 space-y-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Descrição Reduzida</label>
+                <input type="text" name="name" id="edit-name" required
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Descrição Completa</label>
+                <textarea name="description" id="edit-description" rows="2"
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Categoria</label>
+                    <select name="category_id" id="edit-category_id" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="">Selecione...</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Unidade</label>
+                    <select name="unit" id="edit-unit" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="Und">Und</option>
+                        <option value="Metro">Metro</option>
+                        <option value="KG">KG</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Atual</label>
+                    <input type="number" step="0.01" name="current_stock" id="edit-current_stock" disabled
+                        class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-slate-500 cursor-not-allowed">
+                    <p class="text-[10px] text-slate-500 italic">* Use "Movimentações" para ajustar.</p>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Mínimo</label>
+                    <input type="number" step="0.01" name="min_stock" id="edit-min_stock" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+            </div>
+
+            <div class="flex gap-6 py-2">
+                <label class="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" name="is_composite" id="edit-is_composite" value="true"
+                        class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500 transition-all">
+                    <span
+                        class="text-xs font-bold text-slate-300 group-hover:text-white uppercase tracking-wider">Composto</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" name="is_primary" id="edit-is_primary" value="true"
+                        class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500 transition-all">
+                    <span
+                        class="text-xs font-bold text-slate-300 group-hover:text-white uppercase tracking-wider">Primário</span>
+                </label>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit"
+                    class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 transition-all">
+                    Salvar Alterações
                 </button>
             </div>
         </form>
@@ -311,7 +417,7 @@
         document.getElementById('det-history').innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Buscando histórico...</td></tr>';
 
         try {
-            const response = await fetch(`/api/v1/inventory/products/${productId}`);
+            const response = await fetch(`/inventory/products/${productId}`);
             if (!response.ok) throw new Error('Erro ao carregar detalhes');
 
             const data = await response.json();
@@ -369,6 +475,61 @@
 
     function closeImportModal() {
         document.getElementById('importModal').classList.add('hidden');
+    }
+    async function openEditModal(productId) {
+        const modal = document.getElementById('editProductModal');
+        const form = document.getElementById('editProductForm');
+
+        // Clear previous state
+        form.reset();
+        form.action = `/inventory/products/${productId}/update`;
+        modal.classList.remove('hidden');
+
+        try {
+            const response = await fetch(`/inventory/products/${productId}`);
+            if (!response.ok) throw new Error('Erro ao carregar dados do produto');
+            const data = await response.json();
+
+            document.getElementById('edit-name').value = data.name;
+            document.getElementById('edit-description').value = data.description || '';
+            document.getElementById('edit-category_id').value = data.category !== '-' ? getCategoryIdByName(data.category) : ''; // We need ID, but API returns name. Fix API or lookup
+            document.getElementById('edit-unit').value = data.unit;
+            document.getElementById('edit-current_stock').value = data.current_stock;
+            document.getElementById('edit-min_stock').value = data.min_stock;
+            document.getElementById('edit-is_composite').checked = data.is_composite;
+            document.getElementById('edit-is_primary').checked = data.is_primary;
+
+            // Helper to set category by text if ID not available in API (API v1 returns category name)
+            // Ideally API should return ID. Let's fix API or loop select options.
+            // Loop options to match text if value is empty/mismatch
+            const catSelect = document.getElementById('edit-category_id');
+            for (let i = 0; i < catSelect.options.length; i++) {
+                if (catSelect.options[i].text === data.category) {
+                    catSelect.selectedIndex = i;
+                    break;
+                }
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao carregar dados para edição.');
+            closeEditModal();
+        }
+    }
+
+    function closeEditModal() {
+        document.getElementById('editProductModal').classList.add('hidden');
+    }
+
+    function deleteProduct(productId, productName) {
+        if (confirm(`Tem certeza que deseja excluir o produto "${productName}"?\n\nEsta ação não pode ser desfeita.`)) {
+            // Create form to submit POST request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/inventory/products/${productId}/delete`;
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
 </script>
 {% endblock %}
