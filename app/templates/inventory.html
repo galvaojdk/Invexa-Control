@@ -357,7 +357,6 @@
 
             document.getElementById('edit-name').value = data.name;
             document.getElementById('edit-description').value = data.description || '';
-            document.getElementById('edit-category_id').value = data.category !== '-' ? getCategoryIdByName(data.category) : ''; // We need ID, but API returns name. Fix API or lookup
             document.getElementById('edit-unit').value = data.unit;
             document.getElementById('edit-current_stock').value = data.current_stock;
             document.getElementById('edit-min_stock').value = data.min_stock;
@@ -368,6 +367,9 @@
             // Ideally API should return ID. Let's fix API or loop select options.
             // Loop options to match text if value is empty/mismatch
             const catSelect = document.getElementById('edit-category_id');
+            // Reset selection to first option (placeholder)
+            catSelect.selectedIndex = 0;
+
             for (let i = 0; i < catSelect.options.length; i++) {
                 if (catSelect.options[i].text === data.category) {
                     catSelect.selectedIndex = i;
