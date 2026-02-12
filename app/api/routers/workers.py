@@ -124,10 +124,10 @@ async def create_shipment(
         raise HTTPException(status_code=404, detail="Recurso não encontrado")
     
     if product.current_stock < quantity:
-         # Optional: Allow negative stock or block? Let's block for safety or warn.
-         # For this specific app, creating a movement usually allows negative if needed but let's be strict.
-         # user: "controlar o envio de peças" -> implies taking from stock.
-         pass 
+         raise HTTPException(
+             status_code=400, 
+             detail=f"Estoque insuficiente. Disponível: {product.current_stock} {product.unit}. Solicitado: {quantity}"
+         ) 
 
     # Create Shipment Record
     shipment = Shipment(

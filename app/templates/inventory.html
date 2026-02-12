@@ -388,14 +388,29 @@
         document.getElementById('editProductModal').classList.add('hidden');
     }
 
-    function deleteProduct(productId, productName) {
+    async function deleteProduct(productId, productName) {
         if (confirm(`Tem certeza que deseja excluir o produto "${productName}"?\n\nEsta ação não pode ser desfeita.`)) {
-            // Create form to submit POST request
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/inventory/products/${productId}/delete`;
-            document.body.appendChild(form);
-            form.submit();
+            try {
+                const response = await fetch(`/inventory/products/${productId}/delete`, {
+                    method: 'POST'
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.detail || 'Erro ao excluir produto');
+                }
+
+                // If no redirect but success (unexpected but possible), reload
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
+            }
         }
     }
 </script>
