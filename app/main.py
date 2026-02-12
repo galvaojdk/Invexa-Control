@@ -44,6 +44,8 @@ app.include_router(movements.router)
 app.include_router(receptions.router)
 app.include_router(admin.router)
 app.include_router(reports.router)
+from app.api.routers import workers
+app.include_router(workers.router)
 from app.api.routers import dashboard
 app.include_router(dashboard.router)
 
