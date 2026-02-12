@@ -34,7 +34,7 @@ async def create_product(
     is_primary: bool = Form(False),
     sku: str = Form(None),
     min_stock: float = Form(0.0),
-    current_stock: float = Form(0.0),
+    # current_stock: float = Form(0.0), # DEPRECATED: Stock is managed by movements
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -50,7 +50,9 @@ async def create_product(
         is_composite=is_composite,
         is_primary=is_primary,
         min_stock=min_stock,
-        current_stock=current_stock
+        is_primary=is_primary,
+        min_stock=min_stock,
+        current_stock=0.0 # Force 0 on creation
     )
     db.add(new_product)
     db.flush()

@@ -99,8 +99,7 @@
                                         </path>
                                     </svg>
                                 </button>
-                                <button onclick="viewDetails({{ product.id }})"
-                                    class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors ml-2">Detalhes</button>
+
                             </div>
                         </td>
                     </tr>
@@ -164,6 +163,12 @@
                         <option value="Metro">Metro</option>
                         <option value="KG">KG</option>
                     </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Mínimo</label>
+                    <input type="number" step="0.01" name="min_stock"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="0.00">
                 </div>
             </div>
 
@@ -280,88 +285,7 @@
     </div>
 </div>
 
-<!-- Modal Detalhes Produto -->
-<div id="detailsModal"
-    class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div
-        class="bg-[#0f172a] border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-            <div>
-                <h3 class="text-xl font-bold text-white" id="det-name">Carregando...</h3>
-            </div>
-            <button onclick="closeDetailsModal()" class="text-slate-500 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
 
-        <div class="p-6 overflow-y-auto custom-scrollbar space-y-8">
-            <!-- Info Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Categoria</p>
-                    <p class="text-sm font-bold text-white capitalize" id="det-cat">...</p>
-                </div>
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Estoque Atual</p>
-                    <p class="text-sm font-bold text-emerald-400" id="det-stock">...</p>
-                </div>
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Estoque Mínimo</p>
-                    <p class="text-sm font-bold text-blue-400" id="det-min">...</p>
-                </div>
-                <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 flex flex-col justify-center">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Classificação</p>
-                    <div id="det-tags" class="flex gap-1 flex-wrap"></div>
-                </div>
-            </div>
-
-            <!-- Description -->
-            <div>
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h7"></path>
-                    </svg>
-                    Descrição
-                </h4>
-                <p class="text-sm text-slate-300 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 italic"
-                    id="det-desc">
-                    Nenhuma descrição disponível.
-                </p>
-            </div>
-
-            <!-- History Table -->
-            <div>
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Últimas Movimentações
-                </h4>
-                <div class="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-800/50 text-slate-500 uppercase font-bold tracking-tighter">
-                            <tr>
-                                <th class="px-4 py-2.5">Data</th>
-                                <th class="px-4 py-2.5 text-center">Tipo</th>
-                                <th class="px-4 py-2.5 text-center">Qtd</th>
-                                <th class="px-4 py-2.5">Setor</th>
-                                <th class="px-4 py-2.5">Motivo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="det-history" class="divide-y divide-slate-800">
-                            <!-- History items injected here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Importar Produtos -->
 <div id="importModal"
@@ -408,66 +332,7 @@
         document.getElementById('productModal').classList.add('hidden');
     }
 
-    async function viewDetails(productId) {
-        document.getElementById('detailsModal').classList.remove('hidden');
 
-        // Reset values
-        document.getElementById('det-name').innerText = 'Carregando...';
-        document.getElementById('det-sku').innerText = 'SKU: ...';
-        document.getElementById('det-history').innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Buscando histórico...</td></tr>';
-
-        try {
-            const response = await fetch(`/inventory/products/${productId}`);
-            if (!response.ok) throw new Error('Erro ao carregar detalhes');
-
-            const data = await response.json();
-
-            document.getElementById('det-name').innerText = data.name;
-            document.getElementById('det-cat').innerText = data.category;
-            document.getElementById('det-stock').innerText = `${data.current_stock} ${data.unit}`;
-            document.getElementById('det-min').innerText = `${data.min_stock} ${data.unit}`;
-            document.getElementById('det-desc').innerText = data.description || 'Nenhuma descrição disponível.';
-
-            const tagsContainer = document.getElementById('det-tags');
-            tagsContainer.innerHTML = '';
-            if (data.is_composite) {
-                tagsContainer.innerHTML += '<span class="px-1.5 py-0.5 bg-blue-500/10 text-blue-400 text-[8px] font-bold rounded border border-blue-500/20">COMPOSTO</span>';
-            }
-            if (data.is_primary) {
-                tagsContainer.innerHTML += '<span class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 text-[8px] font-bold rounded border border-emerald-500/20">PRIMÁRIO</span>';
-            }
-            if (!data.is_composite && !data.is_primary) {
-                tagsContainer.innerHTML = '<span class="text-[10px] text-slate-600 italic">Padrão</span>';
-            }
-
-            const historyBody = document.getElementById('det-history');
-            if (data.history && data.history.length > 0) {
-                historyBody.innerHTML = data.history.map(m => `
-                    <tr class="hover:bg-slate-800/30 transition-colors">
-                        <td class="px-4 py-3 font-mono text-slate-400">${m.timestamp}</td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${m.type === 'entrada' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
-                                ${m.type}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-center font-bold text-white">${m.quantity}</td>
-                        <td class="px-4 py-3 text-slate-300 font-medium">${m.sector || '-'}</td>
-                        <td class="px-4 py-3 text-slate-400 text-[10px]">${m.reason || '-'}</td>
-                    </tr>
-                `).join('');
-            } else {
-                historyBody.innerHTML = '<tr><td colspan="5" class="px-4 py-12 text-center text-slate-500 italic">Nenhuma movimentação registrada.</td></tr>';
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Erro ao carregar os detalhes do produto.');
-            closeDetailsModal();
-        }
-    }
-
-    function closeDetailsModal() {
-        document.getElementById('detailsModal').classList.add('hidden');
-    }
 
     function openImportModal() {
         document.getElementById('importModal').classList.remove('hidden');
