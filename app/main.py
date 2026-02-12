@@ -7,7 +7,11 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from app.core.database import SessionLocal
+from app.core.database import SessionLocal, Base, engine
+
+# Create tables on startup
+Base.metadata.create_all(bind=engine)
+
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement
 from app.api.dependencies import get_db, login_required
@@ -15,7 +19,6 @@ from app.api.routers import auth, inventory, movements, receptions, admin, repor
 
 app = FastAPI(title="Invexa Control")
 
-# Static files and Templates
 # Static files and Templates
 if not os.path.exists("app/static"):
     os.makedirs("app/static")
