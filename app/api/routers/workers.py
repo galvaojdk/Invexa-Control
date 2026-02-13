@@ -57,7 +57,6 @@ async def create_worker(
     zip_code: str = Form(None),
     worker_type_id: int = Form(...),
     phone: str = Form(None),
-    daily_rate: float = Form(0.0),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -70,7 +69,6 @@ async def create_worker(
         zip_code=zip_code,
         worker_type_id=worker_type_id,
         phone=phone,
-        daily_rate=daily_rate,
         role=role_name # Keeping role populated for backward compatibility/logging if needed
     )
     db.add(new_worker)
@@ -94,7 +92,6 @@ async def update_worker(
     zip_code: str = Form(None),
     worker_type_id: int = Form(...),
     phone: str = Form(None),
-    daily_rate: float = Form(0.0),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -107,7 +104,6 @@ async def update_worker(
     worker.zip_code = zip_code
     worker.worker_type_id = worker_type_id
     worker.phone = phone
-    worker.daily_rate = daily_rate
     
     # Update deprecated role field just in case
     worker_type = db.query(WorkerType).filter(WorkerType.id == worker_type_id).first()

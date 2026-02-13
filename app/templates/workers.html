@@ -55,8 +55,6 @@
                                 Endereço</th>
                             <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Contato
                             </th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Diária
-                                (Ref)</th>
                             <th
                                 class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
                                 Ações</th>
@@ -75,11 +73,9 @@
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-400">{{ worker.address or '-' }}</td>
                             <td class="px-6 py-4 text-sm text-slate-400">{{ worker.phone or '-' }}</td>
-                            <td class="px-6 py-4 text-sm font-mono text-emerald-400">R$ {{
-                                "%.2f"|format(worker.daily_rate) }}</td>
                             <td class="px-6 py-4 text-right flex justify-end gap-2">
                                 <button
-                                    onclick="openEditWorkerModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.worker_type_id or '' }}', '{{ worker.address or '' }}', '{{ worker.zip_code or '' }}', '{{ worker.phone }}', '{{ worker.daily_rate }}')"
+                                    onclick="openEditWorkerModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.worker_type_id or '' }}', '{{ worker.address or '' }}', '{{ worker.zip_code or '' }}', '{{ worker.phone }}')"
                                     class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors">Editar</button>
                                 <button onclick="openShipmentModal('{{ worker.id }}', '{{ worker.name }}')"
                                     class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors ml-2">Nova
@@ -88,7 +84,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhum
+                            <td colspan="5" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhum
                                 terceirizado cadastrado.</td>
                         </tr>
                         {% endfor %}
@@ -221,12 +217,6 @@
                     <input type="text" name="phone" id="w_phone"
                         class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                 </div>
-            </div>
-
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Diária Base (R$)</label>
-                <input type="number" step="0.01" name="daily_rate" id="w_rate"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
             </div>
 
             <button type="submit"
@@ -363,11 +353,10 @@
         document.getElementById('w_zip').value = '';
         if (document.getElementById('w_type')) document.getElementById('w_type').value = '';
         document.getElementById('w_phone').value = '';
-        document.getElementById('w_rate').value = '';
         document.getElementById('workerModal').classList.remove('hidden');
     }
 
-    function openEditWorkerModal(id, name, type_id, address, zip, phone, rate) {
+    function openEditWorkerModal(id, name, type_id, address, zip, phone) {
         document.getElementById('workerForm').action = `/workers/${id}/update`;
         document.getElementById('workerModalTitle').innerText = 'Editar Terceirizado';
         document.getElementById('w_name').value = name;
@@ -375,7 +364,6 @@
         document.getElementById('w_address').value = address;
         document.getElementById('w_zip').value = zip;
         document.getElementById('w_phone').value = phone === 'None' ? '' : phone;
-        document.getElementById('w_rate').value = rate;
         document.getElementById('workerModal').classList.remove('hidden');
     }
 
