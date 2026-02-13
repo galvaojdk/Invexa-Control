@@ -283,7 +283,8 @@
                                     <span class="text-white font-bold">{{ quantity }} un.</span>
                                 </div>
                                 <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                                    {% set percent = (quantity / (recent_count + 1) * 100)|round|int %}
+                                    {% set percent = (quantity / (total_out_qty if total_out_qty > 0 else 1) *
+                                    100)|round|int %}
                                     <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full"
                                         style="width: {{ [percent, 100]|min }}%"></div>
                                 </div>

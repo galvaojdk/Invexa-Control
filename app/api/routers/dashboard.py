@@ -78,12 +78,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         category_labels = [c.name for c in cat_data]
         category_counts = [c.count for c in cat_data]
 
-        stats = {
-            "total_products": total_products,
-            "low_stock": low_stock,
-            "total_categories": total_categories,
-            "total_workers": total_workers
-        }
+
         
         # Additional Dashboard Metrics (moved from Reports)
         thirty_days_ago = datetime.now() - timedelta(days=30)
@@ -91,10 +86,12 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         recent_count = len(recent_movements)
         
         sector_consumption_raw = {}
+        total_out_qty = 0
         for m in recent_movements:
             if m.type == MovementType.OUT:
                 sec = m.sector or "Não Definido"
                 sector_consumption_raw[sec] = sector_consumption_raw.get(sec, 0) + m.quantity
+                total_out_qty += m.quantity
                 
         # Sort sector consumption by quantity desc
         sector_consumption = dict(sorted(sector_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
@@ -106,7 +103,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "total_products": total_products,
             "low_stock": low_stock,
             "total_categories": total_categories,
-            "total_workers": total_workers
+            "total_workers": total_workers,
+            "movements_today": movements_today
         }
         
         return templates.TemplateResponse("dashboard.html", {
@@ -121,7 +119,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "cat_labels": category_labels,
             "cat_counts": category_counts,
             "sector_consumption": sector_consumption,
-            "recent_count": recent_count
+            "recent_count": recent_count,
+            "total_out_qty": total_out_qty
         })
     except Exception as e:
         logger.error(f"DASHBOARD ERROR: {str(e)}", exc_info=True)
@@ -130,11 +129,14 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "request": request,
             "user": user,
             "error": "Erro ao carregar dados do dashboard.",
-            "stats": {"total_products": 0, "low_stock": 0, "movements_today": 0, "total_categories": 0},
+            "stats": {"total_products": 0, "low_stock": 0, "movements_today": 0, "total_categories": 0, "total_workers": 0},
             "latest_movements": [],
             "chart_dates": [],
             "chart_entries": [],
             "chart_exits": [],
             "cat_labels": [],
-            "cat_counts": []
+            "cat_counts": [],
+            "sector_consumption": {},
+            "recent_count": 0,
+            "total_out_qty": 0
         })
