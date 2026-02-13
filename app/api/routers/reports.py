@@ -18,14 +18,30 @@ async def reports_view(
     report_type: str = "stock",
     start_date: str = None,
     end_date: str = None,
+    product_id: int = None,
+    category_id: int = None,
+    worker_id: int = None,
     user: User = Depends(login_required),
     db: Session = Depends(get_db)
 ):
+    # Fetch common data for filters
+    all_products = db.query(Product).order_by(Product.name).all()
+    # Need to import Category if not imported, or query it dynamically if model is available
+    from app.models.inventory import Category # local import to ensure availability or assume global import
+    all_categories = db.query(Category).order_by(Category.name).all()
+    all_workers = db.query(Worker).order_by(Worker.name).all()
+
     # Common context
     context = {
         "request": request,
         "user": user,
-        "report_type": report_type
+        "report_type": report_type,
+        "all_products": all_products,
+        "all_categories": all_categories,
+        "all_workers": all_workers,
+        "product_id": product_id,
+        "category_id": category_id,
+        "worker_id": worker_id
     }
 
     # Helper: Date Filters parsing
@@ -44,6 +60,12 @@ async def reports_view(
             query = query.filter(Shipment.created_at >= filter_start)
         if filter_end:
             query = query.filter(Shipment.created_at <= filter_end)
+        if product_id:
+            query = query.filter(Shipment.product_id == product_id)
+        if worker_id:
+            query = query.filter(Shipment.worker_id == worker_id)
+        if category_id:
+            query = query.filter(Product.category_id == category_id)
             
         shipments = query.all()
         
@@ -63,15 +85,19 @@ async def reports_view(
         
     elif report_type == "movements_history":
         # Global Movements History Report
-        query = db.query(Movement).order_by(Movement.timestamp.desc())
+        query = db.query(Movement).join(Product).order_by(Movement.timestamp.desc())
 
         if filter_start:
             query = query.filter(Movement.timestamp >= filter_start)
         if filter_end:
             query = query.filter(Movement.timestamp <= filter_end)
+        if product_id:
+            query = query.filter(Movement.product_id == product_id)
+        if category_id:
+            query = query.filter(Product.category_id == category_id)
             
         # Limit only if no filter (or very loose filter) to prevent massive scan
-        if not filter_start:
+        if not filter_start and not product_id and not category_id:
             query = query.limit(500)
             
         movements = query.all()
@@ -91,8 +117,14 @@ async def reports_view(
 
     else: # Default: 'stock'
         # Stock Position Report
-        # Stock is always snapshot logic, filters typically don't apply to "current stock" unless historical reconstruction
-        products = db.query(Product).order_by(Product.name.asc()).all()
+        query = db.query(Product)
+        
+        if category_id:
+            query = query.filter(Product.category_id == category_id)
+        if product_id:
+            query = query.filter(Product.id == product_id)
+            
+        products = query.order_by(Product.name.asc()).all()
         context["products"] = products
         context["gen_date"] = datetime.now()
 

@@ -60,6 +60,44 @@
                     class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto">
             </div>
 
+            <!-- Category Filter -->
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <select name="category_id"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
+                    <option value="">Todas Categorias</option>
+                    {% for c in all_categories %}
+                    <option value="{{ c.id }}" {% if category_id and category_id==c.id %}selected{% endif %}>{{ c.name
+                        }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Product Filter -->
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <select name="product_id"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
+                    <option value="">Todos Produtos</option>
+                    {% for p in all_products %}
+                    <option value="{{ p.id }}" {% if product_id and product_id==p.id %}selected{% endif %}>{{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Worker Filter (Only if needed or make generic) -->
+            {% if report_type == 'outsourced' %}
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <select name="worker_id"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
+                    <option value="">Todos Terceirizados</option>
+                    {% for w in all_workers %}
+                    <option value="{{ w.id }}" {% if worker_id and worker_id==w.id %}selected{% endif %}>{{ w.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <button type="submit"
                     class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2">
