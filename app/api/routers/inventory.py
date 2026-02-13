@@ -220,11 +220,7 @@ async def import_inventory(
 @router.get("/categories/")
 async def categories_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
     categories = db.query(Category).all()
-    return templates.TemplateResponse("categories.html", {
-        "request": request, 
-        "user": user, 
-        "categories": categories
-    })
+    return RedirectResponse(url="/inventory?tab=categories", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post("/categories")
 @router.post("/categories/")
@@ -246,7 +242,7 @@ async def create_category(
             description=f"Categoria '{name}' criada."
         ))
         db.commit()
-    return RedirectResponse(url="/inventory/categories", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/inventory?tab=categories", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post("/categories/{category_id}/delete")
 async def delete_category(
@@ -261,12 +257,13 @@ async def delete_category(
     product_count = db.query(Product).filter(Product.category_id == category_id).count()
     if product_count > 0:
         categories = db.query(Category).all()
-        return templates.TemplateResponse("categories.html", {
-            "request": request, 
-            "user": user, 
-            "categories": categories,
-            "error": f"Não é possível excluir: existem {product_count} produtos vinculados a esta categoria."
-        })
+        # Redirect with error query param to be displayed by frontend
+        # Alternatively, could render inventory.html with error, but redirection is simpler for now
+        # We'll use a session cookie or query param. Query param is easiest:
+        return RedirectResponse(
+            url=f"/inventory?tab=categories&error=Não é possível excluir: existem {product_count} produtos vinculados a esta categoria.", 
+            status_code=status.HTTP_303_SEE_OTHER
+        )
     db.add(AuditLog(
         user_id=user.id,
         action="DELETE_CATEGORY",
@@ -276,7 +273,7 @@ async def delete_category(
     ))
     db.delete(category)
     db.commit()
-    return RedirectResponse(url="/inventory/categories", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/inventory?tab=categories", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.get("/products/{product_id}")
 async def get_product_details(
