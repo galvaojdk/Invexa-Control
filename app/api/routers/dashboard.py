@@ -81,11 +81,24 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         stats = {
             "total_products": total_products,
             "low_stock": low_stock,
-            "movements_today": movements_today,
             "total_categories": total_categories,
             "total_workers": total_workers
         }
         
+        # Additional Dashboard Metrics (moved from Reports)
+        thirty_days_ago = datetime.now() - timedelta(days=30)
+        recent_movements = db.query(Movement).filter(Movement.timestamp >= thirty_days_ago).all()
+        recent_count = len(recent_movements)
+        
+        sector_consumption_raw = {}
+        for m in recent_movements:
+            if m.type == MovementType.OUT:
+                sec = m.sector or "Não Definido"
+                sector_consumption_raw[sec] = sector_consumption_raw.get(sec, 0) + m.quantity
+                
+        # Sort sector consumption by quantity desc
+        sector_consumption = dict(sorted(sector_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
+
         return templates.TemplateResponse("dashboard.html", {
             "request": request, 
             "user": user, 
@@ -95,7 +108,9 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "chart_entries": entries_data,
             "chart_exits": exits_data,
             "cat_labels": category_labels,
-            "cat_counts": category_counts
+            "cat_counts": category_counts,
+            "sector_consumption": sector_consumption,
+            "recent_count": recent_count
         })
     except Exception as e:
         logger.error(f"DASHBOARD ERROR: {str(e)}", exc_info=True)
