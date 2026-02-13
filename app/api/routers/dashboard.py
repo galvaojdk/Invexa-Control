@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -22,8 +22,17 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         # Basic Stats
         total_products = db.query(Product).count()
         low_stock = db.query(Product).filter(Product.current_stock <= Product.min_stock).count()
+        
         today = date.today()
-        movements_today = db.query(Movement).filter(func.strftime('%Y-%m-%d', Movement.timestamp) == today.strftime('%Y-%m-%d')).count()
+        # Use range query for movements_today which is DB-agnostic and index-friendly
+        start_of_day = datetime.combine(today, datetime.min.time())
+        end_of_day = datetime.combine(today, datetime.max.time())
+        
+        movements_today = db.query(Movement).filter(
+            Movement.timestamp >= start_of_day,
+            Movement.timestamp <= end_of_day
+        ).count()
+        
         total_categories = db.query(Category).count()
         
         # Latest Movements
@@ -31,14 +40,16 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         
         # Chart Data: Movements Last 7 Days
         seven_days_ago = today - timedelta(days=6)
+        # Use func.date() for grouping by date which works on both SQLite and Postgres
+        # On Postgres it returns Date object, on SQLite string YYYY-MM-DD
         daily_movements = db.query(
-            func.strftime('%Y-%m-%d', Movement.timestamp).label('date'),
+            func.date(Movement.timestamp).label('date'),
             Movement.type,
             func.sum(Movement.quantity).label('total')
         ).filter(
-            Movement.timestamp >= seven_days_ago
+            Movement.timestamp >= datetime.combine(seven_days_ago, datetime.min.time())
         ).group_by(
-            'date', Movement.type
+            func.date(Movement.timestamp), Movement.type
         ).all()
         
         # Process data for Chart.js
@@ -46,7 +57,11 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         entries_data = [0] * 7
         exits_data = [0] * 7
         
-        movement_map = {(row.date, row.type): row.total for row in daily_movements}
+        # Normalizing date keys to string for map lookup
+        movement_map = {}
+        for row in daily_movements:
+            d_str = str(row.date) # row.date could be date object or string depending on DB
+            movement_map[(d_str, row.type)] = row.total
         
         for i, d in enumerate(dates):
             entries_data[i] = movement_map.get((d, MovementType.IN), 0)
