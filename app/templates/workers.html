@@ -13,6 +13,11 @@
             class="px-4 py-2 text-sm font-bold transition-all">
             Terceirizados
         </button>
+        <button @click="activeTab = 'types'"
+            :class="{ 'text-blue-500 border-b-2 border-blue-500': activeTab === 'types', 'text-slate-500 hover:text-slate-300': activeTab !== 'types' }"
+            class="px-4 py-2 text-sm font-bold transition-all">
+            Tipos
+        </button>
         <button @click="activeTab = 'shipments'"
             :class="{ 'text-blue-500 border-b-2 border-blue-500': activeTab === 'shipments', 'text-slate-500 hover:text-slate-300': activeTab !== 'shipments' }"
             class="px-4 py-2 text-sm font-bold transition-all">
@@ -94,74 +99,125 @@
         </div>
     </div>
 
-    <!-- Shipments Tab -->
-    <div x-show="activeTab === 'shipments'" class="flex flex-col gap-6" style="display: none;">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl font-bold text-white">Remessas em Aberto</h2>
-        </div>
+</div>
 
-        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-900/50">
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data
-                            </th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                Prestador</th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
-                            </th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                                Enviado</th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                                Retornado</th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                                Status</th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
-                                Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800">
-                        {% for shipment in active_shipments %}
-                        <tr class="hover:bg-slate-800/30 transition-colors">
-                            <td class="px-6 py-4 text-xs text-slate-400">{{ shipment.created_at.strftime('%d/%m/%Y') }}
-                            </td>
-                            <td class="px-6 py-4 text-sm font-medium text-white">{{ shipment.worker.name }}</td>
-                            <td class="px-6 py-4 text-sm text-slate-300">{{ shipment.product.name }}</td>
-                            <td class="px-6 py-4 text-sm font-bold text-blue-400 text-center">{{ shipment.quantity }}
-                            </td>
-                            <td class="px-6 py-4 text-sm font-bold text-emerald-400 text-center">{{
-                                shipment.returned_quantity }}</td>
-                            <td class="px-6 py-4 text-center">
-                                <span class="px-2 py-1 rounded text-[10px] font-bold border 
+<!-- Worker Types Tab -->
+<div x-show="activeTab === 'types'" class="flex flex-col gap-6" style="display: none;">
+    <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold text-white">Tipos de Terceirizados</h2>
+        <button onclick="openWorkerTypeModal()"
+            class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-500/20 transition-all text-sm flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Novo Tipo
+        </button>
+    </div>
+
+    <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/50">
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Nome do
+                            Tipo</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for type in worker_types %}
+                    <tr class="hover:bg-slate-800/30 transition-colors">
+                        <td class="px-6 py-4 text-sm font-medium text-white">{{ type.name }}</td>
+                        <td class="px-6 py-4 text-right flex justify-end gap-2">
+                            <button onclick="openEditWorkerTypeModal('{{ type.id }}', '{{ type.name }}')"
+                                class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors">Editar</button>
+                            <form action="/workers/types/{{ type.id }}/delete" method="POST"
+                                onsubmit="return confirm('Tem certeza que deseja excluir este tipo?');" class="inline">
+                                <button type="submit"
+                                    class="text-red-400 hover:text-red-300 text-xs font-bold transition-colors ml-2">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhum tipo
+                            cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Shipments Tab -->
+<div x-show="activeTab === 'shipments'" class="flex flex-col gap-6" style="display: none;">
+    <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold text-white">Remessas em Aberto</h2>
+    </div>
+
+    <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/50">
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data
+                        </th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Prestador</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                        </th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Enviado</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Retornado</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Status</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for shipment in active_shipments %}
+                    <tr class="hover:bg-slate-800/30 transition-colors">
+                        <td class="px-6 py-4 text-xs text-slate-400">{{ shipment.created_at.strftime('%d/%m/%Y') }}
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-white">{{ shipment.worker.name }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-300">{{ shipment.product.name }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-blue-400 text-center">{{ shipment.quantity }}
+                        </td>
+                        <td class="px-6 py-4 text-sm font-bold text-emerald-400 text-center">{{
+                            shipment.returned_quantity }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold border 
                                     {% if shipment.status.value == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20
                                     {% elif shipment.status.value == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20
                                     {% endif %}">
-                                    {{ shipment.status.value|upper }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button
-                                    onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
-                                    class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors">Receber
-                                    Retorno</button>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma remessa
-                                ativa no momento.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                                {{ shipment.status.value|upper }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button
+                                onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
+                                class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors">Receber
+                                Retorno</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma remessa
+                            ativa no momento.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Modal Novo/Editar Terceirizado -->
@@ -231,7 +287,7 @@
     <div
         class="bg-[#0f172a] border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden transform transition-all">
         <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-            <h3 class="text-xl font-bold text-white">Novo Tipo de Terceirizado</h3>
+            <h3 class="text-xl font-bold text-white" id="workerTypeModalTitle">Novo Tipo de Terceirizado</h3>
             <button onclick="closeWorkerTypeModal()" class="text-slate-500 hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
@@ -239,16 +295,15 @@
                 </svg>
             </button>
         </div>
-        <form action="/workers/types/create" method="POST" class="p-6 space-y-4">
+        <form id="workerTypeForm" action="/workers/types/create" method="POST" class="p-6 space-y-4">
             <div class="space-y-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nome do Tipo</label>
-                <input type="text" name="name" required
+                <input type="text" name="name" id="wt_name" required
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Ex: Costureira">
             </div>
             <button type="submit"
-                class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg shadow-lg transition-all mt-4">Criar
-                Tipo</button>
+                class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg shadow-lg transition-all mt-4">Salvar</button>
         </form>
     </div>
 </div>
@@ -373,6 +428,16 @@
 
     // Worker Type Modal
     function openWorkerTypeModal() {
+        document.getElementById('workerTypeForm').action = '/workers/types/create';
+        document.getElementById('workerTypeModalTitle').innerText = 'Novo Tipo de Terceirizado';
+        document.getElementById('wt_name').value = '';
+        document.getElementById('workerTypeModal').classList.remove('hidden');
+    }
+
+    function openEditWorkerTypeModal(id, name) {
+        document.getElementById('workerTypeForm').action = `/workers/types/${id}/update`;
+        document.getElementById('workerTypeModalTitle').innerText = 'Editar Tipo';
+        document.getElementById('wt_name').value = name;
         document.getElementById('workerTypeModal').classList.remove('hidden');
     }
 

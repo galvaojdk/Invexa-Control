@@ -29,6 +29,41 @@ async def create_worker_type(
     
     return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
 
+@router.post("/types/{type_id}/update")
+async def update_worker_type(
+    type_id: int,
+    name: str = Form(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    worker_type = db.query(WorkerType).filter(WorkerType.id == type_id).first()
+    if not worker_type:
+        raise HTTPException(status_code=404, detail="Tipo não encontrado")
+    
+    worker_type.name = name
+    db.commit()
+    return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/types/{type_id}/delete")
+async def delete_worker_type(
+    type_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    worker_type = db.query(WorkerType).filter(WorkerType.id == type_id).first()
+    if not worker_type:
+        raise HTTPException(status_code=404, detail="Tipo não encontrado")
+    
+    # Check for dependent workers
+    dependent_count = db.query(Worker).filter(Worker.worker_type_id == type_id, Worker.active == True).count()
+    if dependent_count > 0:
+         # TODO: Handle error gracefully in frontend (flash message?), for now raising HTTP exception
+         raise HTTPException(status_code=400, detail=f"Não é possível excluir. Existem {dependent_count} terceirizados vinculados a este tipo.")
+
+    db.delete(worker_type)
+    db.commit()
+    return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
+
 @router.get("")
 @router.get("/")
 async def workers_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
