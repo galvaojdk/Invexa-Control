@@ -42,6 +42,45 @@
         </div>
     </div>
 
+    <!-- Date Filters -->
+    <div
+        class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <form action="" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
+            <input type="hidden" name="report_type" value="{{ report_type }}">
+
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <label class="text-sm font-bold text-slate-400">De:</label>
+                <input type="date" name="start_date" value="{{ request.query_params.get('start_date', '') }}"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto">
+            </div>
+
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <label class="text-sm font-bold text-slate-400">Até:</label>
+                <input type="date" name="end_date" value="{{ request.query_params.get('end_date', '') }}"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto">
+            </div>
+
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                        </path>
+                    </svg>
+                    Filtrar
+                </button>
+
+                {% if request.query_params.get('start_date') or request.query_params.get('end_date') %}
+                <a href="?report_type={{ report_type }}"
+                    class="px-4 py-2 text-slate-400 hover:text-white text-sm font-bold transition-colors border border-slate-700 rounded-lg hover:bg-slate-800">
+                    Limpar
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
     {% if report_type == 'stock' %}
     <!-- Stock Position Table -->
     <div id="report-content" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">

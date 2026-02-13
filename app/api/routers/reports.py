@@ -16,6 +16,8 @@ from app.models.worker import Shipment, Worker
 async def reports_view(
     request: Request,
     report_type: str = "stock",
+    start_date: str = None,
+    end_date: str = None,
     user: User = Depends(login_required),
     db: Session = Depends(get_db)
 ):
@@ -26,10 +28,25 @@ async def reports_view(
         "report_type": report_type
     }
 
+    # Helper: Date Filters parsing
+    filter_start = None
+    filter_end = None
+    if start_date:
+        filter_start = datetime.strptime(start_date, "%Y-%m-%d")
+    if end_date:
+        filter_end = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=1) - timedelta(seconds=1) # End of day
+
     if report_type == "outsourced":
         # Fetch data for Outsourced Shipments Report
-        # Order by date desc
-        shipments = db.query(Shipment).order_by(Shipment.created_at.desc()).all()
+        query = db.query(Shipment).join(Worker).join(Product).order_by(Shipment.created_at.desc())
+        
+        if filter_start:
+            query = query.filter(Shipment.created_at >= filter_start)
+        if filter_end:
+            query = query.filter(Shipment.created_at <= filter_end)
+            
+        shipments = query.all()
+        
         # Calculate balance for each shipment
         report_data = []
         for s in shipments:
@@ -46,7 +63,19 @@ async def reports_view(
         
     elif report_type == "movements_history":
         # Global Movements History Report
-        movements = db.query(Movement).order_by(Movement.timestamp.desc()).limit(500).all() # Limit for performance
+        query = db.query(Movement).order_by(Movement.timestamp.desc())
+
+        if filter_start:
+            query = query.filter(Movement.timestamp >= filter_start)
+        if filter_end:
+            query = query.filter(Movement.timestamp <= filter_end)
+            
+        # Limit only if no filter (or very loose filter) to prevent massive scan
+        if not filter_start:
+            query = query.limit(500)
+            
+        movements = query.all()
+
         report_data = []
         for m in movements:
             report_data.append({
@@ -62,6 +91,7 @@ async def reports_view(
 
     else: # Default: 'stock'
         # Stock Position Report
+        # Stock is always snapshot logic, filters typically don't apply to "current stock" unless historical reconstruction
         products = db.query(Product).order_by(Product.name.asc()).all()
         context["products"] = products
         context["gen_date"] = datetime.now()
