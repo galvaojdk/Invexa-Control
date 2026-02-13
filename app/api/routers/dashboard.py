@@ -99,10 +99,21 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         # Sort sector consumption by quantity desc
         sector_consumption = dict(sorted(sector_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
+        # Fetch all products ordered by name for quick actions/modals
+        all_products = db.query(Product).order_by(Product.name).all()
+
+        stats = {
+            "total_products": total_products,
+            "low_stock": low_stock,
+            "total_categories": total_categories,
+            "total_workers": total_workers
+        }
+        
         return templates.TemplateResponse("dashboard.html", {
             "request": request, 
             "user": user, 
             "stats": stats,
+            "products": all_products, # Pass full products list for Quick Actions
             "latest_movements": latest_movements,
             "chart_dates": dates,
             "chart_entries": entries_data,
