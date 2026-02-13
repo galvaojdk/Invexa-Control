@@ -44,6 +44,22 @@ async def reports_view(
             })
         context["report_data"] = report_data
         
+    elif report_type == "movements_history":
+        # Global Movements History Report
+        movements = db.query(Movement).order_by(Movement.timestamp.desc()).limit(500).all() # Limit for performance
+        report_data = []
+        for m in movements:
+            report_data.append({
+                "date": m.timestamp,
+                "product": m.product.name,
+                "type": m.type.value,
+                "quantity": m.quantity,
+                "reason": m.reason or "-",
+                "sector": m.sector or "-",
+                "user": m.user.full_name if m.user else "-"
+            })
+        context["report_data"] = report_data
+
     else: # Default: 'stock'
         # Stock Position Report
         products = db.query(Product).order_by(Product.name.asc()).all()

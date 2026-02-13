@@ -31,6 +31,14 @@
                 </svg>
                 Saídas por Terceirizado
             </a>
+            <a href="?report_type=movements_history"
+                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'movements_history' %}bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20{% else %}bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white{% endif %}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Histórico Geral
+            </a>
         </div>
     </div>
 
@@ -138,12 +146,11 @@
                     class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
                         </path>
                     </svg>
                     Imprimir / PDF
                 </button>
-                <!-- TODO: Export endpoint for outsourced shipments -->
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -194,6 +201,76 @@
                                 {{ row.status|upper }}
                             </span>
                         </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center text-slate-500 text-sm italic">Nenhum registro
+                            encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% elif report_type == 'movements_history' %}
+    <!-- Movements History Table -->
+    <div id="report-content" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+            <div>
+                <h3 class="text-xl font-bold text-white font-sans">Histórico Geral de Movimentações</h3>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
+                        class="gen-date"></span></p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="window.print()"
+                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                        </path>
+                    </svg>
+                    Imprimir / PDF
+                </button>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/80">
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data/Hora
+                        </th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                        </th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tipo</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Quantidade</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Setor</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Motivo</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Usuário
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for row in report_data %}
+                    <tr class="hover:bg-slate-800/40 transition-all duration-200">
+                        <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ row.date.strftime('%d/%m/%Y %H:%M') }}
+                        </td>
+                        <td class="px-6 py-4 text-sm font-bold text-white">{{ row.product }}</td>
+                        <td class="px-6 py-4">
+                            {% if row.type == 'entrada' %}
+                            <span
+                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">ENTRADA</span>
+                            {% else %}
+                            <span
+                                class="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20">SAÍDA</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-slate-200">{{ row.quantity }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-400">{{ row.sector }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-400">{{ row.reason }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-500">{{ row.user }}</td>
                     </tr>
                     {% else %}
                     <tr>
