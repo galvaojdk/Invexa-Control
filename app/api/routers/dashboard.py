@@ -7,6 +7,7 @@ from sqlalchemy import func
 from app.core.database import SessionLocal
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement, MovementType
+from app.models.worker import Worker
 from app.api.dependencies import get_db, login_required
 
 import logging
@@ -34,6 +35,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         ).count()
         
         total_categories = db.query(Category).count()
+        total_workers = db.query(Worker).count()
         
         # Latest Movements
         latest_movements = db.query(Movement).order_by(Movement.timestamp.desc()).limit(10).all()
@@ -80,7 +82,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "total_products": total_products,
             "low_stock": low_stock,
             "movements_today": movements_today,
-            "total_categories": total_categories
+            "total_categories": total_categories,
+            "total_workers": total_workers
         }
         
         return templates.TemplateResponse("dashboard.html", {
