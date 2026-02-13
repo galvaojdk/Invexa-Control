@@ -6,17 +6,35 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.user import User
 from app.models.worker import Worker, Shipment, ShipmentStatus
+from app.models.worker_type import WorkerType
 from app.models.inventory import Product, Movement, MovementType, AuditLog
 from app.api.dependencies import login_required
 
 router = APIRouter(prefix="/workers", tags=["Workers"])
 templates = Jinja2Templates(directory="app/templates")
 
+@router.post("/types/create")
+async def create_worker_type(
+    name: str = Form(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    existing = db.query(WorkerType).filter(WorkerType.name == name).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Tipo já existe")
+    
+    new_type = WorkerType(name=name)
+    db.add(new_type)
+    db.commit()
+    
+    return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
+
 @router.get("")
 @router.get("/")
 async def workers_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
     workers = db.query(Worker).filter(Worker.active == True).all()
     products = db.query(Product).all()
+    worker_types = db.query(WorkerType).all()
     
     # Fetch active shipments for display
     active_shipments = db.query(Shipment).filter(
@@ -28,23 +46,32 @@ async def workers_view(request: Request, user: User = Depends(login_required), d
         "user": user,
         "workers": workers,
         "products": products,
+        "worker_types": worker_types,
         "active_shipments": active_shipments
     })
 
 @router.post("/create")
 async def create_worker(
     name: str = Form(...),
-    role: str = Form(...),
+    address: str = Form(None),
+    zip_code: str = Form(None),
+    worker_type_id: int = Form(...),
     phone: str = Form(None),
     daily_rate: float = Form(0.0),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
+    worker_type = db.query(WorkerType).filter(WorkerType.id == worker_type_id).first()
+    role_name = worker_type.name if worker_type else "Desconhecido"
+
     new_worker = Worker(
         name=name,
-        role=role,
+        address=address,
+        zip_code=zip_code,
+        worker_type_id=worker_type_id,
         phone=phone,
-        daily_rate=daily_rate
+        daily_rate=daily_rate,
+        role=role_name # Keeping role populated for backward compatibility/logging if needed
     )
     db.add(new_worker)
     db.flush()
@@ -54,7 +81,7 @@ async def create_worker(
         action="CREATE_WORKER",
         resource_type="worker",
         resource_id=new_worker.id,
-        description=f"Terceirizado '{name}' cadastrado. Função: {role}"
+        description=f"Terceirizado '{name}' cadastrado. Tipo: {role_name}"
     ))
     db.commit()
     return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
@@ -63,7 +90,9 @@ async def create_worker(
 async def update_worker(
     worker_id: int,
     name: str = Form(...),
-    role: str = Form(...),
+    address: str = Form(None),
+    zip_code: str = Form(None),
+    worker_type_id: int = Form(...),
     phone: str = Form(None),
     daily_rate: float = Form(0.0),
     db: Session = Depends(get_db),
@@ -74,10 +103,17 @@ async def update_worker(
         raise HTTPException(status_code=404, detail="Terceirizado não encontrado")
     
     worker.name = name
-    worker.role = role
+    worker.address = address
+    worker.zip_code = zip_code
+    worker.worker_type_id = worker_type_id
     worker.phone = phone
     worker.daily_rate = daily_rate
     
+    # Update deprecated role field just in case
+    worker_type = db.query(WorkerType).filter(WorkerType.id == worker_type_id).first()
+    if worker_type:
+        worker.role = worker_type.name
+
     db.add(AuditLog(
         user_id=user.id,
         action="UPDATE_WORKER",

@@ -4,6 +4,7 @@ services:
     runtime: docker
     plan: free
     region: ohio
+    startCommand: "python migrations/migrate_postgres.py && uvicorn app.main:app --host 0.0.0.0 --port 10000"
     envVars:
       - key: DATABASE_URL
         fromDatabase:

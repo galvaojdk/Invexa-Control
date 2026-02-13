@@ -19,13 +19,20 @@ class Worker(Base):
     tax_id = Column(String, nullable=True) # CPF/CNPJ
     phone = Column(String, nullable=True)
     email = Column(String, nullable=True)
-    role = Column(String, nullable=False) # e.g., Costureira, Acabamento
+    role = Column(String, nullable=True) # Deprecated, use worker_type
+    
+    address = Column(String, nullable=True)
+    zip_code = Column(String, nullable=True)
+    
+    worker_type_id = Column(Integer, ForeignKey("worker_types.id"), nullable=True)
+    
     daily_rate = Column(Float, default=0.0)
     active = Column(Boolean, default=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    worker_type = relationship("WorkerType", back_populates="workers")
     shipments = relationship("Shipment", back_populates="worker")
 
 class Shipment(Base):
