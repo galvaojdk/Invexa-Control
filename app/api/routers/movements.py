@@ -54,7 +54,8 @@ async def register_movement(
         )
         db.commit()
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        # Estoque insuficiente é um erro de validação (Bad Request), não "Não Encontrado"
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao registrar movimentação: {str(e)}")

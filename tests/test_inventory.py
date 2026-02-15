@@ -160,7 +160,7 @@ def test_stock_movement_insufficient_stock(client, db_session):
     )
     
     # Expect failure (404 as per router implementation for ValueError catch)
-    assert response.status_code in [404, 400]
+    assert response.status_code == 400
     # The routers/movements.py catches ValueError and raises 404
     # raise HTTPException(status_code=404, detail=str(e))
     
