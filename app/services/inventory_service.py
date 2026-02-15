@@ -27,8 +27,7 @@ class InventoryService:
             product.current_stock += quantity
         else:
             if product.current_stock < quantity:
-                # Optional: We could raise an error here if we want to prevent negative stock
-                pass
+                raise ValueError(f"Estoque insuficiente para o produto '{product.name}'. Disponível: {product.current_stock}, Solicitado: {quantity}")
             product.current_stock -= quantity
         
         db.add(product)
