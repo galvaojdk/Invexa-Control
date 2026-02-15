@@ -54,11 +54,18 @@ async def register_movement(
         )
         db.commit()
     except ValueError as e:
-        # Estoque insuficiente é um erro de validação (Bad Request), não "Não Encontrado"
-        raise HTTPException(status_code=400, detail=str(e))
+        # Stock validation error - Redirect with error message
+        return RedirectResponse(
+            url=f"/movements?error={str(e)}", 
+            status_code=303
+        )
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Erro ao registrar movimentação: {str(e)}")
+        # General error - Redirect with error message
+        return RedirectResponse(
+            url=f"/movements?error=Erro ao registrar movimentação: {str(e)}", 
+            status_code=303
+        )
         
     return RedirectResponse(url="/movements", status_code=303)
 
