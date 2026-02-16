@@ -286,29 +286,30 @@
                 </div>
 
                 <!-- Grid Items -->
-                <div class="border border-slate-700 rounded-xl overflow-hidden">
-                    <table class="w-full text-left" id="itemsTable">
-                        <thead class="bg-slate-800 text-xs font-bold text-slate-400 uppercase">
+                <div class="border border-slate-700 rounded-xl overflow-hidden shadow-sm">
+                    <table class="w-full text-left border-collapse" id="itemsTable">
+                        <thead class="bg-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                             <tr>
-                                <th class="px-4 py-3">Produto</th>
-                                <th class="px-4 py-3 w-32">Qtd Atual</th>
-                                <th class="px-4 py-3 w-32">Qtd Saída</th>
-                                <th class="px-4 py-3 w-16 text-center">Ação</th>
+                                <th class="px-2 py-2 border-b border-r border-slate-700 w-12 text-center">#</th>
+                                <th class="px-2 py-2 border-b border-r border-slate-700">Produto</th>
+                                <th class="px-2 py-2 border-b border-r border-slate-700 w-24 text-center">Atual</th>
+                                <th class="px-2 py-2 border-b border-r border-slate-700 w-32">Qtd Saída</th>
+                                <th class="px-2 py-2 border-b border-slate-700 w-10 text-center"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800 text-sm">
+                        <tbody class="divide-y divide-slate-700 text-sm bg-slate-900">
                             <!-- Rows will be added here -->
                         </tbody>
                     </table>
-                    <div class="p-3 bg-slate-800/50 border-t border-slate-700">
+                    <div class="p-2 bg-slate-800/50 border-t border-slate-700">
                         <button type="button" onclick="addBatchRow()"
-                            class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 uppercase tracking-wider">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-full py-1.5 rounded border border-dashed border-slate-600 text-xs font-bold text-slate-400 hover:text-blue-400 hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-1 uppercase tracking-wider">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4">
                                 </path>
                             </svg>
-                            Adicionar Item
+                            Adicionar Linha
                         </button>
                     </div>
                 </div>
@@ -318,7 +319,7 @@
                         class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
                     <button type="submit"
                         class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">
-                        Confirmar Saída em Lote
+                        Confirmar Saída
                     </button>
                 </div>
         </form>
@@ -333,36 +334,40 @@
     {% endfor %}
     ];
 
-    // Toggle logic removed as we only support Third-Party now for batches
-
-
     function addBatchRow() {
         const tbody = document.querySelector('#itemsTable tbody');
         const rowId = 'row-' + Date.now();
+        const rowCount = tbody.children.length + 1;
         const tr = document.createElement('tr');
         tr.id = rowId;
-        tr.className = "bg-slate-900 hover:bg-slate-800/50 transition-colors";
+        tr.className = "group hover:bg-slate-800/30 transition-colors";
 
         // Products Options
         let options = '<option value="">Selecione...</option>';
         availableProducts.forEach(p => {
-            options += `<option value="${p.id}" data-stock="${p.stock}">${p.name}</option>`;
+            options += `<option value="${p.id}" data-stock="${p.stock}">${p.name} (${p.unit})</option>`;
         });
 
         tr.innerHTML = `
-            <td class="px-4 py-2">
-                <select class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white text-sm focus:border-blue-500 outline-none product-select" onchange="updateRowStock('${rowId}', this)">
+            <td class="px-2 py-0 border-r border-slate-700 text-center text-xs text-slate-500 font-mono select-none">
+                ${rowCount}
+            </td>
+            <td class="p-0 border-r border-slate-700 relative">
+                <select class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none appearance-none product-select cursor-pointer" onchange="updateRowStock('${rowId}', this)">
                     ${options}
                 </select>
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
             </td>
-            <td class="px-4 py-2 text-slate-500 font-mono text-xs stock-display">
+            <td class="px-2 py-0 border-r border-slate-700 text-center text-slate-400 font-mono text-xs stock-display bg-slate-900/50">
                 -
             </td>
-            <td class="px-4 py-2">
-                <input type="number" step="0.01" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white text-sm focus:border-blue-500 outline-none qty-input" placeholder="0.00">
+            <td class="p-0 border-r border-slate-700">
+                <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none text-right qty-input font-mono" placeholder="0.00">
             </td>
-            <td class="px-4 py-2 text-center">
-                <button type="button" onclick="removeBatchRow('${rowId}')" class="text-slate-500 hover:text-red-400">
+            <td class="p-0 text-center">
+                <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Remover linha">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -370,10 +375,20 @@
             </td>
         `;
         tbody.appendChild(tr);
+
+        // Auto-focus the product select of the new row
+        setTimeout(() => {
+            tr.querySelector('select').focus();
+        }, 50);
     }
 
     function removeBatchRow(rowId) {
         document.getElementById(rowId).remove();
+        // Re-index rows (optional visual polish)
+        const tbody = document.querySelector('#itemsTable tbody');
+        Array.from(tbody.children).forEach((tr, index) => {
+            tr.firstElementChild.innerText = index + 1;
+        });
     }
 
     function updateRowStock(rowId, select) {
@@ -383,9 +398,13 @@
 
         if (selectedOption.value) {
             const stock = selectedOption.getAttribute('data-stock');
-            stockDisplay.innerText = stock;
+            // Format stock to 2 decimals
+            stockDisplay.innerText = parseFloat(stock).toFixed(2);
+            // Highlight if stock is low or zero (optional logic could go here)
+            stockDisplay.classList.add('text-white');
         } else {
             stockDisplay.innerText = '-';
+            stockDisplay.classList.remove('text-white');
         }
     }
 
