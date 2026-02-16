@@ -12,7 +12,7 @@ from app.core.database import SessionLocal, Base, engine
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement
 from app.api.dependencies import get_db, login_required
-from app.api.routers import auth, inventory, movements, receptions, admin, reports
+from app.api.routers import auth, inventory, movements, admin, reports
 from app.models.worker import Worker, Shipment
 
 # Create tables on startup
@@ -45,7 +45,7 @@ async def not_found_exception_handler(request: Request, exc: HTTPException):
 app.include_router(auth.router)
 app.include_router(inventory.router)
 app.include_router(movements.router)
-app.include_router(receptions.router)
+
 app.include_router(admin.router)
 app.include_router(reports.router)
 from app.api.routers import workers
