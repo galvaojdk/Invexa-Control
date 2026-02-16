@@ -22,7 +22,7 @@ class Product(Base):
     description = Column(String) # Descrição Completa
     unit = Column(String, default="un") # Und, Metro, KG, etc
     current_stock = Column(Float, default=0.0)
-    min_stock = Column(Float, default=0.0)
+
     is_composite = Column(Boolean, default=False)
     is_primary = Column(Boolean, default=False)
     category_id = Column(Integer, ForeignKey("categories.id"))

@@ -33,8 +33,7 @@ async def create_product(
     is_composite: bool = Form(False),
     is_primary: bool = Form(False),
     sku: str = Form(None),
-    min_stock: float = Form(0.0),
-    # current_stock: float = Form(0.0), # DEPRECATED: Stock is managed by movements
+
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -49,7 +48,6 @@ async def create_product(
         unit=unit,
         is_composite=is_composite,
         is_primary=is_primary,
-        min_stock=min_stock,
         current_stock=0.0 # Force 0 on creation
     )
     db.add(new_product)
@@ -76,7 +74,6 @@ async def update_product(
     unit: str = Form("Und"),
     is_composite: bool = Form(False),
     is_primary: bool = Form(False),
-    min_stock: float = Form(0.0),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -90,7 +87,6 @@ async def update_product(
     product.unit = unit
     product.is_composite = is_composite
     product.is_primary = is_primary
-    product.min_stock = min_stock
     
     db.add(AuditLog(
         user_id=user.id,
@@ -143,7 +139,7 @@ async def export_inventory(
     products = db.query(Product).all()
     output = io.StringIO()
     writer = csv.DictWriter(output, fieldnames=[
-        "sku", "name", "description", "category", "current_stock", "min_stock", "unit"
+        "sku", "name", "description", "category", "current_stock", "unit"
     ])
     writer.writeheader()
     for p in products:
@@ -153,7 +149,6 @@ async def export_inventory(
             "description": p.description or "",
             "category": p.category.name if p.category else "",
             "current_stock": p.current_stock,
-            "min_stock": p.min_stock,
             "unit": p.unit or "un"
         })
     output.seek(0)
@@ -196,8 +191,6 @@ async def import_inventory(
             product.category_id = category_id or product.category_id
             if row.get("current_stock"):
                 product.current_stock = float(row.get("current_stock"))
-            if row.get("min_stock"):
-                product.min_stock = float(row.get("min_stock"))
             product.unit = row.get("unit", product.unit)
         else:
             if not sku:
@@ -209,7 +202,6 @@ async def import_inventory(
                 description=row.get("description", ""),
                 category_id=category_id,
                 current_stock=float(row.get("current_stock", 0)),
-                min_stock=float(row.get("min_stock", 0)),
                 unit=row.get("unit", "un")
             )
             db.add(new_product)
@@ -295,7 +287,6 @@ async def get_product_details(
         "category": product.category.name if product.category else "-",
         "unit": product.unit or "un",
         "current_stock": product.current_stock,
-        "min_stock": product.min_stock,
         "is_composite": product.is_composite,
         "is_primary": product.is_primary,
         "history": [

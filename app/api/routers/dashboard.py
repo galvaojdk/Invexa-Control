@@ -22,7 +22,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
     try:
         # Basic Stats
         total_products = db.query(Product).count()
-        low_stock = db.query(Product).filter(Product.current_stock <= Product.min_stock).count()
+        # low_stock removed as per request
         
         today = date.today()
         # Use range query for movements_today which is DB-agnostic and index-friendly
@@ -101,7 +101,6 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
 
         stats = {
             "total_products": total_products,
-            "low_stock": low_stock,
             "total_categories": total_categories,
             "total_workers": total_workers,
             "movements_today": movements_today
@@ -129,7 +128,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "request": request,
             "user": user,
             "error": "Erro ao carregar dados do dashboard.",
-            "stats": {"total_products": 0, "low_stock": 0, "movements_today": 0, "total_categories": 0, "total_workers": 0},
+            "stats": {"total_products": 0, "movements_today": 0, "total_categories": 0, "total_workers": 0},
             "latest_movements": [],
             "chart_dates": [],
             "chart_entries": [],

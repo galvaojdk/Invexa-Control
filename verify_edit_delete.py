@@ -44,8 +44,30 @@ def get_auth_headers():
 def test_edit_delete():
     print("Starting verification...")
     
+    # 0. Ensure Admin User
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == "admin@invexa.com").first()
+    if not user:
+        user = User(
+            email="admin@invexa.com", 
+            hashed_password=get_password_hash("senha123"), 
+            full_name="Admin Test",
+            role="admin",
+            is_active=True, 
+            is_admin=True
+        )
+        db.add(user)
+        db.commit()
+    else:
+        user.hashed_password = get_password_hash("senha123")
+        db.commit()
+    db.close()
+
     # 1. Login
-    client.post("/login", data={"email": "admin@invexa.com", "password": "senha123"})
+    resp = client.post("/login", data={"email": "admin@invexa.com", "password": "senha123"})
+    if "E-mail ou senha incorretos" in resp.text:
+         print("LOGIN FAILED: Incorrect email/password")
+         exit(1)
     print("Logged in.")
     
     # 2. Create Product
@@ -54,7 +76,7 @@ def test_edit_delete():
         "description": "Descricao Original",
         "category_id": 1, # Assuming cat 1 exists
         "unit": "Und",
-        "min_stock": 10,
+        # "min_stock": 10, # Removed
         "current_stock": 100
     }
     # Ensure category exists
@@ -68,7 +90,11 @@ def test_edit_delete():
     product_data["category_id"] = cat.id
     db.close()
 
-    resp = client.post("/inventory/products", data=product_data)
+    resp = client.post("/inventory/products", data=product_data, follow_redirects=False)
+    if resp.status_code not in [303, 200]:
+        print(f"FAILED: {resp.status_code}")
+        print(resp.headers)
+        print(resp.text)
     assert resp.status_code == 303 or resp.status_code == 200
     print("Product created.")
     
@@ -84,11 +110,17 @@ def test_edit_delete():
         "description": "Descricao Nova",
         "category_id": cat.id,
         "unit": "KG",
-        "min_stock": 5,
+        # "min_stock": 5, # Removed
         "is_composite": False,
         "is_primary": True
     }
-    resp = client.post(f"/inventory/products/{pid}/update", data=update_data)
+    resp = client.post(f"/inventory/products/{pid}/update", data=update_data, follow_redirects=False)
+    if resp.status_code != 303:
+        print(f"UPDATE FAILED: {resp.status_code}")
+        try:
+            print(resp.text.encode(sys.stdout.encoding, errors='replace').decode(sys.stdout.encoding))
+        except:
+             print("Could not print response text due to encoding issues.")
     assert resp.status_code == 303
     print("Product updated.")
     
@@ -134,7 +166,7 @@ def test_edit_delete():
     print("Movement removed.")
     
     # 7. Delete (Should Succeed)
-    resp = client.post(f"/inventory/products/{pid}/delete")
+    resp = client.post(f"/inventory/products/{pid}/delete", follow_redirects=False)
     assert resp.status_code == 303
     print("Product deleted.")
     

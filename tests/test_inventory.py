@@ -26,7 +26,7 @@ def test_create_product(client, db_session):
             "name": "Test Product",
             "description": "A test product description",
             "category_id": cat.id,
-            "min_stock": 10,
+            # "min_stock": 10, # Removed
             # "current_stock": 100, # DEPRECATED in test? API ignores it on create?
             # Router code says: current_stock=0.0 # Force 0 on creation
             # So we expect 0, but tests say 100?

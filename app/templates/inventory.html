@@ -92,9 +92,6 @@
                             <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                                 Estoque</th>
                             <th
-                                class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                                Status</th>
-                            <th
                                 class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
                                 Ações</th>
                         </tr>
@@ -106,19 +103,10 @@
                             <td class="px-6 py-4 text-sm text-slate-400">{{ product.category.name if product.category
                                 else
                                 '-' }}</td>
-                            <td
-                                class="px-6 py-4 text-sm font-mono {% if product.current_stock <= product.min_stock %}text-red-400{% else %}text-white{% endif %}">
+                            <td class="px-6 py-4 text-sm font-mono text-white">
                                 {{ product.current_stock }} {{ product.unit }}
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                {% if product.current_stock <= product.min_stock %} <span
-                                    class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20">
-                                    CRÍTICO</span>
-                                    {% else %}
-                                    <span
-                                        class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20">NORMAL</span>
-                                    {% endif %}
-                            </td>
+
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button onclick="openEditModal({{ product.id }})"
@@ -289,12 +277,6 @@
                             <option value="KG">KG</option>
                         </select>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Mínimo</label>
-                        <input type="number" step="0.01" name="min_stock"
-                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                            placeholder="0.00">
-                    </div>
                 </div>
 
                 <div class="flex gap-6 py-2">
@@ -373,15 +355,9 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Atual</label>
                         <input type="number" step="0.01" name="current_stock" id="edit-current_stock" disabled
                             class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-slate-500 cursor-not-allowed">
                         <p class="text-[10px] text-slate-500 italic">* Use "Movimentações" para ajustar.</p>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estoque Mínimo</label>
-                        <input type="number" step="0.01" name="min_stock" id="edit-min_stock" required
-                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                     </div>
                 </div>
 
@@ -488,7 +464,9 @@
             document.getElementById('edit-description').value = data.description || '';
             document.getElementById('edit-unit').value = data.unit;
             document.getElementById('edit-current_stock').value = data.current_stock;
-            document.getElementById('edit-min_stock').value = data.min_stock;
+            document.getElementById('edit-current_stock').value = data.current_stock;
+            // document.getElementById('edit-min_stock').value = data.min_stock; // Removed
+            document.getElementById('edit-is_composite').checked = data.is_composite;
             document.getElementById('edit-is_composite').checked = data.is_composite;
             document.getElementById('edit-is_primary').checked = data.is_primary;
 

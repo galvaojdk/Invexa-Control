@@ -159,15 +159,7 @@
                         </th>
                         <th
                             class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                            Mínimo</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
                             Atual</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                            Necessidade</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
-                            Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800">
@@ -181,27 +173,8 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-300">{{ p.category.name if p.category else 'Sem
                             Categoria' }}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-slate-400 text-center">{{ p.min_stock }} {{ p.unit
-                            }}</td>
-                        <td
-                            class="px-6 py-4 text-sm font-mono text-center font-bold {% if p.current_stock <= p.min_stock %}text-red-400 animate-pulse{% else %}text-emerald-400{% endif %}">
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-emerald-400">
                             {{ p.current_stock }} {{ p.unit }}
-                        </td>
-                        <td class="px-6 py-4 text-sm font-mono text-center text-slate-300">
-                            {% if p.current_stock < p.min_stock %} <span class="text-red-400 font-bold">+{{ p.min_stock
-                                - p.current_stock }}</span>
-                                {% else %}
-                                <span class="text-slate-600">-</span>
-                                {% endif %}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            {% if p.current_stock <= p.min_stock %} <span
-                                class="px-2 py-0.5 bg-red-500/10 text-red-500 text-[10px] font-bold rounded-full border border-red-500/20">
-                                REPOSIÇÃO CRÍTICA</span>
-                                {% else %}
-                                <span
-                                    class="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold rounded-full border border-emerald-500/20">ABASTECIDO</span>
-                                {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
