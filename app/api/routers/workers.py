@@ -168,9 +168,9 @@ async def delete_worker(
     # Check for existing shipments
     shipment_count = db.query(Shipment).filter(Shipment.worker_id == worker_id).count()
     if shipment_count > 0:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Não é possível excluir. Existem {shipment_count} remessas vinculadas a este terceirizado."
+        return RedirectResponse(
+            url=f"/workers?error=Não é possível excluir. Existem {shipment_count} remessas vinculadas a este terceirizado.",
+            status_code=status.HTTP_303_SEE_OTHER
         )
 
     worker.active = False
