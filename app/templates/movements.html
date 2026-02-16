@@ -114,64 +114,74 @@
 </div>
 
 <script>
-    // Safe injection of product data using Jinja's tojson
-    // This handles quotes and special characters automatically
-    const availableProducts = [
+    // Safe injection of product data
+    const availableProducts = [];
+    try {
         {% for p in products %}
-    {
-        id: { { p.id | tojson } },
-        name: { { p.name | tojson } },
-        stock: { { p.current_stock | tojson } },
-        unit: { { (p.unit or 'un') | tojson } }
-    },
+        availableProducts.push({
+            id: {{ p.id | tojson }},
+    name: { { p.name | tojson } },
+    stock: { { p.current_stock | tojson } },
+    unit: { { (p.unit or 'un') | tojson } }
+        });
     {% endfor %}
-    ];
+    } catch (e) {
+        console.error("Error initializing products:", e);
+    }
 
     function addBatchRow() {
-        const tbody = document.getElementById('itemsTableBody');
-        const rowId = 'row-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-        const rowCount = tbody.children.length + 1;
-        const tr = document.createElement('tr');
-        tr.id = rowId;
-        tr.className = "group hover:bg-slate-800/30 transition-colors";
+        try {
+            const tbody = document.getElementById('itemsTableBody');
+            if (!tbody) {
+                console.error("Tbody not found");
+                return;
+            }
 
-        // Generate product options
-        // Optimisation: Build string once if list is huge, but for now map is fine for < 1000 items
-        const options = availableProducts.map(p =>
-            `<option value="${p.id}">${p.name} (${p.unit})</option>`
-        ).join('');
+            const rowId = 'row-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            const rowCount = tbody.children.length + 1;
+            const tr = document.createElement('tr');
+            tr.id = rowId;
+            tr.className = "group hover:bg-slate-800/30 transition-colors";
 
-        tr.innerHTML = `
-            <td class="px-3 py-2 border-r border-slate-700 text-center text-slate-500 font-mono select-none">
-                ${rowCount}
-            </td>
-            <td class="p-0 border-r border-slate-700 relative">
-                <select class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none appearance-none product-select cursor-pointer">
-                    <option value="">Selecione um produto...</option>
-                    ${options}
-                </select>
-                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-            </td>
-            <td class="p-0 border-r border-slate-700">
-                <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none qty-input font-mono" placeholder="0.00">
-            </td>
-            <td class="p-0 text-center">
-                <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Remover linha">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                </button>
-            </td>
-        `;
-        tbody.appendChild(tr);
+            // Generate product options
+            const options = availableProducts.map(p =>
+                `<option value="${p.id}">${p.name} (${p.unit})</option>`
+            ).join('');
 
-        // Auto-focus
-        setTimeout(() => {
-            const select = tr.querySelector('select');
-            if (select) select.focus();
-        }, 50);
+            tr.innerHTML = `
+                <td class="px-3 py-2 border-r border-slate-700 text-center text-slate-500 font-mono select-none">
+                    ${rowCount}
+                </td>
+                <td class="p-0 border-r border-slate-700 relative">
+                    <select class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none appearance-none product-select cursor-pointer">
+                        <option value="">Selecione um produto...</option>
+                        ${options}
+                    </select>
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </td>
+                <td class="p-0 border-r border-slate-700">
+                    <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none qty-input font-mono" placeholder="0.00">
+                </td>
+                <td class="p-0 text-center">
+                    <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Remover linha">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+
+            // Auto-focus
+            setTimeout(() => {
+                const select = tr.querySelector('select');
+                if (select) select.focus();
+            }, 50);
+        } catch (e) {
+            console.error("Error adding row:", e);
+        }
     }
 
     function removeBatchRow(rowId) {
