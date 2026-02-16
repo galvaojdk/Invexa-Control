@@ -79,7 +79,16 @@
                                 class="px-3 py-3 border-b border-r border-slate-700 w-40 text-xs font-bold text-slate-400 uppercase">
                                 Quantidade Saída</th>
                             <th
-                                class="px-3 py-3 border-b border-slate-700 w-12 text-center text-xs font-bold text-slate-400 uppercase">
+                                class="px-3 py-3 border-b border-slate-700 w-16 text-center text-xs font-bold text-slate-400 uppercase">
+                                <button type="button" onclick="addBatchRow()"
+                                    class="bg-blue-600 hover:bg-blue-500 text-white rounded p-1 transition-colors group"
+                                    title="Adicionar Novo Item">
+                                    <svg class="w-4 h-4 transform group-hover:scale-110 transition-transform"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </button>
                             </th>
                         </tr>
                     </thead>
@@ -87,17 +96,6 @@
                         <!-- Rows will be added here -->
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Grid Actions -->
-            <div class="p-4 bg-slate-800/50 border-t border-slate-700 flex flex-col gap-2">
-                <button type="button" onclick="addBatchRow()"
-                    class="w-full py-3 rounded-xl border-2 border-dashed border-slate-600 text-sm font-bold text-slate-400 hover:text-blue-400 hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-2 uppercase tracking-wider">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Adicionar Novo Item
-                </button>
             </div>
         </div>
 
@@ -124,9 +122,9 @@
     const availableProducts = [
         {% for p in products %}
     {
-        id: { { p.id } },
+        id: { { p.id | tojson } },
         name: { { p.name | tojson } },
-        stock: { { p.current_stock } },
+        stock: { { p.current_stock | tojson } },
         unit: { { (p.unit or 'un') | tojson } }
     },
     {% endfor %}
