@@ -35,7 +35,7 @@
                             class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors appearance-none">
                             <option value="">Selecione o Terceirizado...</option>
                             {% for w in workers %}
-                            <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
+                            <option value="WORKER:{{ w.id }}:{{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
                             </option>
                             {% endfor %}
                         </select>

@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.models.inventory import Product, Movement, MovementType
 from app.models.user import User
-from app.models.worker import Worker
+from app.models.worker import Worker, Shipment, ShipmentStatus
 from app.api.dependencies import get_db, login_required
 from app.services.inventory_service import InventoryService
 from pydantic import BaseModel
@@ -94,6 +94,17 @@ async def register_batch_movements(
         success_count = 0
         created_movements = []
         for item in data.items:
+            # Check for worker context
+            final_sector = data.sector
+            worker_id = None
+            
+            if data.sector and data.sector.startswith("WORKER:"):
+                parts = data.sector.split(":")
+                if len(parts) >= 3:
+                    worker_id = int(parts[1])
+                    worker_name = parts[2]
+                    final_sector = f"Terceirizado: {worker_name}"
+
             # Using Centralized Service!
             movement = InventoryService.register_stock_movement(
                 db=db,
@@ -102,9 +113,21 @@ async def register_batch_movements(
                 mov_type=m_type,
                 user_id=user.id,
                 reason=data.reason,
-                sector=data.sector
+                sector=final_sector
             )
             created_movements.append(movement)
+
+            # If it's an OUT going to a WORKER, create a SHIPMENT record
+            if m_type == MovementType.OUT and worker_id:
+                new_shipment = Shipment(
+                    worker_id=worker_id,
+                    product_id=item.product_id,
+                    quantity=item.quantity,
+                    status=ShipmentStatus.PENDING,
+                    notes=data.reason
+                )
+                db.add(new_shipment)
+
             success_count += 1
             
         db.commit()
