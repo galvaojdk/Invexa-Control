@@ -26,8 +26,8 @@ class InventoryService:
         if mov_type == MovementType.IN:
             product.current_stock += quantity
         else:
-            if product.current_stock < quantity:
-                raise ValueError(f"Estoque insuficiente para o produto '{product.name}'. Disponível: {product.current_stock}, Solicitado: {quantity}")
+        else:
+            # Allow negative stock as per user request (stock managed externally)
             product.current_stock -= quantity
         
         db.add(product)
