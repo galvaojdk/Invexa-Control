@@ -119,10 +119,10 @@
     const availableProducts = [
         {% for p in products %}
     {
-        id: {{ p.id | tojson }},
-        name: {{ p.name | tojson }},
-        stock: {{ p.current_stock | tojson }},
-        unit: {{ (p.unit or 'un') | tojson }}
+        id: { { p.id | tojson } },
+        name: { { p.name | tojson } },
+        stock: { { p.current_stock | tojson } },
+        unit: { { (p.unit or 'un') | tojson } }
     },
     {% endfor %}
     ];
@@ -243,7 +243,20 @@
             }
 
             const data = await response.json();
-            alert('Sucesso: ' + data.message);
+
+            // Check if we have movement IDs for printing
+            if (data.movement_ids && data.movement_ids.length > 0) {
+                if (confirm('Saída registrada com sucesso!\n\nDeseja imprimir o Romaneio de Saída?')) {
+                    // Open print window in new tab
+                    const printUrl = `/movements/print/batch?ids=${data.movement_ids.join(',')}`;
+                    window.open(printUrl, '_blank');
+                } else {
+                    alert('Sucesso: ' + data.message);
+                }
+            } else {
+                alert('Sucesso: ' + data.message);
+            }
+
             window.location.reload();
 
         } catch (error) {

@@ -92,8 +92,10 @@ async def register_batch_movements(
     
     try:
         success_count = 0
+        created_movements = []
         for item in data.items:
-            InventoryService.register_stock_movement(
+            # Using Centralized Service!
+            movement = InventoryService.register_stock_movement(
                 db=db,
                 product_id=item.product_id,
                 quantity=item.quantity,
@@ -102,10 +104,19 @@ async def register_batch_movements(
                 reason=data.reason,
                 sector=data.sector
             )
+            created_movements.append(movement)
             success_count += 1
             
         db.commit()
-        return {"message": f"{success_count} itens processados com sucesso", "count": success_count}
+        
+        # Return IDs for printing
+        movement_ids = [m.id for m in created_movements]
+        
+        return {
+            "message": f"{success_count} itens processados com sucesso", 
+            "count": success_count,
+            "movement_ids": movement_ids
+        }
         
     except ValueError as e:
         db.rollback()
@@ -113,6 +124,44 @@ async def register_batch_movements(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
+
+@router.get("/print/batch")
+async def print_batch_packing_list(
+    ids: str,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    """
+    Generates a printable packing list (Romaneio) for a set of movement IDs.
+    Expects ids as a comma-separated string, e.g., ?ids=1,2,3
+    """
+    try:
+        id_list = [int(id_str) for id_str in ids.split(",") if id_str.strip().isdigit()]
+        if not id_list:
+             raise HTTPException(status_code=400, detail="Nenhum ID fornecido")
+             
+        movements = db.query(Movement).filter(Movement.id.in_(id_list)).all()
+        
+        if not movements:
+            raise HTTPException(status_code=404, detail="Nenhuma movimentação encontrada")
+            
+        # Group by sector/destination if possible, or just take the first one
+        # Assuming batch movements share the same sector/destination context
+        sector = movements[0].sector if movements else "N/A"
+        reason = movements[0].reason if movements else "N/A"
+        date = movements[0].timestamp
+        
+        return templates.TemplateResponse("packing_list.html", {
+            "request": {}, # minimal mock request if needed by template, or just pass nothing if not used
+            "user": user,
+            "movements": movements,
+            "sector": sector,
+            "reason": reason,
+            "date": date,
+            "total_items": len(movements)
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/api/v1/products/{product_id}")
 async def get_product_details_api(
