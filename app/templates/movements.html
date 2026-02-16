@@ -349,25 +349,8 @@
     {% endfor %}
     ];
 
-    function toggleBatchSectorInput() {
-        const type = document.querySelector('input[name="batch_sector_type"]:checked').value;
-        const internalDiv = document.getElementById('batch_sector_internal_div');
-        const workerDiv = document.getElementById('batch_sector_worker_div');
-        const internalInput = document.getElementById('batch_sector_input');
-        const workerSelect = document.getElementById('batch_sector_select');
+    // Toggle logic removed as we only support Third-Party now for batches
 
-        if (type === 'internal') {
-            internalDiv.classList.remove('hidden');
-            workerDiv.classList.add('hidden');
-            internalInput.disabled = false;
-            workerSelect.disabled = true;
-        } else {
-            internalDiv.classList.add('hidden');
-            workerDiv.classList.remove('hidden');
-            internalInput.disabled = true;
-            workerSelect.disabled = false;
-        }
-    }
 
     function addBatchRow() {
         const tbody = document.querySelector('#itemsTable tbody');
@@ -425,17 +408,11 @@
     async function submitBatchExit(event) {
         event.preventDefault();
 
-        // Determine Sector
-        const sectorType = document.querySelector('input[name="batch_sector_type"]:checked').value;
-        let sector = "";
-        if (sectorType === 'internal') {
-            sector = document.getElementById('batch_sector_input').value;
-        } else {
-            sector = document.getElementById('batch_sector_select').value;
-        }
+        // Determine Sector (Always Worker for Batch Output)
+        const sector = document.getElementById('batch_sector_select').value;
 
         if (!sector) {
-            alert("Por favor, informe o Setor ou selecione o Terceirizado.");
+            alert("Por favor, selecione o Terceirizado de destino.");
             return;
         }
         const reason = document.getElementById('batch_reason').value;
