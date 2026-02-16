@@ -119,10 +119,10 @@
     const availableProducts = [
         {% for p in products %}
     {
-        id: { { p.id | tojson } },
-        name: { { p.name | tojson } },
-        stock: { { p.current_stock | tojson } },
-        unit: { { (p.unit or 'un') | tojson } }
+        id: {{ p.id | tojson }},
+        name: {{ p.name | tojson }},
+        stock: {{ p.current_stock | tojson }},
+        unit: {{ (p.unit or 'un') | tojson }}
     },
     {% endfor %}
     ];
