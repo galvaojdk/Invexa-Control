@@ -197,8 +197,9 @@
         const selectedOption = select.options[select.selectedIndex];
 
         if (selectedOption.value) {
-            const stock = selectedOption.getAttribute('data-stock');
-            stockDisplay.innerText = parseFloat(stock).toFixed(2);
+            const stockStr = selectedOption.getAttribute('data-stock');
+            const stock = parseFloat(stockStr) || 0;
+            stockDisplay.innerText = stock.toFixed(2);
             stockDisplay.classList.add('text-white', 'font-bold');
         } else {
             stockDisplay.innerText = '-';
