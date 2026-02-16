@@ -33,6 +33,15 @@
             </svg>
             Registrar Movimentação
         </button>
+        <button onclick="openModal('exitModal'); addBatchRow();"
+            class="ml-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-500/20 transition-all text-sm flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                </path>
+            </svg>
+            Nova Saída (Lote)
+        </button>
     </div>
 
     <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
@@ -213,6 +222,17 @@
     }
     function closeMovModal() {
         document.getElementById('movModal').classList.add('hidden');
+    }
+
+    // Generic Modal Functions
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById(modalId).classList.add('flex');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.getElementById(modalId).classList.remove('flex');
     }
 </script>
 
