@@ -265,78 +265,62 @@
             <!-- Header Fields -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Setor / Destino</label>
-                    <div class="flex gap-4 mb-2">
-                        <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-300 hover:text-white">
-                            <input type="radio" name="batch_sector_type" value="internal" checked
-                                onchange="toggleBatchSectorInput()" class="accent-red-500 w-3 h-3">
-                            Interno / Geral
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-300 hover:text-white">
-                            <input type="radio" name="batch_sector_type" value="worker"
-                                onchange="toggleBatchSectorInput()" class="accent-red-500 w-3 h-3">
-                            Terceirizado
-                        </label>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Destino (Terceirizado)</label>
+                        <div id="batch_sector_worker_div">
+                            <select id="batch_sector_select" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
+                                <option value="">Selecione o Terceirizado...</option>
+                                {% for w in workers %}
+                                <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-
-                    <div id="batch_sector_internal_div">
-                        <input type="text" id="batch_sector_input" placeholder="Ex: Produção"
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Motivo (Geral)</label>
+                        <input type="text" id="batch_reason" placeholder="Ex: Ordem de Produção #123" required
                             class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
                     </div>
+                </div>
 
-                    <div id="batch_sector_worker_div" class="hidden">
-                        <select id="batch_sector_select" disabled
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
-                            <option value="">Selecione o Terceirizado...</option>
-                            {% for w in workers %}
-                            <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
-                            </option>
-                            {% endfor %}
-                        </select>
+                <!-- Grid Items -->
+                <div class="border border-slate-700 rounded-xl overflow-hidden">
+                    <table class="w-full text-left" id="itemsTable">
+                        <thead class="bg-slate-800 text-xs font-bold text-slate-400 uppercase">
+                            <tr>
+                                <th class="px-4 py-3">Produto</th>
+                                <th class="px-4 py-3 w-32">Qtd Atual</th>
+                                <th class="px-4 py-3 w-32">Qtd Saída</th>
+                                <th class="px-4 py-3 w-16 text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-sm">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                    <div class="p-3 bg-slate-800/50 border-t border-slate-700">
+                        <button type="button" onclick="addBatchRow()"
+                            class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 uppercase tracking-wider">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4">
+                                </path>
+                            </svg>
+                            Adicionar Item
+                        </button>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-1">Motivo (Geral)</label>
-                    <input type="text" id="batch_reason" placeholder="Ex: Ordem de Produção #123" required
-                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
-                </div>
-            </div>
 
-            <!-- Grid Items -->
-            <div class="border border-slate-700 rounded-xl overflow-hidden">
-                <table class="w-full text-left" id="itemsTable">
-                    <thead class="bg-slate-800 text-xs font-bold text-slate-400 uppercase">
-                        <tr>
-                            <th class="px-4 py-3">Produto</th>
-                            <th class="px-4 py-3 w-32">Qtd Atual</th>
-                            <th class="px-4 py-3 w-32">Qtd Saída</th>
-                            <th class="px-4 py-3 w-16 text-center">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800 text-sm">
-                        <!-- Rows will be added here -->
-                    </tbody>
-                </table>
-                <div class="p-3 bg-slate-800/50 border-t border-slate-700">
-                    <button type="button" onclick="addBatchRow()"
-                        class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 uppercase tracking-wider">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
-                            </path>
-                        </svg>
-                        Adicionar Item
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeModal('exitModal')"
+                        class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
+                    <button type="submit"
+                        class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">
+                        Confirmar Saída em Lote
                     </button>
                 </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-2">
-                <button type="button" onclick="closeModal('exitModal')"
-                    class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
-                <button type="submit"
-                    class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">
-                    Confirmar Saída em Lote
-                </button>
-            </div>
         </form>
     </div>
 </div>
