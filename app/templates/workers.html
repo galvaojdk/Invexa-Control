@@ -76,9 +76,12 @@
                                 <button
                                     onclick="openEditWorkerModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.worker_type_id or '' }}', '{{ worker.address or '' }}', '{{ worker.zip_code or '' }}', '{{ worker.phone }}')"
                                     class="text-blue-400 hover:text-blue-300 text-xs font-bold transition-colors">Editar</button>
-                                <button onclick="openShipmentModal('{{ worker.id }}', '{{ worker.name }}')"
-                                    class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors ml-2">Nova
-                                    Remessa</button>
+                                <form action="/workers/{{ worker.id }}/delete" method="POST"
+                                    onsubmit="return confirm('Tem certeza que deseja excluir este terceirizado? Esta ação não pode ser desfeita.');"
+                                    class="inline ml-2">
+                                    <button type="submit"
+                                        class="text-red-400 hover:text-red-300 text-xs font-bold transition-colors">Excluir</button>
+                                </form>
                             </td>
                         </tr>
                         {% else %}

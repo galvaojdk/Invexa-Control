@@ -162,16 +162,26 @@ async def delete_worker(
     user: User = Depends(login_required)
 ):
     worker = db.query(Worker).filter(Worker.id == worker_id).first()
-    if worker:
-        worker.active = False
-        db.add(AuditLog(
-            user_id=user.id,
-            action="DELETE_WORKER",
-            resource_type="worker",
-            resource_id=worker.id,
-            description=f"Terceirizado '{worker.name}' inativado."
-        ))
-        db.commit()
+    if not worker:
+        raise HTTPException(status_code=404, detail="Terceirizado não encontrado")
+
+    # Check for existing shipments
+    shipment_count = db.query(Shipment).filter(Shipment.worker_id == worker_id).count()
+    if shipment_count > 0:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Não é possível excluir. Existem {shipment_count} remessas vinculadas a este terceirizado."
+        )
+
+    worker.active = False
+    db.add(AuditLog(
+        user_id=user.id,
+        action="DELETE_WORKER",
+        resource_type="worker",
+        resource_id=worker.id,
+        description=f"Terceirizado '{worker.name}' inativado."
+    ))
+    db.commit()
     return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post("/{worker_id}/shipments")
