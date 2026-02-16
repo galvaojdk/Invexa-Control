@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Movimentações - Invexa Control{% endblock %}
-{% block header_title %}Histórico de Movimentações{% endblock %}
+{% block header_title %}Registro de Saída em Lote{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6 max-w-7xl mx-auto">
     {% if request.query_params.get('error') %}
     <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3">
         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,370 +14,176 @@
         <span class="font-medium">{{ request.query_params.get('error') }}</span>
     </div>
     {% endif %}
+
     <div class="flex justify-between items-center">
-        <div class="flex gap-4">
-            <select
-                class="bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-                <option value="">Todos os tipos</option>
-                <option value="IN">Entrada</option>
-                <option value="OUT">Saída</option>
-            </select>
-            <input type="date"
-                class="bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-        </div>
-        <button onclick="openModal('exitModal'); addBatchRow();"
-            class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-500/20 transition-all text-sm flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                </path>
-            </svg>
-            Nova Saída (Lote)
-        </button>
-    </div>
-
-    <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-900/50">
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data/Hora
-                        </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
-                        </th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                            Tipo</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-                            Qtd</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Setor</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Motivo</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800">
-                    {% for mov in movements %}
-                    <tr class="hover:bg-slate-800/30 transition-colors">
-                        <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ mov.timestamp.strftime('%d/%m/%Y
-                            %H:%M') }}</td>
-                        <td class="px-6 py-4 text-sm font-medium text-white">{{ mov.product.name }}</td>
-                        <td class="px-6 py-4 text-center">
-                            {% if mov.type.value == 'entrada' %}
-                            <span
-                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20">ENTRADA</span>
-                            {% else %}
-                            <span
-                                class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20">SAÍDA</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-6 py-4 text-sm font-mono text-white text-center">{{ mov.quantity }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-300">{{ mov.sector or '-' }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-400">{{ mov.reason or '-' }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma movimentação
-                            registrada.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div>
+            <h2 class="text-2xl font-bold text-white">Nova Saída em Lote</h2>
+            <p class="text-slate-400 text-sm">Registre a saída de múltiplos itens para um terceirizado.</p>
         </div>
     </div>
-</div>
 
-<!-- Modal Registrar Movimentação -->
-<div id="movModal"
-    class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div
-        class="bg-[#0f172a] border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-white">Ajuste / Saída de Estoque</h3>
-            <button onclick="closeMovModal()" class="text-slate-500 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
-        <form action="/movements" method="POST" class="p-6 space-y-4">
-            <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-4">
-                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Aviso de Operação</p>
-                <p class="text-xs text-slate-400 mt-1">Para entrada de novas compras, utilize o menu <b>Recebimento</b>
-                    para garantir o vínculo com a NF.</p>
-            </div>
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Produto</label>
-                <select name="product_id" required
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                    <option value="">Selecione o produto...</option>
-                    {% for prod in products %}
-                    <option value="{{ prod.id }}">{{ prod.sku }} - {{ prod.name }} (Atual: {{ prod.current_stock }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tipo</label>
-                    <select name="type" required
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                        <option value="saida">Saída / Consumo (-)</option>
-                        <option value="entrada">Ajuste Positivo (+)</option>
-                    </select>
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Quantidade</label>
-                    <input type="number" step="0.01" name="quantity" required
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                        placeholder="0.00">
-                </div>
-            </div>
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Setor / Destino /
-                    Origem</label>
-
-                <div class="flex gap-4 mb-1">
-                    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300 hover:text-white">
-                        <input type="radio" name="sector_type" value="internal" checked onchange="toggleSectorInput()"
-                            class="accent-blue-500 w-4 h-4">
-                        Interno / Geral
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300 hover:text-white">
-                        <input type="radio" name="sector_type" value="worker" onchange="toggleSectorInput()"
-                            class="accent-blue-500 w-4 h-4">
-                        Terceirizado
-                    </label>
-                </div>
-
-                <div id="sector_internal_div">
-                    <input type="text" id="sector_input" name="sector"
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                        placeholder="Ex: TI, Adm, Almoxarifado, Fornecedor X...">
-                </div>
-
-                <div id="sector_worker_div" class="hidden">
-                    <select id="sector_select" name="sector" disabled
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                        <option value="">Selecione o Terceirizado...</option>
-                        {% for w in workers %}
-                        <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})</option>
-                        {% endfor %}
-                    </select>
-                    <p class="text-[10px] text-yellow-500/80 mt-1 italic">
-                        * Apenas identifica o setor. Para controle de remessa (envio/retorno), use o menu
-                        <b>Terceirizados</b>.
-                    </p>
-                </div>
-            </div>
-
-            <script>
-                function toggleSectorInput() {
-                    const type = document.querySelector('input[name="sector_type"]:checked').value;
-                    const internalDiv = document.getElementById('sector_internal_div');
-                    const workerDiv = document.getElementById('sector_worker_div');
-                    const internalInput = document.getElementById('sector_input');
-                    const workerSelect = document.getElementById('sector_select');
-
-                    if (type === 'internal') {
-                        internalDiv.classList.remove('hidden');
-                        workerDiv.classList.add('hidden');
-                        internalInput.disabled = false;
-                        workerSelect.disabled = true;
-                    } else {
-                        internalDiv.classList.add('hidden');
-                        workerDiv.classList.remove('hidden');
-                        internalInput.disabled = true;
-                        workerSelect.disabled = false;
-                    }
-                }
-            </script>
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Motivo / Observação</label>
-                <textarea name="reason" rows="2"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Ex: Compra de matéria-prima, Venda, Perda..."></textarea>
-            </div>
-            <div class="pt-4">
-                <button type="submit"
-                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all">
-                    Confirmar Transação
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openMovModal() {
-        document.getElementById('movModal').classList.remove('hidden');
-    }
-    function closeMovModal() {
-        document.getElementById('movModal').classList.add('hidden');
-    }
-
-    // Generic Modal Functions
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.remove('hidden');
-        document.getElementById(modalId).classList.add('flex');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-        document.getElementById(modalId).classList.remove('flex');
-    }
-</script>
-
-<!-- Exit Modal (Batch) -->
-<div id="exitModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm"
-    onclick="if(event.target === this) closeModal('exitModal')">
-    <div
-        class="bg-slate-900 border border-slate-700 p-8 rounded-2xl w-full max-w-4xl shadow-2xl transform transition-all scale-100 relative max-h-[90vh] overflow-y-auto">
-        <button onclick="closeModal('exitModal')"
-            class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-
-        <div class="flex items-center gap-3 mb-6">
-            <div class="p-3 bg-red-500/10 rounded-xl">
-                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m12-4l4 4-4 4">
-                    </path>
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold text-white">Nova Saída (Lote)</h3>
-                <p class="text-xs text-slate-400">Adicione múltiplos itens para saída de uma só vez.</p>
-            </div>
-        </div>
-
-        <form id="batchExitForm" onsubmit="submitBatchExit(event)" class="flex flex-col gap-6">
-            <!-- Header Fields -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                <div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Destino (Terceirizado)</label>
-                        <div id="batch_sector_worker_div">
-                            <select id="batch_sector_select" required
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
-                                <option value="">Selecione o Terceirizado...</option>
-                                {% for w in workers %}
-                                <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
-                                </option>
-                                {% endfor %}
-                            </select>
+    <form id="batchExitForm" onsubmit="submitBatchExit(event)" class="flex flex-col gap-6">
+        <!-- Main Control Panel -->
+        <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sector / Destination -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Destino
+                        (Terceirizado)</label>
+                    <div class="relative">
+                        <select id="batch_sector_select" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors appearance-none">
+                            <option value="">Selecione o Terceirizado...</option>
+                            {% for w in workers %}
+                            <option value="Terceirizado: {{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-1">Motivo (Geral)</label>
-                        <input type="text" id="batch_reason" placeholder="Ex: Ordem de Produção #123" required
-                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
-                    </div>
                 </div>
 
-                <!-- Grid Items -->
-                <div class="border border-slate-700 rounded-xl overflow-hidden shadow-sm">
-                    <table class="w-full text-left border-collapse" id="itemsTable">
-                        <thead class="bg-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                            <tr>
-                                <th class="px-2 py-2 border-b border-r border-slate-700 w-12 text-center">#</th>
-                                <th class="px-2 py-2 border-b border-r border-slate-700">Produto</th>
-                                <th class="px-2 py-2 border-b border-r border-slate-700 w-24 text-center">Atual</th>
-                                <th class="px-2 py-2 border-b border-r border-slate-700 w-32">Qtd Saída</th>
-                                <th class="px-2 py-2 border-b border-slate-700 w-10 text-center"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-700 text-sm bg-slate-900">
-                            <!-- Rows will be added here -->
-                        </tbody>
-                    </table>
-                    <div class="p-2 bg-slate-800/50 border-t border-slate-700">
-                        <button type="button" onclick="addBatchRow()"
-                            class="w-full py-1.5 rounded border border-dashed border-slate-600 text-xs font-bold text-slate-400 hover:text-blue-400 hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-1 uppercase tracking-wider">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4">
-                                </path>
-                            </svg>
-                            Adicionar Linha
-                        </button>
-                    </div>
+                <!-- Reason -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Motivo /
+                        Observação</label>
+                    <input type="text" id="batch_reason"
+                        placeholder="Ex: Ordem de Produção #123, Remessa para conserto..." required
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
                 </div>
+            </div>
+        </div>
 
-                <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" onclick="closeModal('exitModal')"
-                        class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
-                    <button type="submit"
-                        class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">
-                        Confirmar Saída
-                    </button>
-                </div>
-        </form>
-    </div>
+        <!-- Grid Area -->
+        <div
+            class="bg-[#0f172a] border border-slate-700 rounded-2xl overflow-hidden shadow-xl flex flex-col min-h-[500px]">
+            <div class="overflow-x-auto flex-grow">
+                <table class="w-full text-left border-collapse" id="itemsTable">
+                    <thead class="bg-slate-800 sticky top-0 z-10">
+                        <tr>
+                            <th
+                                class="px-3 py-3 border-b border-r border-slate-700 w-12 text-center text-xs font-bold text-slate-400 uppercase">
+                                #</th>
+                            <th
+                                class="px-3 py-3 border-b border-r border-slate-700 text-xs font-bold text-slate-400 uppercase">
+                                Produto</th>
+                            <th
+                                class="px-3 py-3 border-b border-r border-slate-700 w-32 text-center text-xs font-bold text-slate-400 uppercase">
+                                Estoque Atual</th>
+                            <th
+                                class="px-3 py-3 border-b border-r border-slate-700 w-40 text-xs font-bold text-slate-400 uppercase">
+                                Quantidade Saída</th>
+                            <th
+                                class="px-3 py-3 border-b border-slate-700 w-12 text-center text-xs font-bold text-slate-400 uppercase">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700 text-sm bg-slate-900" id="itemsTableBody">
+                        <!-- Rows will be added here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grid Actions -->
+            <div class="p-4 bg-slate-800/50 border-t border-slate-700 flex flex-col gap-2">
+                <button type="button" onclick="addBatchRow()"
+                    class="w-full py-3 rounded-xl border-2 border-dashed border-slate-600 text-sm font-bold text-slate-400 hover:text-blue-400 hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-2 uppercase tracking-wider">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Adicionar Nova Linha
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Submit -->
+        <div class="flex justify-end gap-4 py-4">
+            <button type="button" onclick="window.location.reload()"
+                class="px-6 py-3 text-slate-400 hover:text-white font-bold transition-colors">
+                Limpar / Cancelar
+            </button>
+            <button type="submit"
+                class="px-8 py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20 flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Confirmar Saída em Lote
+            </button>
+        </div>
+    </form>
 </div>
 
 <script>
-    // Store products for dropdown
-    const availableProducts = [
-        {% for p in products %}
-    { id: { { p.id } }, name: "{{ p.name }}", stock: { { p.current_stock } }, unit: "{{ p.unit }}" },
-    {% endfor %}
-    ];
+    // Safe injection of product data using Jinja's tojson
+    // This handles quotes and special characters automatically
+    const availableProducts = {{ products | map(attribute = '__dict__') | list | tojson }}.map(p => ({
+        id: p.id,
+        name: p.name,
+        stock: p.current_stock,
+        unit: p.unit || 'un'
+    }));
 
     function addBatchRow() {
-        const tbody = document.querySelector('#itemsTable tbody');
-        const rowId = 'row-' + Date.now();
+        const tbody = document.getElementById('itemsTableBody');
+        const rowId = 'row-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         const rowCount = tbody.children.length + 1;
         const tr = document.createElement('tr');
         tr.id = rowId;
         tr.className = "group hover:bg-slate-800/30 transition-colors";
 
-        // Products Options
-        let options = '<option value="">Selecione...</option>';
-        availableProducts.forEach(p => {
-            options += `<option value="${p.id}" data-stock="${p.stock}">${p.name} (${p.unit})</option>`;
-        });
+        // Generate product options
+        // Optimisation: Build string once if list is huge, but for now map is fine for < 1000 items
+        const options = availableProducts.map(p =>
+            `<option value="${p.id}" data-stock="${p.stock}">${p.name} (${p.unit})</option>`
+        ).join('');
 
         tr.innerHTML = `
-            <td class="px-2 py-0 border-r border-slate-700 text-center text-xs text-slate-500 font-mono select-none">
+            <td class="px-3 py-2 border-r border-slate-700 text-center text-slate-500 font-mono select-none">
                 ${rowCount}
             </td>
             <td class="p-0 border-r border-slate-700 relative">
-                <select class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none appearance-none product-select cursor-pointer" onchange="updateRowStock('${rowId}', this)">
+                <select class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none appearance-none product-select cursor-pointer" onchange="updateRowStock('${rowId}', this)">
+                    <option value="">Selecione um produto...</option>
                     ${options}
                 </select>
-                <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
             </td>
-            <td class="px-2 py-0 border-r border-slate-700 text-center text-slate-400 font-mono text-xs stock-display bg-slate-900/50">
+            <td class="px-3 py-2 border-r border-slate-700 text-center text-slate-400 font-mono stock-display bg-slate-900/50">
                 -
             </td>
             <td class="p-0 border-r border-slate-700">
-                <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none text-right qty-input font-mono" placeholder="0.00">
+                <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-4 py-3 focus:ring-1 focus:ring-blue-500 focus:bg-slate-800 outline-none qty-input font-mono" placeholder="0.00">
             </td>
             <td class="p-0 text-center">
                 <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Remover linha">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
                 </button>
             </td>
         `;
         tbody.appendChild(tr);
 
-        // Auto-focus the product select of the new row
+        // Auto-focus
         setTimeout(() => {
-            tr.querySelector('select').focus();
+            const select = tr.querySelector('select');
+            if (select) select.focus();
         }, 50);
     }
 
     function removeBatchRow(rowId) {
-        document.getElementById(rowId).remove();
-        // Re-index rows (optional visual polish)
-        const tbody = document.querySelector('#itemsTable tbody');
+        const row = document.getElementById(rowId);
+        if (row) row.remove();
+
+        // Re-index
+        const tbody = document.getElementById('itemsTableBody');
         Array.from(tbody.children).forEach((tr, index) => {
             tr.firstElementChild.innerText = index + 1;
         });
@@ -390,30 +196,29 @@
 
         if (selectedOption.value) {
             const stock = selectedOption.getAttribute('data-stock');
-            // Format stock to 2 decimals
             stockDisplay.innerText = parseFloat(stock).toFixed(2);
-            // Highlight if stock is low or zero (optional logic could go here)
-            stockDisplay.classList.add('text-white');
+            stockDisplay.classList.add('text-white', 'font-bold');
         } else {
             stockDisplay.innerText = '-';
-            stockDisplay.classList.remove('text-white');
+            stockDisplay.classList.remove('text-white', 'font-bold');
         }
     }
 
     async function submitBatchExit(event) {
         event.preventDefault();
 
-        // Determine Sector (Always Worker for Batch Output)
         const sector = document.getElementById('batch_sector_select').value;
+        const reason = document.getElementById('batch_reason').value;
 
         if (!sector) {
-            alert("Por favor, selecione o Terceirizado de destino.");
+            alert("Por favor, selecione o Destino (Terceirizado).");
+            document.getElementById('batch_sector_select').focus();
             return;
         }
-        const reason = document.getElementById('batch_reason').value;
-        const rows = document.querySelectorAll('#itemsTable tbody tr');
 
+        const rows = document.querySelectorAll('#itemsTableBody tr');
         const items = [];
+
         for (let row of rows) {
             const prodId = row.querySelector('.product-select').value;
             const qty = row.querySelector('.qty-input').value;
@@ -428,10 +233,16 @@
 
         if (items.length === 0) {
             alert("Adicione pelo menos um item com quantidade válida.");
+            if (rows.length === 0) addBatchRow();
             return;
         }
 
         try {
+            const submitBtn = event.submitter;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processando...';
+
             const response = await fetch('/movements/batch', {
                 method: 'POST',
                 headers: {
@@ -457,16 +268,14 @@
         } catch (error) {
             console.error(error);
             alert('Erro: ' + error.message);
+            event.submitter.disabled = false;
+            event.submitter.innerHTML = originalText;
         }
     }
 
-    // Initialize with one row
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-        // Check for auto-open action
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('action') === 'out') {
-            openModal('exitModal');
-            addBatchRow();
-        }
+        addBatchRow();
     });
-    {% endblock %}
+</script>
+{% endblock %}
