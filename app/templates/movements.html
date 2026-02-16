@@ -121,12 +121,16 @@
 <script>
     // Safe injection of product data using Jinja's tojson
     // This handles quotes and special characters automatically
-    const availableProducts = {{ products | map(attribute = '__dict__') | list | tojson }}.map(p => ({
-        id: p.id,
-        name: p.name,
-        stock: p.current_stock,
-        unit: p.unit || 'un'
-    }));
+    const availableProducts = [
+        {% for p in products %}
+    {
+        id: { { p.id } },
+        name: { { p.name | tojson } },
+        stock: { { p.current_stock } },
+        unit: { { (p.unit or 'un') | tojson } }
+    },
+    {% endfor %}
+    ];
 
     function addBatchRow() {
         const tbody = document.getElementById('itemsTableBody');
