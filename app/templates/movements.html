@@ -215,4 +215,208 @@
         document.getElementById('movModal').classList.add('hidden');
     }
 </script>
-{% endblock %}
+
+<!-- Exit Modal (Batch) -->
+<div id="exitModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm"
+    onclick="if(event.target === this) closeModal('exitModal')">
+    <div
+        class="bg-slate-900 border border-slate-700 p-8 rounded-2xl w-full max-w-4xl shadow-2xl transform transition-all scale-100 relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeModal('exitModal')"
+            class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-red-500/10 rounded-xl">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m12-4l4 4-4 4">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">Nova Saída (Lote)</h3>
+                <p class="text-xs text-slate-400">Adicione múltiplos itens para saída de uma só vez.</p>
+            </div>
+        </div>
+
+        <form id="batchExitForm" onsubmit="submitBatchExit(event)" class="flex flex-col gap-6">
+            <!-- Header Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Setor / Destino</label>
+                    <input type="text" id="batch_sector" placeholder="Ex: Produção" required
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Motivo (Geral)</label>
+                    <input type="text" id="batch_reason" placeholder="Ex: Ordem de Produção #123" required
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 transition-colors">
+                </div>
+            </div>
+
+            <!-- Grid Items -->
+            <div class="border border-slate-700 rounded-xl overflow-hidden">
+                <table class="w-full text-left" id="itemsTable">
+                    <thead class="bg-slate-800 text-xs font-bold text-slate-400 uppercase">
+                        <tr>
+                            <th class="px-4 py-3">Produto</th>
+                            <th class="px-4 py-3 w-32">Qtd Atual</th>
+                            <th class="px-4 py-3 w-32">Qtd Saída</th>
+                            <th class="px-4 py-3 w-16 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 text-sm">
+                        <!-- Rows will be added here -->
+                    </tbody>
+                </table>
+                <div class="p-3 bg-slate-800/50 border-t border-slate-700">
+                    <button type="button" onclick="addBatchRow()"
+                        class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 uppercase tracking-wider">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Adicionar Item
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeModal('exitModal')"
+                    class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
+                <button type="submit"
+                    class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">
+                    Confirmar Saída em Lote
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Store products for dropdown
+    const availableProducts = [
+        {% for p in products %}
+    { id: { { p.id } }, name: "{{ p.name }}", stock: { { p.current_stock } }, unit: "{{ p.unit }}" },
+    {% endfor %}
+    ];
+
+    function addBatchRow() {
+        const tbody = document.querySelector('#itemsTable tbody');
+        const rowId = 'row-' + Date.now();
+        const tr = document.createElement('tr');
+        tr.id = rowId;
+        tr.className = "bg-slate-900 hover:bg-slate-800/50 transition-colors";
+
+        // Products Options
+        let options = '<option value="">Selecione...</option>';
+        availableProducts.forEach(p => {
+            options += `<option value="${p.id}" data-stock="${p.stock}">${p.name}</option>`;
+        });
+
+        tr.innerHTML = `
+            <td class="px-4 py-2">
+                <select class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white text-sm focus:border-blue-500 outline-none product-select" onchange="updateRowStock('${rowId}', this)">
+                    ${options}
+                </select>
+            </td>
+            <td class="px-4 py-2 text-slate-500 font-mono text-xs stock-display">
+                -
+            </td>
+            <td class="px-4 py-2">
+                <input type="number" step="0.01" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-white text-sm focus:border-blue-500 outline-none qty-input" placeholder="0.00">
+            </td>
+            <td class="px-4 py-2 text-center">
+                <button type="button" onclick="removeBatchRow('${rowId}')" class="text-slate-500 hover:text-red-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function removeBatchRow(rowId) {
+        document.getElementById(rowId).remove();
+    }
+
+    function updateRowStock(rowId, select) {
+        const row = document.getElementById(rowId);
+        const stockDisplay = row.querySelector('.stock-display');
+        const selectedOption = select.options[select.selectedIndex];
+
+        if (selectedOption.value) {
+            const stock = selectedOption.getAttribute('data-stock');
+            stockDisplay.innerText = stock;
+        } else {
+            stockDisplay.innerText = '-';
+        }
+    }
+
+    async function submitBatchExit(event) {
+        event.preventDefault();
+
+        const sector = document.getElementById('batch_sector').value;
+        const reason = document.getElementById('batch_reason').value;
+        const rows = document.querySelectorAll('#itemsTable tbody tr');
+
+        const items = [];
+        for (let row of rows) {
+            const prodId = row.querySelector('.product-select').value;
+            const qty = row.querySelector('.qty-input').value;
+
+            if (prodId && qty && parseFloat(qty) > 0) {
+                items.push({
+                    product_id: parseInt(prodId),
+                    quantity: parseFloat(qty)
+                });
+            }
+        }
+
+        if (items.length === 0) {
+            alert("Adicione pelo menos um item com quantidade válida.");
+            return;
+        }
+
+        try {
+            const response = await fetch('/movements/batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'saida',
+                    sector: sector,
+                    reason: reason,
+                    items: items
+                })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.detail || 'Erro ao processar movimentações');
+            }
+
+            const data = await response.json();
+            alert('Sucesso: ' + data.message);
+            window.location.reload();
+
+        } catch (error) {
+            console.error(error);
+            alert('Erro: ' + error.message);
+        }
+    }
+
+    // Initialize with one row
+    document.addEventListener('DOMContentLoaded', () => {
+        // Check for auto-open action
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'out') {
+            openModal('exitModal');
+            addBatchRow();
+        }
+    });
+    {% endblock %}

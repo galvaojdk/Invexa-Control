@@ -8,6 +8,8 @@ from app.models.user import User
 from app.models.worker import Worker
 from app.api.dependencies import get_db, login_required
 from app.services.inventory_service import InventoryService
+from pydantic import BaseModel
+from typing import List, Optional
 
 router = APIRouter(prefix="/movements", tags=["Movements"])
 templates = Jinja2Templates(directory="app/templates")
@@ -68,6 +70,49 @@ async def register_movement(
         )
         
     return RedirectResponse(url="/movements", status_code=303)
+
+class MovementItem(BaseModel):
+    product_id: int
+    quantity: float
+
+class BatchMovementRequest(BaseModel):
+    type: str # 'entrada' or 'saida'
+    reason: Optional[str] = None
+    sector: Optional[str] = None
+    items: List[MovementItem]
+
+@router.post("/batch")
+async def register_batch_movements(
+    data: BatchMovementRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    mov_type_str = data.type.lower().strip()
+    m_type = MovementType.IN if mov_type_str == "entrada" else MovementType.OUT
+    
+    try:
+        success_count = 0
+        for item in data.items:
+            InventoryService.register_stock_movement(
+                db=db,
+                product_id=item.product_id,
+                quantity=item.quantity,
+                mov_type=m_type,
+                user_id=user.id,
+                reason=data.reason,
+                sector=data.sector
+            )
+            success_count += 1
+            
+        db.commit()
+        return {"message": f"{success_count} itens processados com sucesso", "count": success_count}
+        
+    except ValueError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
 
 @router.get("/api/v1/products/{product_id}")
 async def get_product_details_api(

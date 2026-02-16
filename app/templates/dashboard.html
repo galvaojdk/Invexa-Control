@@ -20,7 +20,7 @@
         </div>
     </button>
 
-    <button onclick="openModal('exitModal')"
+    <a href="/movements?action=out"
         class="group bg-slate-800/40 hover:bg-red-500/10 border border-slate-700/50 hover:border-red-500/30 p-6 rounded-2xl shadow-lg transition-all duration-300 text-left flex items-center gap-4">
         <div
             class="p-3 bg-red-500/10 group-hover:bg-red-500/20 rounded-xl text-red-400 group-hover:text-red-300 transition-colors">
@@ -32,7 +32,7 @@
             <h3 class="text-lg font-bold text-white group-hover:text-red-300 transition-colors">Saída Rápida</h3>
             <p class="text-sm text-slate-400 group-hover:text-red-400/70">Baixar estoque ou enviar p/ produção</p>
         </div>
-    </button>
+    </a>
 
     <a href="/inventory?action=new"
         class="group bg-slate-800/40 hover:bg-blue-500/10 border border-slate-700/50 hover:border-blue-500/30 p-6 rounded-2xl shadow-lg transition-all duration-300 text-left flex items-center gap-4">
@@ -287,72 +287,7 @@
     </div>
 </div>
 
-<!-- Exit Modal -->
-<div id="exitModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur-sm"
-    onclick="if(event.target === this) closeModal('exitModal')">
-    <div
-        class="bg-slate-900 border border-slate-700 p-8 rounded-2xl w-full max-w-md shadow-2xl transform transition-all scale-100 relative">
-        <button onclick="closeModal('exitModal')"
-            class="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
 
-        <div class="flex items-center gap-3 mb-6">
-            <div class="p-3 bg-red-500/10 rounded-xl">
-                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m12-4l4 4-4 4">
-                    </path>
-                </svg>
-            </div>
-            <h3 class="text-xl font-bold text-white">Nova Saída</h3>
-        </div>
-
-        <form action="/inventory/movements" method="POST" class="flex flex-col gap-4">
-            <input type="hidden" name="type" value="saida">
-            <input type="hidden" name="redirect_url" value="/dashboard">
-
-            <div>
-                <label class="block text-sm font-medium text-slate-400 mb-1">Produto</label>
-                <select name="product_id" required
-                    class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
-                    {% for p in products %}
-                    <option value="{{ p.id }}">{{ p.name }} ({{ p.current_stock }} {{ p.unit }})
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-slate-400 mb-1">Quantidade</label>
-                <input type="number" name="quantity" step="0.01" required
-                    class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors"
-                    placeholder="0.00">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-slate-400 mb-1">Setor / Destino</label>
-                <input type="text" name="sector" placeholder="Ex: Produção"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-slate-400 mb-1">Motivo</label>
-                <input type="text" name="reason" placeholder="Ex: Consumo Interno"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
-            </div>
-
-            <div class="flex justify-end gap-3 mt-4">
-                <button type="button" onclick="closeModal('exitModal')"
-                    class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button>
-                <button type="submit"
-                    class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/20">Confirmar
-                    Saída</button>
-            </div>
-        </form>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}

@@ -90,6 +90,9 @@
                                 Categoria
                             </th>
                             <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                Tipo
+                            </th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                                 Estoque</th>
                             <th
                                 class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
@@ -103,6 +106,17 @@
                             <td class="px-6 py-4 text-sm text-slate-400">{{ product.category.name if product.category
                                 else
                                 '-' }}</td>
+                            <td class="px-6 py-4 text-sm">
+                                {% if product.is_composite %}
+                                <span
+                                    class="px-2 py-1 rounded-md bg-purple-500/10 text-purple-400 text-xs font-bold border border-purple-500/20">COMPOSTO</span>
+                                {% elif product.is_primary %}
+                                <span
+                                    class="px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20">PRIMÁRIO</span>
+                                {% else %}
+                                <span class="text-slate-500 text-xs">PADRÃO</span>
+                                {% endif %}
+                            </td>
                             <td class="px-6 py-4 text-sm font-mono text-white">
                                 {{ product.current_stock }} {{ product.unit }}
                             </td>
