@@ -116,18 +116,16 @@
 <script>
     // Safe injection of product data
     const availableProducts = [];
-    try {
-        {% for p in products %}
-        availableProducts.push({
-            id: {{ p.id | tojson }},
-    name: { { p.name | tojson } },
-    stock: { { p.current_stock | tojson } },
-    unit: { { (p.unit or 'un') | tojson } }
-        });
+
+    // Add products one by one to avoid large layout issues
+    {% for p in products %}
+    availableProducts.push({
+        id: {{ p.id | tojson }},
+        name: {{ p.name | tojson }},
+        stock: {{ p.current_stock | tojson }},
+        unit: {{ (p.unit or 'un') | tojson }}
+    });
     {% endfor %}
-    } catch (e) {
-        console.error("Error initializing products:", e);
-    }
 
     function addBatchRow() {
         try {
