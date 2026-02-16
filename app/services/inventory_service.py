@@ -26,7 +26,6 @@ class InventoryService:
         if mov_type == MovementType.IN:
             product.current_stock += quantity
         else:
-        else:
             # Allow negative stock as per user request (stock managed externally)
             product.current_stock -= quantity
         
