@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Remessas - Invexa Control{% endblock %}
+{% block header_title %}Controle de Remessas{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6">
+
+    <!-- Filters and Actions -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+            <a href="/shipments?status_filter=active"
+                class="px-4 py-2 rounded-md text-sm font-medium transition-all {% if status_filter == 'active' %}bg-slate-700 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                Em Aberto
+            </a>
+            <a href="/shipments?status_filter=all"
+                class="px-4 py-2 rounded-md text-sm font-medium transition-all {% if status_filter == 'all' %}bg-slate-700 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                Todas
+            </a>
+        </div>
+
+        <button onclick="openShipmentModal()"
+            class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-500/20 transition-all text-sm flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Nova Remessa
+        </button>
+    </div>
+
+    <!-- Shipments Table -->
+    <div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900/50">
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Prestador
+                        </th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                        </th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Qtd Enviada</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Qtd Retornada</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                            Status</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                    {% for shipment in shipments %}
+                    <tr class="hover:bg-slate-800/30 transition-colors">
+                        <td class="px-6 py-4 text-xs text-slate-400">{{ shipment.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-white">{{ shipment.worker.name }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-300">{{ shipment.product.name }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-blue-400 text-center">{{ shipment.quantity }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-emerald-400 text-center">{{
+                            shipment.returned_quantity }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold border 
+                                {% if shipment.status.value == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20
+                                {% elif shipment.status.value == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20
+                                {% elif shipment.status.value == 'finalizado' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20
+                                {% else %}bg-slate-700 text-slate-400 border-slate-600{% endif %}">
+                                {{ shipment.status.value|upper }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            {% if shipment.status.value != 'finalizado' and shipment.status.value != 'cancelado' %}
+                            <button
+                                onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
+                                class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10">
+                                Receber Retorno
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma remessa
+                            encontrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova Remessa -->
+<div id="shipmentModal"
+    class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div
+        class="bg-[#0f172a] border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+            <h3 class="text-xl font-bold text-white">Nova Remessa</h3>
+            <button onclick="closeShipmentModal()" class="text-slate-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <form action="/shipments/create" method="POST" class="p-6 space-y-4">
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terceirizado</label>
+                <select name="worker_id" required
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    <option value="" disabled selected>Selecione um prestador...</option>
+                    {% for worker in workers %}
+                    <option value="{{ worker.id }}">{{ worker.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Produto</label>
+                <select name="product_id" required
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    <option value="" disabled selected>Selecione um produto...</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.sku or '' }} - {{ product.name }} ({{
+                        product.current_stock }} {{ product.unit }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Quantidade</label>
+                    <input type="number" step="0.01" name="quantity" required
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Custo Unit. (R$)</label>
+                    <input type="number" step="0.01" name="cost_per_unit" value="0.00"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Observações</label>
+                <textarea name="notes" rows="2"
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all"></textarea>
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg shadow-lg shadow-purple-500/20 transition-all mt-4">Confirmar
+                Envio</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Retorno -->
+<div id="returnModal"
+    class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div
+        class="bg-[#0f172a] border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+            <h3 class="text-xl font-bold text-white">Registrar Retorno</h3>
+            <button onclick="closeReturnModal()" class="text-slate-500 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <form id="returnForm" method="POST" class="p-6 space-y-4">
+            <div class="text-sm text-slate-300 mb-2">
+                Produto: <span id="ret_prod_name" class="font-bold text-white"></span>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Quantidade Retornada</label>
+                <input type="number" step="0.01" name="return_quantity" id="ret_quantity" required
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <p class="text-[10px] text-slate-500 text-right">Máximo pendente: <span id="ret_max"></span></p>
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 transition-all mt-4">Confirmar
+                Retorno</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function openShipmentModal() {
+        document.getElementById('shipmentModal').classList.remove('hidden');
+    }
+
+    function closeShipmentModal() {
+        document.getElementById('shipmentModal').classList.add('hidden');
+    }
+
+    function openReturnModal(shipmentId, productName, maxQuantity) {
+        document.getElementById('returnForm').action = `/shipments/${shipmentId}/return`;
+        document.getElementById('ret_prod_name').innerText = productName;
+        document.getElementById('ret_quantity').max = maxQuantity;
+        document.getElementById('ret_quantity').value = maxQuantity;
+        document.getElementById('ret_max').innerText = maxQuantity;
+        document.getElementById('returnModal').classList.remove('hidden');
+    }
+
+    function closeReturnModal() {
+        document.getElementById('returnModal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

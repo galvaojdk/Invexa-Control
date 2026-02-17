@@ -1,0 +1,131 @@
+from datetime import datetime
+from fastapi import APIRouter, Request, Depends, Form, HTTPException, status
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.models.user import User
+from app.models.worker import Worker, Shipment, ShipmentStatus
+from app.models.inventory import Product, Movement, MovementType
+from app.api.dependencies import login_required
+
+router = APIRouter(prefix="/shipments", tags=["Shipments"])
+templates = Jinja2Templates(directory="app/templates")
+
+@router.get("")
+@router.get("/")
+async def shipments_view(request: Request, status_filter: str = "active", user: User = Depends(login_required), db: Session = Depends(get_db)):
+    query = db.query(Shipment).order_by(Shipment.created_at.desc())
+    
+    if status_filter == "active":
+        query = query.filter(Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]))
+        
+    shipments = query.all()
+    
+    # Fetch data for modals
+    workers = db.query(Worker).filter(Worker.active == True).all()
+    products = db.query(Product).order_by(Product.name).all()
+
+    return templates.TemplateResponse("shipments.html", {
+        "request": request,
+        "user": user,
+        "shipments": shipments,
+        "workers": workers,
+        "products": products,
+        "status_filter": status_filter
+    })
+
+@router.post("/create")
+async def create_shipment(
+    worker_id: int = Form(...),
+    product_id: int = Form(...),
+    quantity: float = Form(...),
+    cost_per_unit: float = Form(0.0),
+    notes: str = Form(None),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    worker = db.query(Worker).filter(Worker.id == worker_id).first()
+    product = db.query(Product).filter(Product.id == product_id).first()
+    
+    if not worker or not product:
+        raise HTTPException(status_code=404, detail="Recurso não encontrado")
+    
+    if product.current_stock < quantity:
+         # TODO: flash message?
+         raise HTTPException(
+             status_code=400, 
+             detail=f"Estoque insuficiente. Disponível: {product.current_stock} {product.unit}. Solicitado: {quantity}"
+         ) 
+
+    # Create Shipment Record
+    shipment = Shipment(
+        worker_id=worker.id,
+        product_id=product.id,
+        quantity=quantity,
+        cost_per_unit=cost_per_unit,
+        notes=notes,
+        status=ShipmentStatus.PENDING
+    )
+    db.add(shipment)
+    
+    # Decrease Stock
+    product.current_stock -= quantity
+    
+    # Log Movement
+    movement = Movement(
+        product_id=product.id,
+        quantity=quantity,
+        type=MovementType.OUT,
+        reason=f"Remessa para {worker.name}",
+        user_id=user.id,
+        sector="Terceirizado",
+        timestamp=datetime.now()
+    )
+    db.add(movement)
+    
+    db.commit()
+    return RedirectResponse(url="/shipments", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/{shipment_id}/return")
+async def return_shipment(
+    shipment_id: int,
+    return_quantity: float = Form(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    shipment = db.query(Shipment).filter(Shipment.id == shipment_id).first()
+    if not shipment:
+        raise HTTPException(status_code=404, detail="Remessa não encontrada")
+    
+    # Validate return quantity
+    remaining = shipment.quantity - shipment.returned_quantity
+    if return_quantity > remaining:
+         return_quantity = remaining
+
+    # Update Shipment
+    shipment.returned_quantity += return_quantity
+    shipment.updated_at = datetime.now()
+    
+    if shipment.returned_quantity >= shipment.quantity:
+        shipment.status = ShipmentStatus.COMPLETED
+    else:
+        shipment.status = ShipmentStatus.PARTIAL
+        
+    # Increase Stock (Returns to inventory)
+    shipment.product.current_stock += return_quantity
+    
+    # Log Movement
+    movement = Movement(
+        product_id=shipment.product_id,
+        quantity=return_quantity,
+        type=MovementType.IN,
+        reason=f"Retorno de {shipment.worker.name}",
+        user_id=user.id,
+        sector="Estoque Principal",
+        timestamp=datetime.now()
+    )
+    db.add(movement)
+    
+    db.commit()
+    return RedirectResponse(url="/shipments", status_code=status.HTTP_303_SEE_OTHER)

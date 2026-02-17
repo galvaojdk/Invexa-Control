@@ -123,6 +123,15 @@
                         Terceirizados
                     </a>
 
+                    <a href="/shipments"
+                        class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path.startswith('/shipments') %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                        Remessas
+                    </a>
+
                     <a href="/reports"
                         class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 {% if request.url.path == '/reports' %}bg-blue-600/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]{% else %}text-slate-400 hover:bg-slate-800 hover:text-white{% endif %}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

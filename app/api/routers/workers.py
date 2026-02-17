@@ -71,18 +71,12 @@ async def workers_view(request: Request, user: User = Depends(login_required), d
     products = db.query(Product).all()
     worker_types = db.query(WorkerType).all()
     
-    # Fetch active shipments for display
-    active_shipments = db.query(Shipment).filter(
-        Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL])
-    ).all()
-
     return templates.TemplateResponse("workers.html", {
         "request": request,
         "user": user,
         "workers": workers,
         "products": products,
-        "worker_types": worker_types,
-        "active_shipments": active_shipments
+        "worker_types": worker_types
     })
 
 @router.post("/create")
@@ -184,95 +178,4 @@ async def delete_worker(
     db.commit()
     return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
 
-@router.post("/{worker_id}/shipments")
-async def create_shipment(
-    worker_id: int,
-    product_id: int = Form(...),
-    quantity: float = Form(...),
-    cost_per_unit: float = Form(0.0),
-    notes: str = Form(None),
-    db: Session = Depends(get_db),
-    user: User = Depends(login_required)
-):
-    worker = db.query(Worker).filter(Worker.id == worker_id).first()
-    product = db.query(Product).filter(Product.id == product_id).first()
-    
-    if not worker or not product:
-        raise HTTPException(status_code=404, detail="Recurso não encontrado")
-    
-    if product.current_stock < quantity:
-         raise HTTPException(
-             status_code=400, 
-             detail=f"Estoque insuficiente. Disponível: {product.current_stock} {product.unit}. Solicitado: {quantity}"
-         ) 
 
-    # Create Shipment Record
-    shipment = Shipment(
-        worker_id=worker.id,
-        product_id=product.id,
-        quantity=quantity,
-        cost_per_unit=cost_per_unit,
-        notes=notes,
-        status=ShipmentStatus.PENDING
-    )
-    db.add(shipment)
-    
-    # Decrease Stock
-    product.current_stock -= quantity
-    
-    # Log Movement
-    movement = Movement(
-        product_id=product.id,
-        quantity=quantity,
-        type=MovementType.OUT,
-        reason=f"Remessa para {worker.name}",
-        user_id=user.id,
-        sector="Terceirizado"
-    )
-    db.add(movement)
-    
-    db.commit()
-    return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
-
-@router.post("/shipments/{shipment_id}/return")
-async def return_shipment(
-    shipment_id: int,
-    return_quantity: float = Form(...),
-    db: Session = Depends(get_db),
-    user: User = Depends(login_required)
-):
-    shipment = db.query(Shipment).filter(Shipment.id == shipment_id).first()
-    if not shipment:
-        raise HTTPException(status_code=404, detail="Remessa não encontrada")
-    
-    # Validate return quantity
-    remaining = shipment.quantity - shipment.returned_quantity
-    if return_quantity > remaining:
-         # Cap at remaining or allow over-return? Cap it to avoid logic errors.
-         return_quantity = remaining
-
-    # Update Shipment
-    shipment.returned_quantity += return_quantity
-    shipment.updated_at = datetime.utcnow()
-    
-    if shipment.returned_quantity >= shipment.quantity:
-        shipment.status = ShipmentStatus.COMPLETED
-    else:
-        shipment.status = ShipmentStatus.PARTIAL
-        
-    # Increase Stock (Returns to inventory)
-    shipment.product.current_stock += return_quantity
-    
-    # Log Movement
-    movement = Movement(
-        product_id=shipment.product_id,
-        quantity=return_quantity,
-        type=MovementType.IN,
-        reason=f"Retorno de {shipment.worker.name}",
-        user_id=user.id,
-        sector="Estoque Principal"
-    )
-    db.add(movement)
-    
-    db.commit()
-    return RedirectResponse(url="/workers", status_code=status.HTTP_303_SEE_OTHER)
