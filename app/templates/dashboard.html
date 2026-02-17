@@ -6,82 +6,107 @@
 {% block content %}
 
 
+
 <!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Products -->
     <div
-        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-blue-500/50 transition-all group">
-        <div class="flex items-center justify-between mb-4">
-            <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
-            </div>
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
-        <p class="text-slate-400 text-sm font-medium">Produtos Cadastrados</p>
-        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.total_products }}</h3>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform duration-300 border border-indigo-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Produtos Cadastrados</p>
+            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_products }}</h3>
+        </div>
     </div>
 
     <!-- Recent Movements -->
     <div
-        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-emerald-500/50 transition-all group">
-        <div class="flex items-center justify-between mb-4">
-            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-            </div>
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
-        <p class="text-slate-400 text-sm font-medium">Movimentações (Hoje)</p>
-        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.movements_today }}</h3>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400 group-hover:scale-110 transition-transform duration-300 border border-emerald-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Movimentações (Hoje)</p>
+            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.movements_today }}</h3>
+        </div>
     </div>
 
     <!-- Workers -->
     <div
-        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-cyan-500/50 transition-all group">
-        <div class="flex items-center justify-between mb-4">
-            <div class="p-2 bg-cyan-500/10 rounded-lg text-cyan-400 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                    </path>
-                </svg>
-            </div>
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-cyan-500/10 transition-all duration-300">
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
-        <p class="text-slate-400 text-sm font-medium">Terceirizados</p>
-        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.total_workers }}</h3>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="p-2 bg-cyan-500/10 rounded-xl text-cyan-400 group-hover:scale-110 transition-transform duration-300 border border-cyan-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Terceirizados</p>
+            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_workers }}</h3>
+        </div>
     </div>
 
     <!-- Active Shipments -->
     <div
-        class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl hover:border-purple-500/50 transition-all group">
-        <div class="flex items-center justify-between mb-4">
-            <div class="p-2 bg-purple-500/10 rounded-lg text-purple-400 group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8 4-8-4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
-            </div>
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-violet-500/10 transition-all duration-300">
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
-        <p class="text-slate-400 text-sm font-medium">Remessas Ativas</p>
-        <h3 class="text-3xl font-bold text-white mt-1">{{ stats.active_shipments }}</h3>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="p-2 bg-violet-500/10 rounded-xl text-violet-400 group-hover:scale-110 transition-transform duration-300 border border-violet-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8 4-8-4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Remessas Ativas</p>
+            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
+        </div>
     </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Movements Chart -->
-    <div class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
-        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Movimentações (7 Dias)</h3>
+    <div class="bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg">
+        <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Movimentações (7 Dias)</h3>
         <div class="relative h-64 w-full">
             <canvas id="movementsChart"></canvas>
         </div>
     </div>
 
     <!-- Categories Chart -->
-    <div class="bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
-        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Distribuição por Categoria</h3>
+    <div class="bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg">
+        <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Distribuição por Categoria</h3>
         <div class="relative h-64 w-full flex justify-center">
             <canvas id="categoriesChart"></canvas>
         </div>
@@ -90,10 +115,10 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Consumption by Sector -->
-    <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-5 border-b border-slate-700/50 bg-slate-900/50">
+    <div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg backdrop-blur-xl">
+        <div class="p-5 border-b border-white/5 bg-surface/30">
             <h4 class="text-sm font-bold text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -107,24 +132,25 @@
                 {% for sector, quantity in sector_consumption.items() %}
                 <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between text-xs font-medium">
-                        <span class="text-slate-300">{{ sector }}</span>
-                        <span class="text-white font-bold">{{ quantity }} un.</span>
+                        <span class="text-zinc-400">{{ sector }}</span>
+                        <span class="text-white font-mono">{{ quantity }} un.</span>
                     </div>
-                    <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                    <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
                         {% set percent = (quantity / (total_out_qty if total_out_qty > 0 else 1) * 100)|round|int %}
-                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full"
+                        <div class="bg-gradient-to-r from-indigo-500 to-violet-500 h-full rounded-full"
                             style="width: {{ [percent, 100]|min }}%"></div>
                     </div>
                 </div>
                 {% else %}
-                <p class="text-xs text-slate-500 italic text-center py-4">Nenhuma saída registrada.</p>
+                <p class="text-xs text-zinc-500 italic text-center py-4">Nenhuma saída registrada.</p>
                 {% endfor %}
             </div>
         </div>
     </div>
 
     <!-- Quick Inventory Insights -->
-    <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 shadow-xl flex flex-col justify-center">
+    <div
+        class="bg-surface/50 border border-white/5 rounded-2xl p-6 shadow-lg backdrop-blur-xl flex flex-col justify-center">
         <h4 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -133,62 +159,65 @@
             Insights Rápidos
         </h4>
         <div class="space-y-6">
-            <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-800/50">
-                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Giro de Estoque</p>
+            <div class="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                <p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Giro de Estoque</p>
                 <p class="text-xl font-bold text-white">Ativo</p>
-                <p class="text-[10px] text-slate-400 mt-1">Baseado nos últimos 30 dias de movimentação.</p>
+                <p class="text-[10px] text-zinc-500 mt-1">Baseado nos últimos 30 dias de movimentação.</p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden mb-8">
-    <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-        <h3 class="text-lg font-bold text-white">Últimas Movimentações</h3>
-        <a href="/movements" class="text-sm text-blue-400 hover:text-blue-300 transition-colors">Ver
+<div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden mb-8 backdrop-blur-xl shadow-lg">
+    <div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface/30">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Últimas Movimentações</h3>
+        <a href="/movements"
+            class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-wider">Ver
             tudo</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="bg-slate-900/50">
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <tr class="bg-zinc-950/30 border-b border-white/5">
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Data</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Produto</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Tipo</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Qtd
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Qtd
                     </th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Setor</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Motivo</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800">
+            <tbody class="divide-y divide-white/5">
                 {% for mov in latest_movements %}
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                    <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ mov.timestamp.strftime('%d/%m
+                <tr class="hover:bg-white/5 transition-colors group">
+                    <td class="px-6 py-4 text-xs font-mono text-zinc-400 group-hover:text-zinc-300">{{
+                        mov.timestamp.strftime('%d/%m
                         %H:%M') }}
                     </td>
-                    <td class="px-6 py-4 text-sm font-medium text-white">{{ mov.product.name }}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white">{{ mov.product.name
+                        }}</td>
                     <td class="px-6 py-4">
                         {% if mov.type.value == 'entrada' %}
                         <span
-                            class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">ENTRADA</span>
+                            class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 uppercase tracking-wider">ENTRADA</span>
                         {% else %}
                         <span
-                            class="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20">SAÍDA</span>
+                            class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider">SAÍDA</span>
                         {% endif %}
                     </td>
-                    <td class="px-6 py-4 text-sm font-mono text-white">{{ mov.quantity }}</td>
-                    <td class="px-6 py-4 text-sm text-slate-300">{{ mov.sector or '-' }}</td>
-                    <td class="px-6 py-4 text-sm text-slate-400">{{ mov.reason or '-' }}</td>
+                    <td class="px-6 py-4 text-sm font-mono text-zinc-300">{{ mov.quantity }}</td>
+                    <td class="px-6 py-4 text-xs text-zinc-400">{{ mov.sector or '-' }}</td>
+                    <td class="px-6 py-4 text-xs text-zinc-500">{{ mov.reason or '-' }}</td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-slate-500 text-sm italic">Nenhuma
+                    <td colspan="6" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhuma
                         movimentação
                         registrada hoje.</td>
                 </tr>
