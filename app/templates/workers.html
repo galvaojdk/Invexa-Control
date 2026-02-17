@@ -266,8 +266,51 @@
         </div>
     </div>
 
-    function closeWorkerTypeModal() {
-    document.getElementById('workerTypeModal').classList.add('hidden');
-    }
+    <script>
+        // Worker Modal
+        function openWorkerModal() {
+            document.getElementById('workerForm').action = '/workers/create';
+            document.getElementById('workerModalTitle').innerText = 'Novo Terceirizado';
+            document.getElementById('w_name').value = '';
+            document.getElementById('w_address').value = '';
+            document.getElementById('w_zip').value = '';
+            if (document.getElementById('w_type')) document.getElementById('w_type').value = '';
+            document.getElementById('w_phone').value = '';
+            document.getElementById('workerModal').classList.remove('hidden');
+        }
+
+        function openEditWorkerModal(id, name, type_id, address, zip, phone) {
+            document.getElementById('workerForm').action = `/workers/${id}/update`;
+            document.getElementById('workerModalTitle').innerText = 'Editar Terceirizado';
+            document.getElementById('w_name').value = name;
+            if (document.getElementById('w_type')) document.getElementById('w_type').value = type_id;
+            document.getElementById('w_address').value = address;
+            document.getElementById('w_zip').value = zip;
+            document.getElementById('w_phone').value = phone === 'None' ? '' : phone;
+            document.getElementById('workerModal').classList.remove('hidden');
+        }
+
+        function closeWorkerModal() {
+            document.getElementById('workerModal').classList.add('hidden');
+        }
+
+        // Worker Type Modal
+        function openWorkerTypeModal() {
+            document.getElementById('workerTypeForm').action = '/workers/types/create';
+            document.getElementById('workerTypeModalTitle').innerText = 'Novo Tipo de Terceirizado';
+            document.getElementById('wt_name').value = '';
+            document.getElementById('workerTypeModal').classList.remove('hidden');
+        }
+
+        function openEditWorkerTypeModal(id, name) {
+            document.getElementById('workerTypeForm').action = `/workers/types/${id}/update`;
+            document.getElementById('workerTypeModalTitle').innerText = 'Editar Tipo';
+            document.getElementById('wt_name').value = name;
+            document.getElementById('workerTypeModal').classList.remove('hidden');
+        }
+
+        function closeWorkerTypeModal() {
+            document.getElementById('workerTypeModal').classList.add('hidden');
+        }
     </script>
     {% endblock %}
