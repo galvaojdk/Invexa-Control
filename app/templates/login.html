@@ -3,56 +3,93 @@
 {% block title %}Login - Invexa Control{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-[70vh]">
-    <div class="w-full max-w-md bg-[#0f172a] border border-slate-800 rounded-2xl shadow-2xl p-8">
-        <div class="text-center mb-8">
-            <div class="inline-flex p-3 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-xl shadow-lg mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                    </path>
-                </svg>
-            </div>
-            <h1
-                class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 mb-2">
-                Invexa Control</h1>
-            <h2 class="text-xl font-bold text-white">Bem-vindo de volta!</h2>
-            <p class="text-slate-400 mt-2">Acesse sua conta para gerenciar seu estoque.</p>
-        </div>
+<div
+    class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl p-8 w-full relative overflow-hidden group">
+    <!-- Decorator -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-indigo-600"></div>
 
-        <form action="/login" method="POST" class="space-y-6">
-            {% if error %}
-            <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center">
-                {{ error }}
-            </div>
-            {% endif %}
-            <div>
-                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">E-mail</label>
+    <div class="text-center mb-8 relative z-10">
+        <div
+            class="inline-flex p-3 bg-gradient-to-br from-emerald-500 to-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 mb-4 ring-4 ring-white/5">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                </path>
+            </svg>
+        </div>
+        <h1
+            class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 mb-2 tracking-tight">
+            Invexa Control</h1>
+        <h2 class="text-lg font-medium text-zinc-300">Bem-vindo de volta!</h2>
+        <p class="text-zinc-500 text-sm mt-1">Acesse sua conta para gerenciar seu estoque.</p>
+    </div>
+
+    <form action="/login" method="POST" class="space-y-5 relative z-10">
+        {% if error %}
+        <div
+            class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center shadow-lg shadow-red-500/5 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ error }}
+        </div>
+        {% endif %}
+        <div>
+            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">E-mail</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
+                        </path>
+                    </svg>
+                </div>
                 <input type="email" name="email"
-                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
                     placeholder="seu@email.com" required>
             </div>
-            <div>
-                <div class="flex justify-between items-center mb-1.5">
-                    <label class="block text-slate-400 text-xs font-bold uppercase tracking-wide">Senha</label>
-                    <a href="#" class="text-[10px] text-blue-400 hover:text-blue-300">Esqueceu a senha?</a>
+        </div>
+        <div>
+            <div class="flex justify-between items-center mb-1.5">
+                <label class="block text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Senha</label>
+                <a href="#"
+                    class="text-[10px] text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Esqueceu a
+                    senha?</a>
+            </div>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
                 </div>
                 <input type="password" name="password"
-                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
                     placeholder="••••••••" required>
             </div>
-
-            <button type="submit"
-                class="w-full py-3 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">
-                Entrar no Sistema
-            </button>
-        </form>
-
-        <div class="mt-8 text-center pt-6 border-t border-slate-800">
-            <p class="text-sm text-slate-400">Não tem uma conta? <a href="/register"
-                    class="text-blue-400 font-bold hover:text-blue-300 transition-colors">Crie agora</a></p>
         </div>
+
+        <button type="submit"
+            class="w-full py-3 bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-[0.98] border border-white/10 relative overflow-hidden group">
+            <span class="relative z-10 flex items-center justify-center gap-2">
+                Entrar no Sistema
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
+                    </path>
+                </svg>
+            </span>
+            <div
+                class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            </div>
+        </button>
+    </form>
+
+    <div class="mt-8 text-center pt-6 border-t border-white/5 relative z-10">
+        <p class="text-sm text-zinc-500">Não tem uma conta? <a href="/register"
+                class="text-indigo-400 font-bold hover:text-indigo-300 transition-colors">Crie agora</a></p>
     </div>
 </div>
-
 {% endblock %}

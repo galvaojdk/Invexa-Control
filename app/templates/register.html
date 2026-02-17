@@ -3,44 +3,82 @@
 {% block title %}Cadastro - Invexa Control{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-[70vh]">
-    <div class="w-full max-w-md bg-[#0f172a] border border-slate-800 rounded-2xl shadow-2xl p-8">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold text-white">Criar Conta</h2>
-            <p class="text-slate-400 mt-2">Comece a gerenciar seu almoxarifado agora.</p>
-        </div>
+<div
+    class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl p-8 w-full relative overflow-hidden group">
+    <!-- Decorator -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-indigo-600"></div>
 
-        <form action="/register" method="POST" class="space-y-6">
-            <div>
-                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">Nome
-                    Completo</label>
+    <div class="text-center mb-8 relative z-10">
+        <h2 class="text-2xl font-bold text-white tracking-tight">Criar Conta</h2>
+        <p class="text-zinc-500 text-sm mt-2">Comece a gerenciar seu almoxarifado agora.</p>
+    </div>
+
+    <form action="/register" method="POST" class="space-y-5 relative z-10">
+        <div>
+            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">Nome
+                Completo</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
                 <input type="text" name="full_name"
-                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
                     placeholder="Ex: João Silva" required>
             </div>
-            <div>
-                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">E-mail</label>
+        </div>
+        <div>
+            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">E-mail</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
+                        </path>
+                    </svg>
+                </div>
                 <input type="email" name="email"
-                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
                     placeholder="seu@email.com" required>
             </div>
-            <div>
-                <label class="block text-slate-400 text-xs font-bold mb-1.5 uppercase tracking-wide">Senha</label>
+        </div>
+        <div>
+            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">Senha</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                        </path>
+                    </svg>
+                </div>
                 <input type="password" name="password"
-                    class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
                     placeholder="••••••••" required>
             </div>
-
-            <button type="submit"
-                class="w-full py-3 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-500 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">
-                Criar Minha Conta
-            </button>
-        </form>
-
-        <div class="mt-8 text-center pt-6 border-t border-slate-800">
-            <p class="text-sm text-slate-400">Já tem uma conta? <a href="/login"
-                    class="text-blue-400 font-bold hover:text-blue-300 transition-colors">Fazer Login</a></p>
         </div>
+
+        <button type="submit"
+            class="w-full py-3 bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-[0.98] border border-white/10 relative overflow-hidden group">
+            <span class="relative z-10 flex items-center justify-center gap-2">
+                Criar Minha Conta
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
+                    </path>
+                </svg>
+            </span>
+            <div
+                class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            </div>
+        </button>
+    </form>
+
+    <div class="mt-8 text-center pt-6 border-t border-white/5 relative z-10">
+        <p class="text-sm text-zinc-500">Já tem uma conta? <a href="/login"
+                class="text-indigo-400 font-bold hover:text-indigo-300 transition-colors">Fazer Login</a></p>
     </div>
 </div>
 {% endblock %}
