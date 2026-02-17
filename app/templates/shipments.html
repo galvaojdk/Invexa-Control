@@ -72,11 +72,22 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             {% if shipment.status.value != 'finalizado' and shipment.status.value != 'cancelado' %}
-                            <button
-                                onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
-                                class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors border border-emerald-500/20 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 uppercase tracking-wider bg-emerald-500/5">
-                                Receber Retorno
-                            </button>
+                            <div class="flex items-center justify-end gap-2">
+                                <button
+                                    onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
+                                    class="text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-colors border border-emerald-500/20 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10 uppercase tracking-wider bg-emerald-500/5">
+                                    Receber
+                                </button>
+                                <button
+                                    onclick="cancelShipment('{{ shipment.id }}', '{{ shipment.product.name }}', '{{ shipment.worker.name }}')"
+                                    class="text-red-400 hover:text-red-300 text-xs font-bold transition-colors border border-red-500/20 px-3 py-1.5 rounded-lg hover:bg-red-500/10 uppercase tracking-wider bg-red-500/5"
+                                    title="Cancelar Remessa">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
                             {% endif %}
                         </td>
                     </tr>
@@ -219,6 +230,31 @@
 
     function closeReturnModal() {
         document.getElementById('returnModal').classList.add('hidden');
+    }
+
+    async function cancelShipment(shipmentId, productName, workerName) {
+        if (confirm(`Tem certeza que deseja CANCELAR a remessa de "${productName}" para "${workerName}"?\n\nO estoque será estornado e esta ação não pode ser desfeita.`)) {
+            try {
+                const response = await fetch(`/shipments/${shipmentId}/cancel`, {
+                    method: 'POST'
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.detail || 'Erro ao cancelar remessa');
+                }
+
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
+            }
+        }
     }
 </script>
 {% endblock %}

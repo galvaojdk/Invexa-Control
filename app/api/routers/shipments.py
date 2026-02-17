@@ -128,4 +128,53 @@ async def return_shipment(
     db.add(movement)
     
     db.commit()
+    db.commit()
+    return RedirectResponse(url="/shipments", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/{shipment_id}/cancel")
+async def cancel_shipment(
+    shipment_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    shipment = db.query(Shipment).filter(Shipment.id == shipment_id).first()
+    if not shipment:
+        raise HTTPException(status_code=404, detail="Remessa não encontrada")
+    
+    # Check status
+    if shipment.status not in [ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]:
+        # Optionally allow cancellation of COMPLETED if needed, but usually only active ones
+        # For now, let's restrict to active ones to avoid complex stock logic if it was fully returned?
+        # Actually, if it's COMPLETED, it means everything was returned, so nothing to cancel.
+        # If it's CANCELLED, well...
+        if shipment.status == ShipmentStatus.CANCELLED:
+             raise HTTPException(status_code=400, detail="Remessa já cancelada")
+        if shipment.status == ShipmentStatus.COMPLETED:
+             raise HTTPException(status_code=400, detail="Remessa já finalizada")
+
+    # Calculate quantity to return to stock (revoke shipment)
+    # The quantity that was sent but NOT returned is effectively "out".
+    # We need to put it back.
+    quantity_to_restore = shipment.quantity - shipment.returned_quantity
+    
+    if quantity_to_restore > 0:
+        shipment.product.current_stock += quantity_to_restore
+        
+        # Log Movement (Estorno/Cancelamento)
+        movement = Movement(
+            product_id=shipment.product_id,
+            quantity=quantity_to_restore,
+            type=MovementType.IN,
+            reason=f"Cancelamento de remessa para {shipment.worker.name}",
+            user_id=user.id,
+            sector="Estoque Principal",
+            timestamp=datetime.now()
+        )
+        db.add(movement)
+
+    # Update Shipment Status
+    shipment.status = ShipmentStatus.CANCELLED
+    shipment.updated_at = datetime.now()
+    
+    db.commit()
     return RedirectResponse(url="/shipments", status_code=status.HTTP_303_SEE_OTHER)
