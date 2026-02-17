@@ -50,3 +50,37 @@ async def admin_audit_log(
         "user": user,
         "logs": logs
     })
+
+from fastapi.responses import FileResponse
+import shutil
+import os
+from datetime import datetime
+from app.core.config import settings
+
+@router.get("/backup")
+async def backup_database(user: User = Depends(admin_required)):
+    # Verify it is sqlite
+    db_url = settings.DATABASE_URL
+    if not db_url.startswith("sqlite"):
+        raise HTTPException(status_code=400, detail="Backup automatico disponivel apenas para SQLite local.")
+    
+    # Extract file path: sqlite:///./control.db -> ./control.db
+    # Remove sqlite:/// prefix
+    db_path = db_url.replace("sqlite:///", "")
+    
+    if not os.path.exists(db_path):
+         raise HTTPException(status_code=404, detail="Arquivo de banco de dados nao encontrado.")
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_filename = f"backup_invexa_{timestamp}.db"
+    
+    # Ensure backups dir exists
+    backup_dir = "./backups"
+    os.makedirs(backup_dir, exist_ok=True)
+    
+    backup_path = os.path.join(backup_dir, backup_filename)
+    
+    # Copy file (using copy2 to preserve metadata)
+    shutil.copy2(db_path, backup_path)
+    
+    return FileResponse(path=backup_path, filename=backup_filename, media_type='application/octet-stream')
