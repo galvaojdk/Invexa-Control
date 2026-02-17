@@ -83,6 +83,64 @@ async def reports_view(
             })
         context["report_data"] = report_data
         
+        context["report_data"] = report_data
+
+    elif report_type == "worker_review":
+        # Review Report: Items currently with workers (Balance > 0)
+        query = db.query(Shipment).join(Worker).join(Product)\
+            .filter(Shipment.status != 'cancelado')\
+            .filter(Shipment.quantity > Shipment.returned_quantity)\
+            .order_by(Worker.name, Product.name)
+            
+        if filter_start:
+             query = query.filter(Shipment.created_at >= filter_start)
+        if filter_end:
+             query = query.filter(Shipment.created_at <= filter_end)
+        if worker_id:
+             query = query.filter(Shipment.worker_id == worker_id)
+        if product_id:
+             query = query.filter(Shipment.product_id == product_id)
+             
+        shipments = query.all()
+        
+        # Aggregate by Worker
+        # Structure: { worker_id: { name: str, items: [ { product, sent, returned, balance, date } ] } }
+        aggregated = {}
+        
+        for s in shipments:
+            if s.worker_id not in aggregated:
+                aggregated[s.worker_id] = {
+                    "name": s.worker.name,
+                    "items": []
+                }
+            
+            # Check if product already exists for this worker to merge (optional, but shipments are usually distinct records)
+            # User might want to see individual shipments or total per product. 
+            # Usually "what he has" implies total per product. Let's aggregate per product per worker.
+            
+            existing_item = next((i for i in aggregated[s.worker_id]["items"] if i["product_id"] == s.product_id), None)
+            
+            balance = s.quantity - s.returned_quantity
+            
+            if existing_item:
+                existing_item["sent"] += s.quantity
+                existing_item["returned"] += s.returned_quantity
+                existing_item["balance"] += balance
+                # Keep checking latest date?
+            else:
+                aggregated[s.worker_id]["items"].append({
+                    "product_id": s.product_id,
+                    "product": s.product.name,
+                    "unit": s.product.unit,
+                    "sent": s.quantity,
+                    "returned": s.returned_quantity,
+                    "balance": balance
+                })
+        
+        # Convert to list for template
+        report_data = list(aggregated.values())
+        context["report_data"] = report_data
+        
     elif report_type == "movements_history":
         # Global Movements History Report
         query = db.query(Movement).join(Product).order_by(Movement.timestamp.desc())
