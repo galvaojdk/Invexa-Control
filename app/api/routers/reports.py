@@ -9,7 +9,7 @@ from app.api.dependencies import get_db, login_required
 router = APIRouter(prefix="/reports", tags=["Reports"])
 templates = Jinja2Templates(directory="app/templates")
 
-from app.models.worker import Shipment, Worker
+from app.models.worker import Shipment, Worker, ShipmentStatus
 
 @router.get("")
 @router.get("/")
@@ -88,7 +88,7 @@ async def reports_view(
     elif report_type == "worker_review":
         # Review Report: Items currently with workers (Balance > 0)
         query = db.query(Shipment).join(Worker).join(Product)\
-            .filter(Shipment.status != 'cancelado')\
+            .filter(Shipment.status != ShipmentStatus.CANCELLED)\
             .filter(Shipment.quantity > Shipment.returned_quantity)\
             .order_by(Worker.name, Product.name)
             
