@@ -31,8 +31,8 @@
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Prestador
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
-                        </th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Motivo /
+                            Observação</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Qtd Enviada</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
@@ -51,7 +51,7 @@
                         <td
                             class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
                             {{ shipment.worker.name }}</td>
-                        <td class="px-6 py-4 text-sm text-zinc-400">{{ shipment.product.name }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ shipment.notes or '-' }}</td>
                         <td class="px-6 py-4 text-sm font-bold text-indigo-400 text-center">{{ shipment.quantity }}</td>
                         <td class="px-6 py-4 text-sm font-bold text-emerald-400 text-center">{{
                             shipment.returned_quantity }}</td>
