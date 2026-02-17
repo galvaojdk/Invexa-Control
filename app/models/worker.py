@@ -29,8 +29,8 @@ class Worker(Base):
     daily_rate = Column(Float, default=0.0)
     active = Column(Boolean, default=True)
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     worker_type = relationship("WorkerType", back_populates="workers")
     shipments = relationship("Shipment", back_populates="worker")
@@ -48,8 +48,8 @@ class Shipment(Base):
     status = Column(Enum(ShipmentStatus), default=ShipmentStatus.PENDING)
     cost_per_unit = Column(Float, default=0.0) # Valor a pagar por peça
     
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     notes = Column(Text, nullable=True)
 
     worker = relationship("Worker", back_populates="shipments")

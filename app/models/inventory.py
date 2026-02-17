@@ -37,7 +37,7 @@ class Movement(Base):
     quantity = Column(Float)
     type = Column(Enum(MovementType))
     reason = Column(String) # compra, venda, ajuste, consumo
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.now)
     
     product = relationship("Product", back_populates="movements")
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
@@ -52,7 +52,7 @@ class AuditLog(Base):
     resource_type = Column(String) # product, category, movement
     resource_id = Column(Integer, nullable=True)
     description = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.now)
     
     user = relationship("User")
 
