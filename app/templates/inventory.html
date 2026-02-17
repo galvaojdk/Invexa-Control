@@ -266,7 +266,38 @@
                     </svg>
                 </button>
             </div>
-            <form action="/inventory/products" method="POST" class="p-6 space-y-5">
+            <form action="/inventory/products" method="POST" class="p-6 space-y-5" x-data="{ 
+                isComposite: false, 
+                composition: [],
+                newItemId: '',
+                newItemQty: 1,
+                primaryProducts: [
+                    {% for p in products %}
+                        {% if p.is_primary %}
+                            { id: {{ p.id }}, name: '{{ p.name }}', unit: '{{ p.unit }}' },
+                        {% endif %}
+                    {% endfor %}
+                ],
+                addToComposition() {
+                    if (!this.newItemId) return;
+                    const product = this.primaryProducts.find(p => p.id == this.newItemId);
+                    if (product) {
+                        this.composition.push({
+                            id: product.id,
+                            name: product.name,
+                            unit: product.unit,
+                            quantity: this.newItemQty
+                        });
+                        this.newItemId = '';
+                        this.newItemQty = 1;
+                    }
+                },
+                removeFromComposition(index) {
+                    this.composition.splice(index, 1);
+                }
+            }">
+                <input type="hidden" name="composition_data" :value="JSON.stringify(composition)">
+
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição Reduzida</label>
                     <input type="text" name="name" required
@@ -305,7 +336,7 @@
 
                 <div class="flex gap-6 py-2">
                     <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="checkbox" name="is_composite" value="true"
+                        <input type="checkbox" name="is_composite" value="true" x-model="isComposite"
                             class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all checked:bg-indigo-500">
                         <span
                             class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider transition-colors">Composto</span>
@@ -316,6 +347,62 @@
                         <span
                             class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider transition-colors">Primário</span>
                     </label>
+                </div>
+
+                <!-- Composition Section (Alpine) -->
+                <div x-show="isComposite" x-transition
+                    class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4">
+                    <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        Composição do Produto
+                    </h4>
+
+                    <div class="flex gap-2">
+                        <select x-model="newItemId"
+                            class="flex-1 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50">
+                            <option value="">Selecione um produto...</option>
+                            <template x-for="p in primaryProducts" :key="p.id">
+                                <option :value="p.id" x-text="p.name + ' (' + p.unit + ')'"></option>
+                            </template>
+                        </select>
+                        <input type="number" x-model="newItemQty" min="0.1" step="0.1"
+                            class="w-20 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50"
+                            placeholder="Qtd">
+                        <button type="button" @click="addToComposition()"
+                            class="p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="space-y-2 max-h-40 overflow-y-auto">
+                        <template x-for="(item, index) in composition" :key="index">
+                            <div
+                                class="flex justify-between items-center bg-dark/30 p-2 rounded-lg border border-white/5">
+                                <span class="text-sm text-zinc-300">
+                                    <span class="font-bold text-white" x-text="item.quantity"></span>
+                                    <span x-text="item.unit"></span> x
+                                    <span x-text="item.name"></span>
+                                </span>
+                                <button type="button" @click="removeFromComposition(index)"
+                                    class="text-zinc-500 hover:text-red-400 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+                        <div x-show="composition.length === 0" class="text-center py-2 text-xs text-zinc-500 italic">
+                            Nenhum item adicionado.
+                        </div>
+                    </div>
                 </div>
 
                 <div class="pt-4">
@@ -399,6 +486,48 @@
                         <span
                             class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Primário</span>
                     </label>
+                </div>
+
+                <!-- Composition Edit Section (Vanilla JS) -->
+                <div id="edit-composition-wrapper"
+                    class="hidden bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4">
+                    <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        Composição do Produto
+                    </h4>
+
+                    <input type="hidden" name="composition_data" id="edit-composition-input">
+
+                    <div class="flex gap-2">
+                        <select id="edit-comp-select"
+                            class="flex-1 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50">
+                            <option value="">Selecione um produto...</option>
+                            {% for p in products %}
+                            {% if p.is_primary %}
+                            <option value="{{ p.id }}" data-name="{{ p.name }}" data-unit="{{ p.unit }}">{{ p.name }}
+                                ({{ p.unit }})</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <input type="number" id="edit-comp-qty" min="0.1" step="0.1" value="1"
+                            class="w-20 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50"
+                            placeholder="Qtd">
+                        <button type="button" onclick="addToEditComposition()"
+                            class="p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="edit-composition-list" class="space-y-2 max-h-40 overflow-y-auto">
+                        <!-- Items will be injected here -->
+                    </div>
                 </div>
 
                 <div class="pt-4">
@@ -495,6 +624,10 @@
             document.getElementById('edit-is_composite').checked = data.is_composite;
             document.getElementById('edit-is_primary').checked = data.is_primary;
 
+            // Load composition
+            editComposition = data.composition || [];
+            renderEditComposition();
+
             // Helper to set category by text if ID not available in API (API v1 returns category name)
             // Ideally API should return ID. Let's fix API or loop select options.
             // Loop options to match text if value is empty/mismatch
@@ -519,6 +652,86 @@
     function closeEditModal() {
         document.getElementById('editProductModal').classList.add('hidden');
     }
+
+    // Edit Composition Logic
+    let editComposition = [];
+
+    function renderEditComposition() {
+        const listEl = document.getElementById('edit-composition-list');
+        const inputEl = document.getElementById('edit-composition-input');
+
+        listEl.innerHTML = '';
+
+        if (editComposition.length === 0) {
+            listEl.innerHTML = '<div class="text-center py-2 text-xs text-zinc-500 italic">Nenhum item adicionado.</div>';
+        } else {
+            editComposition.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-dark/30 p-2 rounded-lg border border-white/5';
+                div.innerHTML = `
+                    <span class="text-sm text-zinc-300">
+                        <span class="font-bold text-white">${item.quantity}</span> 
+                        <span>${item.unit}</span> x 
+                        <span>${item.name}</span>
+                    </span>
+                    <button type="button" onclick="removeFromEditComposition(${index})" class="text-zinc-500 hover:text-red-400 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        // Update hidden input
+        inputEl.value = JSON.stringify(editComposition);
+
+        // Toggle visibility based on checkbox
+        const isCompositeObj = document.getElementById('edit-is_composite');
+        const wrapper = document.getElementById('edit-composition-wrapper');
+        if (isCompositeObj.checked) {
+            wrapper.classList.remove('hidden');
+        } else {
+            wrapper.classList.add('hidden');
+        }
+    }
+
+    function addToEditComposition() {
+        const select = document.getElementById('edit-comp-select');
+        const qtyInput = document.getElementById('edit-comp-qty');
+
+        const id = select.value;
+        const qty = parseFloat(qtyInput.value);
+
+        if (!id || isNaN(qty) || qty <= 0) return;
+
+        const option = select.options[select.selectedIndex];
+        const name = option.getAttribute('data-name');
+        const unit = option.getAttribute('data-unit');
+
+        editComposition.push({
+            id: parseInt(id),
+            name: name,
+            unit: unit,
+            quantity: qty
+        });
+
+        renderEditComposition();
+
+        // Reset inputs
+        select.value = "";
+        qtyInput.value = 1;
+    }
+
+    function removeFromEditComposition(index) {
+        editComposition.splice(index, 1);
+        renderEditComposition();
+    }
+
+    // Add event listener to checkbox to toggle visibility
+    document.getElementById('edit-is_composite').addEventListener('change', renderEditComposition);
+
+
+
 
     async function deleteProduct(productId, productName) {
         if (confirm(`Tem certeza que deseja excluir o produto "${productName}"?\n\nEsta ação não pode ser desfeita.`)) {

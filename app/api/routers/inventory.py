@@ -5,7 +5,9 @@ from fastapi import APIRouter, Request, Depends, HTTPException, status, Form, Up
 from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from app.models.inventory import Product, Category, Movement, AuditLog
+import json
+from app.models.inventory import Product, Category, Movement, AuditLog, ProductComposition
+
 from app.models.user import User
 from app.api.dependencies import get_db, login_required
 
@@ -33,6 +35,7 @@ async def create_product(
     is_composite: bool = Form(False),
     is_primary: bool = Form(False),
     sku: str = Form(None),
+    composition_data: str = Form(None), # JSON string
 
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
@@ -52,6 +55,21 @@ async def create_product(
     )
     db.add(new_product)
     db.flush()
+    
+    # Process Composition
+    if is_composite and composition_data:
+        try:
+            items = json.loads(composition_data)
+            for item in items:
+                comp = ProductComposition(
+                    composite_id=new_product.id,
+                    component_id=int(item['id']),
+                    quantity=float(item['quantity'])
+                )
+                db.add(comp)
+        except Exception as e:
+            print(f"Error processing composition: {e}")
+            # Optionally raise HTTPException, but for now just log
     
     db.add(AuditLog(
         user_id=user.id,
@@ -74,6 +92,7 @@ async def update_product(
     unit: str = Form("Und"),
     is_composite: bool = Form(False),
     is_primary: bool = Form(False),
+    composition_data: str = Form(None), # JSON string
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -87,6 +106,27 @@ async def update_product(
     product.unit = unit
     product.is_composite = is_composite
     product.is_primary = is_primary
+    
+    # Process Composition Update
+    if is_composite:
+        # Simple strategy: Delete all and recreate
+        try:
+            db.query(ProductComposition).filter(ProductComposition.composite_id == product.id).delete()
+            if composition_data:
+                items = json.loads(composition_data)
+                for item in items:
+                    comp = ProductComposition(
+                        composite_id=product.id,
+                        component_id=int(item['id']),
+                        quantity=float(item['quantity'])
+                    )
+                    db.add(comp)
+        except Exception as e:
+             print(f"Error updating composition: {e}")
+    else:
+        # If not composite anymore, cleanup
+        db.query(ProductComposition).filter(ProductComposition.composite_id == product.id).delete()
+
     
     db.add(AuditLog(
         user_id=user.id,
@@ -279,6 +319,17 @@ async def get_product_details(
         
     history = db.query(Movement).filter(Movement.product_id == product_id).order_by(Movement.timestamp.desc()).limit(10).all()
     
+    # Fetch Composition
+    composition = db.query(ProductComposition).filter(ProductComposition.composite_id == product_id).all()
+    comp_list = []
+    for c in composition:
+        comp_list.append({
+            "id": c.component.id,
+            "name": c.component.name,
+            "quantity": c.quantity,
+            "unit": c.component.unit
+        })
+
     return {
         "id": product.id,
         "sku": product.sku,
@@ -289,6 +340,7 @@ async def get_product_details(
         "current_stock": product.current_stock,
         "is_composite": product.is_composite,
         "is_primary": product.is_primary,
+        "composition": comp_list,
         "history": [
             {
                 "type": m.type.value,

@@ -29,6 +29,24 @@ class Product(Base):
     
     category = relationship("Category", back_populates="products")
     movements = relationship("Movement", back_populates="product")
+    
+    # Relationship for composite products
+    composition = relationship(
+        "ProductComposition",
+        foreign_keys="ProductComposition.composite_id",
+        backref="composite_product",
+        cascade="all, delete-orphan"
+    )
+
+class ProductComposition(Base):
+    __tablename__ = "product_compositions"
+    id = Column(Integer, primary_key=True, index=True)
+    composite_id = Column(Integer, ForeignKey("products.id"), index=True)
+    component_id = Column(Integer, ForeignKey("products.id"))
+    quantity = Column(Float)
+    
+    # Relationship to get component details
+    component = relationship("Product", foreign_keys=[component_id])
 
 class Movement(Base):
     __tablename__ = "movements"
