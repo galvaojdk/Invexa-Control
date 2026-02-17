@@ -255,7 +255,7 @@
     <div id="productModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all">
         <div
-            class="bg-surface border border-white/10 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
+            class="bg-surface border border-white/10 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
             <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <h3 class="text-xl font-bold text-white tracking-tight">Novo Produto</h3>
                 <button onclick="closeModal()"
@@ -298,116 +298,169 @@
             }">
                 <input type="hidden" name="composition_data" :value="JSON.stringify(composition)">
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição Reduzida</label>
-                    <input type="text" name="name" required
-                        class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700"
-                        placeholder="Ex: Martelo de Borracha">
-                </div>
+                <div :class="{'grid grid-cols-1 lg:grid-cols-2 gap-8': isComposite, 'space-y-5': !isComposite}">
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição Completa</label>
-                    <textarea name="description" rows="2"
-                        class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700"
-                        placeholder="Detalhes adicionais do produto..."></textarea>
-                </div>
+                    <!-- Coluna da Esquerda: Dados Básicos -->
+                    <div class="space-y-5">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
+                                Reduzida</label>
+                            <input type="text" name="name" required
+                                class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
+                                placeholder="Ex: Parafuso Sextavado M8">
+                        </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
-                        <select name="category_id" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                            <option value="" class="text-zinc-500">Selecione...</option>
-                            {% for cat in categories %}
-                            <option value="{{ cat.id }}">{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
+                                Completa</label>
+                            <textarea name="description" rows="2"
+                                class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
+                                placeholder="Detalhes técnicos, especificações..."></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
+                                <select name="category_id" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Selecione...</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
+                                <select name="unit" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    <option value="un">Unidade (un)</option>
+                                    <option value="kg">Quilograma (kg)</option>
+                                    <option value="m">Metro (m)</option>
+                                    <option value="l">Litro (l)</option>
+                                    <option value="cx">Caixa (cx)</option>
+                                    <option value="pc">Peça (pc)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estoque
+                                    Inicial</label>
+                                <input type="number" name="current_stock" value="0" step="0.01" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estoque
+                                    Mínimo</label>
+                                <input type="number" name="min_stock" value="0" step="0.01" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 py-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" name="is_composite" x-model="isComposite" value="true"
+                                    class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
+                                <span
+                                    class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Composto</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" name="is_primary" value="true"
+                                    class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
+                                <span
+                                    class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Primário</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
-                        <select name="unit" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                            <option value="Und">Und</option>
-                            <option value="Metro">Metro</option>
-                            <option value="KG">KG</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="flex gap-6 py-2">
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="checkbox" name="is_composite" value="true" x-model="isComposite"
-                            class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all checked:bg-indigo-500">
-                        <span
-                            class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider transition-colors">Composto</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="checkbox" name="is_primary" value="true"
-                            class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all checked:bg-indigo-500">
-                        <span
-                            class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider transition-colors">Primário</span>
-                    </label>
-                </div>
+                    <!-- Coluna da Direita: Composição -->
+                    <div x-show="isComposite" x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-x-4"
+                        x-transition:enter-end="opacity-100 translate-x-0"
+                        class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-6 space-y-6 flex flex-col h-full">
 
-                <!-- Composition Section (Alpine) -->
-                <div x-show="isComposite" x-transition
-                    class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4">
-                    <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                        Composição do Produto
-                    </h4>
-
-                    <div class="flex gap-2">
-                        <select x-model="newItemId"
-                            class="flex-1 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50">
-                            <option value="">Selecione um produto...</option>
-                            <template x-for="p in primaryProducts" :key="p.id">
-                                <option :value="p.id" x-text="p.name + ' (' + p.unit + ')'"></option>
-                            </template>
-                        </select>
-                        <input type="number" x-model="newItemQty" min="0.1" step="0.1"
-                            class="w-20 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50"
-                            placeholder="Qtd">
-                        <button type="button" @click="addToComposition()"
-                            class="p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-colors">
+                        <h4
+                            class="text-lg font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2 pb-2 border-b border-white/5">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4"></path>
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
                             </svg>
-                        </button>
-                    </div>
+                            Composição do Produto
+                        </h4>
 
-                    <div class="space-y-2 max-h-40 overflow-y-auto">
-                        <template x-for="(item, index) in composition" :key="index">
-                            <div
-                                class="flex justify-between items-center bg-dark/30 p-2 rounded-lg border border-white/5">
-                                <span class="text-sm text-zinc-300">
-                                    <span class="font-bold text-white" x-text="item.quantity"></span>
-                                    <span x-text="item.unit"></span> x
-                                    <span x-text="item.name"></span>
-                                </span>
-                                <button type="button" @click="removeFromComposition(index)"
-                                    class="text-zinc-500 hover:text-red-400 transition-colors">
+                        <div class="flex gap-2">
+                            <div class="flex-1 relative">
+                                <select x-model="newItemId"
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 appearance-none">
+                                    <option value="">Selecione um componente...</option>
+                                    <template x-for="p in primaryProducts" :key="p.id">
+                                        <option :value="p.id" x-text="p.name + ' (' + p.unit + ')'"></option>
+                                    </template>
+                                </select>
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-white">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
+                                            d="M19 9l-7 7-7-7"></path>
                                     </svg>
-                                </button>
+                                </div>
                             </div>
-                        </template>
-                        <div x-show="composition.length === 0" class="text-center py-2 text-xs text-zinc-500 italic">
-                            Nenhum item adicionado.
+                            <input type="number" x-model="newItemQty" min="0.1" step="0.1"
+                                class="w-24 bg-dark/50 border border-white/10 rounded-lg px-3 py-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 text-center"
+                                placeholder="Qtd">
+                            <button type="button" @click="addToComposition()" :disabled="!newItemId"
+                                class="p-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors shadow-lg shadow-indigo-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar min-h-[200px]">
+                            <template x-for="(item, index) in composition" :key="index">
+                                <div
+                                    class="flex justify-between items-center bg-dark/30 hover:bg-dark/50 p-3 rounded-lg border border-white/5 transition-colors group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs"
+                                            x-text="index + 1"></div>
+                                        <div class="flex flex-col">
+                                            <span class="text-white font-medium" x-text="item.name"></span>
+                                            <span class="text-xs text-zinc-400">
+                                                <span class="text-indigo-300 font-bold" x-text="item.quantity"></span>
+                                                <span x-text="item.unit"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button type="button" @click="removeFromComposition(index)"
+                                        class="text-zinc-600 hover:text-red-400 transition-colors p-1 rounded-md hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus:opacity-100">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                            <div x-show="composition.length === 0"
+                                class="h-full flex flex-col items-center justify-center text-zinc-600 italic gap-2">
+                                <svg class="w-8 h-8 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+                                <span>Nenhum componente adicionado.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-4">
+                <div class="pt-6 border-t border-white/5 flex justify-end">
                     <button type="submit"
-                        class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                        class="py-3 px-8 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
                         Salvar Produto
                     </button>
                 </div>
@@ -419,7 +472,7 @@
     <div id="editProductModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div
-            class="bg-surface border border-white/10 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            class="bg-surface border border-white/10 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden transform transition-all">
             <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
                 <h3 class="text-xl font-bold text-white">Editar Produto</h3>
                 <button onclick="closeEditModal()"
@@ -431,106 +484,116 @@
                 </button>
             </div>
             <form id="editProductForm" method="POST" class="p-6 space-y-5">
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição Reduzida</label>
-                    <input type="text" name="name" id="edit-name" required
-                        class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
-                </div>
+                <div id="edit-form-grid" class="space-y-5">
+                    <!-- Esquerda: Dados Básicos -->
+                    <div class="space-y-5">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
+                                Reduzida</label>
+                            <input type="text" name="name" id="edit-name" required
+                                class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                        </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição Completa</label>
-                    <textarea name="description" id="edit-description" rows="2"
-                        class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"></textarea>
-                </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
+                                Completa</label>
+                            <textarea name="description" id="edit-description" rows="2"
+                                class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"></textarea>
+                        </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
-                        <select name="category_id" id="edit-category_id" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                            <option value="">Selecione...</option>
-                            {% for cat in categories %}
-                            <option value="{{ cat.id }}">{{ cat.name }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
+                                <select name="category_id" id="edit-category_id" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    <option value="">Selecione...</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
+                                <select name="unit" id="edit-unit" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    <option value="Und">Und</option>
+                                    <option value="Metro">Metro</option>
+                                    <option value="KG">KG</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <input type="number" step="0.01" name="current_stock" id="edit-current_stock" disabled
+                                    class="w-full bg-dark/20 border border-white/5 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed">
+                                <p class="text-[10px] text-zinc-500 italic">* Use "Movimentações" para ajustar.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-6 py-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" name="is_composite" id="edit-is_composite" value="true"
+                                    class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
+                                <span
+                                    class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Composto</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" name="is_primary" id="edit-is_primary" value="true"
+                                    class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
+                                <span
+                                    class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Primário</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
-                        <select name="unit" id="edit-unit" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                            <option value="Und">Und</option>
-                            <option value="Metro">Metro</option>
-                            <option value="KG">KG</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <input type="number" step="0.01" name="current_stock" id="edit-current_stock" disabled
-                            class="w-full bg-dark/20 border border-white/5 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed">
-                        <p class="text-[10px] text-zinc-500 italic">* Use "Movimentações" para ajustar.</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-6 py-2">
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="checkbox" name="is_composite" id="edit-is_composite" value="true"
-                            class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
-                        <span
-                            class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Composto</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                        <input type="checkbox" name="is_primary" id="edit-is_primary" value="true"
-                            class="w-5 h-5 rounded-md border-white/10 bg-dark/50 text-indigo-600 focus:ring-indigo-500 transition-all">
-                        <span
-                            class="text-xs font-bold text-zinc-400 group-hover:text-white uppercase tracking-wider">Primário</span>
-                    </label>
-                </div>
-
-                <!-- Composition Edit Section (Vanilla JS) -->
-                <div id="edit-composition-wrapper"
-                    class="hidden bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4">
-                    <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                        Composição do Produto
-                    </h4>
-
-                    <input type="hidden" name="composition_data" id="edit-composition-input">
-
-                    <div class="flex gap-2">
-                        <select id="edit-comp-select"
-                            class="flex-1 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50">
-                            <option value="">Selecione um produto...</option>
-                            {% for p in products %}
-                            {% if p.is_primary %}
-                            <option value="{{ p.id }}" data-name="{{ p.name }}" data-unit="{{ p.unit }}">{{ p.name }}
-                                ({{ p.unit }})</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        <input type="number" id="edit-comp-qty" min="0.1" step="0.1" value="1"
-                            class="w-20 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50"
-                            placeholder="Qtd">
-                        <button type="button" onclick="addToEditComposition()"
-                            class="p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Composition Edit Section (Vanilla JS) -->
+                    <div id="edit-composition-wrapper"
+                        class="hidden bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-6 space-y-6 flex flex-col h-full">
+                        <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4"></path>
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
                             </svg>
-                        </button>
-                    </div>
+                            Composição do Produto
+                        </h4>
 
-                    <div id="edit-composition-list" class="space-y-2 max-h-40 overflow-y-auto">
-                        <!-- Items will be injected here -->
-                    </div>
-                </div>
+                        <input type="hidden" name="composition_data" id="edit-composition-input">
 
-                <div class="pt-4">
+                        <div class="flex gap-2">
+                            <select id="edit-comp-select"
+                                class="flex-1 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50">
+                                <option value="">Selecione um produto...</option>
+                                {% for p in products %}
+                                {% if p.is_primary %}
+                                <option value="{{ p.id }}" data-name="{{ p.name }}" data-unit="{{ p.unit }}">{{
+                                    p.name
+                                    }}
+                                    ({{ p.unit }})</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="number" id="edit-comp-qty" min="0.1" step="0.1" value="1"
+                                class="w-20 bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                placeholder="Qtd">
+                            <button type="button" onclick="addToEditComposition()"
+                                class="p-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="edit-composition-list" class="space-y-2 max-h-40 overflow-y-auto">
+                            <!-- Items will be injected here -->
+                        </div>
+                    </div>
+                </div> <!-- Close edit-form-grid -->
+
+                <div class="pt-6 border-t border-white/5 flex justify-end">
                     <button type="submit"
                         class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all">
                         Salvar Alterações
@@ -688,10 +751,18 @@
         // Toggle visibility based on checkbox
         const isCompositeObj = document.getElementById('edit-is_composite');
         const wrapper = document.getElementById('edit-composition-wrapper');
+        const gridContainer = document.getElementById('edit-form-grid');
+
         if (isCompositeObj.checked) {
             wrapper.classList.remove('hidden');
+            // Enable Grid Mode
+            gridContainer.classList.remove('space-y-5');
+            gridContainer.classList.add('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-8');
         } else {
             wrapper.classList.add('hidden');
+            // Disable Grid Mode (Standard vertical stack)
+            gridContainer.classList.add('space-y-5');
+            gridContainer.classList.remove('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-8');
         }
     }
 
