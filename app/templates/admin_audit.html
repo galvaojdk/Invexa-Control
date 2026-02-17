@@ -4,88 +4,82 @@
 {% block header_title %}Registro de Auditoria{% endblock %}
 
 {% block content %}
-<div class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-    <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-        <div>
-            <h3 class="text-xl font-bold text-white">Histórico do Sistema</h3>
-            <p class="text-sm text-slate-400 mt-1">Acompanhe todas as ações realizadas pelos usuários.</p>
+<div class="flex flex-col gap-6">
+    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                    </path>
+                </svg>
+                Log de Auditoria
+            </h3>
         </div>
-        <div class="flex gap-2">
-            <span
-                class="px-3 py-1 bg-blue-500/10 text-blue-400 text-xs font-bold rounded-full border border-blue-500/20">Apenas
-                Admin</span>
-        </div>
-    </div>
-
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-slate-900/80">
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data/Hora</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Usuário</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ação</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Recurso</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Descrição</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800">
-                {% for log in logs %}
-                <tr class="hover:bg-slate-800/40 transition-all duration-200">
-                    <td class="px-6 py-4 text-sm font-mono text-slate-400">
-                        {{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white uppercase">
-                                {{ log.user.full_name[0] if log.user.full_name else 'U' }}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-zinc-950/30 border-b border-white/5">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest w-32">
+                            Data/Hora</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                            USUÁRIO</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                            Ação</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                            RECURSO</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for log in audit_logs %}
+                    <tr class="hover:bg-white/5 transition-colors group">
+                        <td class="px-6 py-4 text-xs text-zinc-400 font-mono">{{ log.timestamp.strftime('%d/%m/%Y
+                            %H:%M') }}</td>
+                        <td
+                            class="px-6 py-4 text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+                            {{ log.user.full_name or log.user.email }}</td>
+                        <td class="px-6 py-4 text-center">
+                            {% if log.action == 'CREATE' %}
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">CRIAR</span>
+                            {% elif log.action == 'UPDATE' %}
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wide">EDITAR</span>
+                            {% elif log.action == 'DELETE' %}
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-wide">EXCLUIR</span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 uppercase tracking-wide">{{
+                                log.action }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-xs font-mono text-zinc-400">{{ log.resource_type }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors max-w-xs truncate"
+                            title="{{ log.details }}">
+                            {{ log.details }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-zinc-500 text-sm italic">
+                            <div class="flex flex-col items-center gap-2">
+                                <svg class="w-12 h-12 text-zinc-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                <span>Nenhum registro de auditoria encontrado.</span>
                             </div>
-                            <span class="text-sm text-white font-medium">{{ log.user.full_name or log.user.email
-                                }}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        {% if 'CREATE' in log.action or 'ENTRADA' in log.action %}
-                        <span
-                            class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/20 uppercase">{{
-                            log.action }}</span>
-                        {% elif 'DELETE' in log.action or 'SAIDA' in log.action %}
-                        <span
-                            class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded border border-red-500/20 uppercase">{{
-                            log.action }}</span>
-                        {% else %}
-                        <span
-                            class="px-2 py-1 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded border border-blue-500/20 uppercase">{{
-                            log.action }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="text-xs text-slate-300 font-mono bg-slate-800 px-1.5 py-0.5 rounded">{{
-                            log.resource_type }}</span>
-                        {% if log.resource_id %}
-                        <span class="text-[10px] text-slate-500 ml-1">#{{ log.resource_id }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-300">
-                        {{ log.description }}
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm italic">
-                        <div class="flex flex-col items-center gap-2">
-                            <svg class="w-12 h-12 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
-                            <span>Nenhum registro de auditoria encontrado.</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -7,14 +7,14 @@
 <div class="flex flex-col gap-8">
     <!-- Report Selection -->
     <div
-        class="flex flex-col md:flex-row gap-4 justify-between items-center bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
+        class="flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl">
         <div>
-            <h3 class="text-lg font-bold text-white">Selecione o Relatório</h3>
-            <p class="text-sm text-slate-400">Escolha abaixo qual relatório deseja visualizar.</p>
+            <h3 class="text-lg font-bold text-white tracking-tight">Selecione o Relatório</h3>
+            <p class="text-sm text-zinc-400">Escolha abaixo qual relatório deseja visualizar.</p>
         </div>
         <div class="flex gap-4">
             <a href="?report_type=stock"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20{% else %}bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white{% endif %}">
+                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
@@ -23,7 +23,7 @@
                 Posição de Estoque
             </a>
             <a href="?report_type=outsourced"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20{% else %}bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white{% endif %}">
+                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
@@ -32,7 +32,7 @@
                 Saídas por Terceirizado
             </a>
             <a href="?report_type=movements_history"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'movements_history' %}bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20{% else %}bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white{% endif %}">
+                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'movements_history' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -44,27 +44,27 @@
 
     <!-- Date Filters -->
     <div
-        class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+        class="bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
         <form action="" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
             <input type="hidden" name="report_type" value="{{ report_type }}">
 
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <label class="text-sm font-bold text-slate-400">De:</label>
+                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">De:</label>
                 <input type="date" name="start_date" value="{{ request.query_params.get('start_date', '') }}"
-                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
             </div>
 
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <label class="text-sm font-bold text-slate-400">Até:</label>
+                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Até:</label>
                 <input type="date" name="end_date" value="{{ request.query_params.get('end_date', '') }}"
-                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
             </div>
 
             <!-- Category Filter -->
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <select name="category_id"
-                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
-                    <option value="">Todas Categorias</option>
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
+                    <option value="" class="text-zinc-500">Todas Categorias</option>
                     {% for c in all_categories %}
                     <option value="{{ c.id }}" {% if category_id and category_id==c.id %}selected{% endif %}>{{ c.name
                         }}</option>
@@ -75,8 +75,8 @@
             <!-- Product Filter -->
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <select name="product_id"
-                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
-                    <option value="">Todos Produtos</option>
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
+                    <option value="" class="text-zinc-500">Todos Produtos</option>
                     {% for p in all_products %}
                     <option value="{{ p.id }}" {% if product_id and product_id==p.id %}selected{% endif %}>{{ p.name }}
                     </option>
@@ -88,8 +88,8 @@
             {% if report_type == 'outsourced' %}
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <select name="worker_id"
-                    class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-blue-500 transition-all w-full md:w-auto appearance-none">
-                    <option value="">Todos Terceirizados</option>
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
+                    <option value="" class="text-zinc-500">Todos Terceirizados</option>
                     {% for w in all_workers %}
                     <option value="{{ w.id }}" {% if worker_id and worker_id==w.id %}selected{% endif %}>{{ w.name }}
                     </option>
@@ -98,9 +98,9 @@
             </div>
             {% endif %}
 
-            <div class="flex items-center gap-2 w-full md:w-auto">
+            <div class="flex items-center gap-2 w-full md:w-auto ml-auto">
                 <button type="submit"
-                    class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2">
+                    class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
@@ -111,7 +111,7 @@
 
                 {% if request.query_params.get('start_date') or request.query_params.get('end_date') %}
                 <a href="?report_type={{ report_type }}"
-                    class="px-4 py-2 text-slate-400 hover:text-white text-sm font-bold transition-colors border border-slate-700 rounded-lg hover:bg-slate-800">
+                    class="px-4 py-2.5 text-zinc-400 hover:text-white text-sm font-bold transition-all border border-white/10 rounded-xl hover:bg-white/5">
                     Limpar
                 </a>
                 {% endif %}
@@ -121,16 +121,17 @@
 
     {% if report_type == 'stock' %}
     <!-- Stock Position Table -->
-    <div id="report-content" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+    <div id="report-content"
+        class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950/30">
             <div>
-                <h3 class="text-xl font-bold text-white font-sans">Posição de Estoque Atual</h3>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
+                <h3 class="text-xl font-bold text-white tracking-tight">Posição de Estoque Atual</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
                         class="gen-date"></span></p>
             </div>
             <div class="flex gap-3">
                 <button onclick="window.print()"
-                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-2">
+                    class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
@@ -139,7 +140,7 @@
                     Imprimir / PDF
                 </button>
                 <a href="/inventory/export"
-                    class="px-4 py-2 bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-400 rounded-xl text-xs font-bold border border-emerald-500/20 transition-all flex items-center gap-2">
+                    class="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-xs font-bold border border-emerald-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
@@ -152,26 +153,27 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-900/80">
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                    <tr class="bg-zinc-950/30 border-b border-white/5">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Categoria
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Categoria
                         </th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Atual</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800">
+                <tbody class="divide-y divide-white/5">
                     {% for p in products %}
-                    <tr class="hover:bg-slate-800/40 transition-all duration-200">
+                    <tr class="hover:bg-white/5 transition-all duration-200 group">
                         <td class="px-6 py-4">
                             <div class="flex flex-col">
-                                <span class="text-sm font-bold text-white">{{ p.name }}</span>
-                                <span class="text-[10px] font-mono text-slate-500">{{ p.sku }}</span>
+                                <span
+                                    class="text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">{{
+                                    p.name }}</span>
+                                <span class="text-[10px] font-mono text-zinc-500">{{ p.sku }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-slate-300">{{ p.category.name if p.category else 'Sem
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ p.category.name if p.category else 'Sem
                             Categoria' }}</td>
                         <td class="px-6 py-4 text-sm font-mono text-center font-bold text-emerald-400">
                             {{ p.current_stock }} {{ p.unit }}
@@ -184,16 +186,17 @@
     </div>
     {% elif report_type == 'outsourced' %}
     <!-- Outsourced Shipments Table -->
-    <div id="report-content" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+    <div id="report-content"
+        class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
             <div>
-                <h3 class="text-xl font-bold text-white font-sans">Relatório de Saídas por Terceirizado</h3>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
+                <h3 class="text-xl font-bold text-white tracking-tight">Relatório de Saídas por Terceirizado</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
                         class="gen-date"></span></p>
             </div>
             <div class="flex gap-3">
                 <button onclick="window.print()"
-                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-2">
+                    class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
@@ -206,43 +209,40 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-900/80">
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Prestador
+                    <tr class="bg-zinc-900/30 border-b border-white/5">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Prestador
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
                         </th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Qtd. Enviada</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Qtd. Retornada</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Saldo (Pendente)</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
                             Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800">
+                <tbody class="divide-y divide-white/5">
                     {% for row in report_data %}
-                    <tr class="hover:bg-slate-800/40 transition-all duration-200">
-                        <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ row.date.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-slate-200">{{ row.worker }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-300">{{ row.product }}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-blue-400">{{ row.quantity }}
+                    <tr class="hover:bg-white/5 transition-all duration-200 group">
+                        <td class="px-6 py-4 text-sm font-mono text-zinc-400">{{ row.date.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-zinc-200">{{ row.worker }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.product }}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-indigo-400">{{ row.quantity }}
                         </td>
                         <td class="px-6 py-4 text-sm font-mono text-center text-emerald-400">{{ row.returned }}</td>
                         <td class="px-6 py-4 text-sm font-mono text-center">
                             {% if row.balance > 0 %}
                             <span class="text-amber-400 font-bold">{{ row.balance }}</span>
                             {% else %}
-                            <span class="text-slate-600 font-bold">0</span>
+                            <span class="text-zinc-600 font-bold">0</span>
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border 
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider
                                     {% if row.status == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20
                                     {% elif row.status == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20
                                     {% elif row.status == 'finalizado' %}bg-emerald-500/10 text-emerald-500 border-emerald-500/20
@@ -254,7 +254,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-500 text-sm italic">Nenhum registro
+                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum registro
                             encontrado.</td>
                     </tr>
                     {% endfor %}
@@ -264,19 +264,20 @@
     </div>
     {% elif report_type == 'movements_history' %}
     <!-- Movements History Table -->
-    <div id="report-content" class="bg-[#0f172a] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+    <div id="report-content"
+        class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
             <div>
-                <h3 class="text-xl font-bold text-white font-sans">Histórico Geral de Movimentações</h3>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
+                <h3 class="text-xl font-bold text-white tracking-tight">Histórico Geral de Movimentações</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
                         class="gen-date"></span></p>
             </div>
             <div class="flex gap-3">
                 <button onclick="window.print()"
-                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-2">
+                    class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
                         </path>
                     </svg>
                     Imprimir / PDF
@@ -286,45 +287,45 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-900/80">
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data/Hora
+                    <tr class="bg-zinc-900/30 border-b border-white/5">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data/Hora
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Produto
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Tipo</th>
-                        <th
-                            class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Tipo</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Quantidade</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Setor</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Motivo</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Usuário
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Setor</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Motivo</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Usuário
                         </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800">
+                <tbody class="divide-y divide-white/5">
                     {% for row in report_data %}
-                    <tr class="hover:bg-slate-800/40 transition-all duration-200">
-                        <td class="px-6 py-4 text-sm font-mono text-slate-400">{{ row.date.strftime('%d/%m/%Y %H:%M') }}
+                    <tr class="hover:bg-white/5 transition-all duration-200 group">
+                        <td class="px-6 py-4 text-sm font-mono text-zinc-400">{{ row.date.strftime('%d/%m/%Y %H:%M') }}
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-white">{{ row.product }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">
+                            {{ row.product }}</td>
                         <td class="px-6 py-4">
                             {% if row.type == 'entrada' %}
                             <span
-                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">ENTRADA</span>
+                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 uppercase tracking-wider">ENTRADA</span>
                             {% else %}
                             <span
-                                class="px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20">SAÍDA</span>
+                                class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider">SAÍDA</span>
                             {% endif %}
                         </td>
-                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-slate-200">{{ row.quantity }}
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-zinc-200">{{ row.quantity }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-slate-400">{{ row.sector }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-400">{{ row.reason }}</td>
-                        <td class="px-6 py-4 text-sm text-slate-500">{{ row.user }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.sector }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.reason }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-500">{{ row.user }}</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-500 text-sm italic">Nenhum registro
+                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum registro
                             encontrado.</td>
                     </tr>
                     {% endfor %}
@@ -362,7 +363,7 @@
         button,
         a,
         .grid,
-        .bg-slate-800\/40,
+        .bg-surface\/30,
         .shadow-xl,
         .shadow-2xl,
         .custom-scrollbar {
@@ -389,7 +390,7 @@
         }
 
         /* 5. Show ONLY the Stock Table Section with specific ID */
-        #stock-position-report {
+        #report-content {
             display: block !important;
             visibility: visible !important;
             width: 100% !important;
@@ -425,9 +426,9 @@
 
         /* Ensure texts are visible and black */
         .text-white,
-        .text-slate-300,
-        .text-slate-400,
-        .text-slate-500,
+        .text-zinc-300,
+        .text-zinc-400,
+        .text-zinc-500,
         .text-emerald-400,
         .text-red-400,
         .font-mono {
