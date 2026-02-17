@@ -111,14 +111,14 @@ async def reports_view(
             if s.worker_id not in aggregated:
                 aggregated[s.worker_id] = {
                     "name": s.worker.name,
-                    "items": []
+                    "worker_items": []
                 }
             
             # Check if product already exists for this worker to merge (optional, but shipments are usually distinct records)
             # User might want to see individual shipments or total per product. 
             # Usually "what he has" implies total per product. Let's aggregate per product per worker.
             
-            existing_item = next((i for i in aggregated[s.worker_id]["items"] if i["product_id"] == s.product_id), None)
+            existing_item = next((i for i in aggregated[s.worker_id]["worker_items"] if i["product_id"] == s.product_id), None)
             
             balance = s.quantity - s.returned_quantity
             
@@ -128,7 +128,7 @@ async def reports_view(
                 existing_item["balance"] += balance
                 # Keep checking latest date?
             else:
-                aggregated[s.worker_id]["items"].append({
+                aggregated[s.worker_id]["worker_items"].append({
                     "product_id": s.product_id,
                     "product": s.product.name,
                     "unit": s.product.unit,
