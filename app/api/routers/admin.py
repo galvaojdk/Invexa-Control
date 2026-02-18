@@ -38,6 +38,25 @@ async def toggle_user_premium(
     db.commit()
     return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
 
+@router.post("/users/{user_id}/toggle-admin")
+async def toggle_user_admin(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    if user_id == admin.id:
+        # Prevent self-demotion to avoid lockout
+        # Ideally flash a message, but for now just redirect
+        return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user.is_admin = not user.is_admin
+    db.commit()
+    return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
 @router.get("/audit")
 async def admin_audit_log(
     request: Request,

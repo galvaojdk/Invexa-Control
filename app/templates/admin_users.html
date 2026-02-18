@@ -67,6 +67,18 @@
                                     {% if u.is_premium %}Remover Premium{% else %}Tornar Premium{% endif %}
                                 </button>
                             </form>
+
+                            <form action="/admin/users/{{ u.id }}/toggle-admin" method="POST" class="inline ml-2">
+                                <button type="submit" class="text-xs font-bold transition-all px-3 py-1.5 rounded-lg border uppercase tracking-wider
+                                    {% if u.is_admin %}
+                                    text-red-400 border-red-400/20 hover:bg-red-400/10
+                                    {% else %}
+                                    text-indigo-400 border-indigo-400/20 hover:bg-indigo-400/10
+                                    {% endif %}" {% if u.id==user.id %}disabled opacity-50
+                                    title="Você não pode remover seu próprio acesso" {% endif %}>
+                                    {% if u.is_admin %}Remover Admin{% else %}Tornar Admin{% endif %}
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
