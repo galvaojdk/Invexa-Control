@@ -134,25 +134,24 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Consumption by Sector -->
+    <!-- Consumption by Worker -->
     <div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg backdrop-blur-xl">
         <div class="p-5 border-b border-white/5 bg-surface/30">
             <h4 class="text-sm font-bold text-white flex items-center gap-2">
                 <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
                 </svg>
-                Consumo por Setor (30 dias)
+                Consumo por Terceirizado (30 dias)
             </h4>
         </div>
         <div class="p-6">
             <div class="space-y-4">
-                {% for sector, quantity in sector_consumption.items() %}
+                {% for worker_name, quantity in worker_consumption.items() %}
                 <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between text-xs font-medium">
-                        <span class="text-zinc-400">{{ sector }}</span>
+                        <span class="text-zinc-400">{{ worker_name }}</span>
                         <span class="text-white font-mono">{{ quantity }} un.</span>
                     </div>
                     <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
@@ -168,22 +167,41 @@
         </div>
     </div>
 
-    <!-- Quick Inventory Insights -->
-    <div
-        class="bg-surface/50 border border-white/5 rounded-2xl p-6 shadow-lg backdrop-blur-xl flex flex-col justify-center">
-        <h4 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Insights Rápidos
-        </h4>
-        <div class="space-y-6">
-            <div class="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Giro de Estoque</p>
-                <p class="text-xl font-bold text-white">Ativo</p>
-                <p class="text-[10px] text-zinc-500 mt-1">Baseado nos últimos 30 dias de movimentação.</p>
+    <!-- Top Production -->
+    <div class="bg-surface/50 border border-white/5 rounded-2xl p-6 shadow-lg backdrop-blur-xl flex flex-col">
+        <div class="p-0 border-b border-white/5 pb-5 mb-5">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Top Produção (30 dias)
+            </h4>
+        </div>
+
+        <div class="space-y-4">
+            {% for prod_name, quantity in top_production.items() %}
+            <div class="flex flex-col gap-1.5">
+                <div class="flex justify-between text-xs font-medium">
+                    <span class="text-zinc-400">{{ prod_name }}</span>
+                    <span class="text-white font-mono">{{ quantity }} un.</span>
+                </div>
+                <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                    {% set percent = (quantity / (total_produced_qty if total_produced_qty > 0 else 1) * 100)|round|int
+                    %}
+                    <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full"
+                        style="width: {{ [percent, 100]|min }}%"></div>
+                </div>
             </div>
+            {% else %}
+            <div class="flex flex-col items-center justify-center py-6 text-zinc-500 gap-2">
+                <svg class="w-8 h-8 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+                <p class="text-xs italic">Nenhuma produção registrada.</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

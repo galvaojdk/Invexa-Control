@@ -145,16 +145,39 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         recent_movements = db.query(Movement).filter(Movement.timestamp >= thirty_days_ago).all()
         recent_count = len(recent_movements)
         
-        sector_consumption_raw = {}
+        # Worker Consumption (Top 5 in last 30 days)
+        # Based on Shipments created (sent materials)
+        recent_shipments_in = db.query(Shipment).filter(
+            Shipment.created_at >= thirty_days_ago
+        ).all()
+        
+        worker_consumption_raw = {}
         total_out_qty = 0
-        for m in recent_movements:
-            if m.type == MovementType.OUT:
-                sec = m.sector or "Não Definido"
-                sector_consumption_raw[sec] = sector_consumption_raw.get(sec, 0) + m.quantity
-                total_out_qty += m.quantity
-                
-        # Sort sector consumption by quantity desc
-        sector_consumption = dict(sorted(sector_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
+        
+        for s in recent_shipments_in:
+            worker_name = s.worker.name
+            worker_consumption_raw[worker_name] = worker_consumption_raw.get(worker_name, 0) + s.quantity
+            total_out_qty += s.quantity
+
+        # Sort by quantity desc
+        worker_consumption = dict(sorted(worker_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
+
+        # Top Produced Products (Top 5 in last 30 days)
+        # Based on Shipments updated (returned materials)
+        recent_shipments_out = db.query(Shipment).filter(
+            Shipment.updated_at >= thirty_days_ago,
+            Shipment.returned_quantity > 0
+        ).all()
+        
+        production_raw = {}
+        total_produced_qty = 0
+        
+        for s in recent_shipments_out:
+            prod_name = s.product.name
+            production_raw[prod_name] = production_raw.get(prod_name, 0) + s.returned_quantity
+            total_produced_qty += s.returned_quantity
+            
+        top_production = dict(sorted(production_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
         # Fetch all products ordered by name for quick actions/modals
         all_products = db.query(Product).order_by(Product.name).all()
@@ -179,9 +202,12 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "chart_exits": exits_data,
             "cat_labels": category_labels,
             "cat_counts": category_counts,
-            "sector_consumption": sector_consumption,
+            "cat_counts": category_counts,
+            "worker_consumption": worker_consumption,
+            "top_production": top_production,
             "recent_count": recent_count,
-            "total_out_qty": total_out_qty
+            "total_out_qty": total_out_qty,
+            "total_produced_qty": total_produced_qty
         })
     except Exception as e:
         logger.error(f"DASHBOARD ERROR: {str(e)}", exc_info=True)
@@ -197,7 +223,10 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "chart_exits": [],
             "cat_labels": [],
             "cat_counts": [],
-            "sector_consumption": {},
+            "sector_consumption": {}, # Keep empty for compatibility if template not updated yet
+            "worker_consumption": {}, 
+            "top_production": {},
             "recent_count": 0,
-            "total_out_qty": 0
+            "total_out_qty": 0,
+            "total_produced_qty": 0
         })
