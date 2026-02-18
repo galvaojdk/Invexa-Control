@@ -92,3 +92,18 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmClearLogs() {
+        if (confirm('ATENÇÃO: Tem certeza que deseja apagar TODOS os registros de auditoria?\n\nEsta ação é irreversível.')) {
+            // Create a form to submit POST request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/audit/clear';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}
