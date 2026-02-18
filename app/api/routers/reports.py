@@ -18,12 +18,21 @@ async def reports_view(
     report_type: str = "stock",
     start_date: str = None,
     end_date: str = None,
-    product_id: int = None,
-    category_id: int = None,
-    worker_id: int = None,
+    product_id: str = None,
+    category_id: str = None,
+    worker_id: str = None,
     user: User = Depends(login_required),
     db: Session = Depends(get_db)
 ):
+    # Sanitize Inputs (Handle empty strings from HTML forms)
+    if product_id == "": product_id = None
+    if category_id == "": category_id = None
+    if worker_id == "": worker_id = None
+    
+    if product_id: product_id = int(product_id)
+    if category_id: category_id = int(category_id)
+    if worker_id: worker_id = int(worker_id)
+
     # Fetch common data for filters
     all_products = db.query(Product).order_by(Product.name).all()
     # Need to import Category if not imported, or query it dynamically if model is available
