@@ -51,6 +51,20 @@ async def admin_audit_log(
         "audit_logs": logs
     })
 
+@router.post("/audit/clear")
+async def clear_audit_logs(
+    db: Session = Depends(get_db),
+    user: User = Depends(admin_required)
+):
+    try:
+        # Delete all records
+        db.query(AuditLog).delete()
+        db.commit()
+        return RedirectResponse(url="/admin/audit", status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao limpar logs: {str(e)}")
+
 from fastapi.responses import FileResponse
 import shutil
 import os
