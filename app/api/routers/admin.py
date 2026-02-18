@@ -78,15 +78,9 @@ async def backup_database(user: User = Depends(admin_required)):
     
     # 1. PostgreSQL Strategy
     if db_url.startswith("postgres"):
-        # Fix URL format for pg_dump if needed (SQLAlchemy uses postgresql://, libpq accepts it too)
-        # We need to ensure we don't expose password in logs if subprocess fails, so handle carefuly.
-        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_filename = f"backup_invexa_pg_{timestamp}.dump"
         backup_path = os.path.join("/tmp", backup_filename)
-        
-        # pg_dump command: -F c (custom format, compressed), -f (output file)
-        # Using environment variable for password to avoid CLI exposure is safer, 
-        # but passing the full URL to -d usually works and is simplest for Render.
         
         try:
             import subprocess
@@ -97,7 +91,6 @@ async def backup_database(user: User = Depends(admin_required)):
             if not pg_dump_path:
                 print("BACKUP ERROR: pg_dump not found in PATH.")
                 print(f"Current PATH: {os.environ.get('PATH')}")
-                # Fallback to common locations just in case
                 if os.path.exists("/usr/bin/pg_dump"):
                     pg_dump_path = "/usr/bin/pg_dump"
                 elif os.path.exists("/usr/local/bin/pg_dump"):
@@ -107,8 +100,6 @@ async def backup_database(user: User = Depends(admin_required)):
             
             print(f"Using pg_dump at: {pg_dump_path}")
 
-            # Using Popen to execute pg_dump
-            # Note: Render instances usually have pg_dump installed.
             process = subprocess.Popen(
                 [pg_dump_path, "-d", db_url, "-F", "c", "-b", "-v", "-f", backup_path],
                 stdout=subprocess.PIPE,
@@ -127,6 +118,51 @@ async def backup_database(user: User = Depends(admin_required)):
         except Exception as e:
             print(f"Backup Exception: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Erro interno de backup: {str(e)}")
+
+@router.get("/reset")
+async def admin_reset_view(
+    request: Request,
+    user: User = Depends(admin_required)
+):
+    return templates.TemplateResponse("admin_reset.html", {
+        "request": request,
+        "user": user
+    })
+
+@router.post("/reset")
+async def admin_reset_database(
+    db: Session = Depends(get_db),
+    user: User = Depends(admin_required)
+):
+    try:
+        from app.models.inventory import Product, Category, ProductComposition, Movement, AuditLog
+        from app.models.worker import Worker, Shipment
+        from app.models.worker_type import WorkerType
+        
+        # Delete in order of dependencies (reverse creation)
+        db.query(AuditLog).delete()
+        db.query(Movement).delete()
+        db.query(Shipment).delete()
+        db.query(ProductComposition).delete()
+        db.query(Product).delete()
+        db.query(Worker).delete()
+        db.query(WorkerType).delete()
+        db.query(Category).delete()
+        
+        # Log the reset action (Wait, we just deleted logs... create a new one)
+        db.add(AuditLog(
+            user_id=user.id,
+            action="SYSTEM_RESET",
+            resource_type="system",
+            resource_id=0,
+            description="Sistema resetado pelo administrador (Dados apagados)."
+        ))
+        
+        db.commit()
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao resetar banco: {str(e)}")
 
     # 2. SQLite Strategy (Local Development)
     elif db_url.startswith("sqlite"):

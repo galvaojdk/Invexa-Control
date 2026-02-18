@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Resetar Sistema - Invexa Control{% endblock %}
+{% block header_title %}ZONA DE PERIGO{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] gap-8 max-w-2xl mx-auto text-center">
+
+    <div
+        class="p-4 bg-red-500/10 rounded-full border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.2)] animate-pulse">
+        <svg class="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+            </path>
+        </svg>
+    </div>
+
+    <div class="space-y-4">
+        <h2 class="text-3xl font-bold text-white tracking-tight">CUIDADO: Ação Irreversível</h2>
+        <p class="text-zinc-400 text-lg">
+            Você está prestes a <span class="text-red-400 font-bold">APAGAR TODOS OS DADOS</span> do sistema.
+        </p>
+        <div class="bg-red-950/30 border border-red-500/20 rounded-xl p-6 text-left space-y-2">
+            <p class="text-red-200 font-semibold border-b border-red-500/20 pb-2 mb-2">Serão excluídos permanentemente:
+            </p>
+            <ul class="list-disc list-inside text-sm text-red-300 space-y-1 font-mono">
+                <li>Todos os Produtos e Categorias</li>
+                <li>Todo o Histórico de Movimentações</li>
+                <li>Cadastro de Terceirizados e Tipos</li>
+                <li>Todas as Remessas e Produções</li>
+                <li>Logs de Auditoria</li>
+            </ul>
+            <p class="text-emerald-400 text-sm mt-4 pt-2 border-t border-red-500/20 font-bold flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Seu usuário e senha serão preservados.
+            </p>
+        </div>
+    </div>
+
+    <div class="flex gap-4 w-full justify-center">
+        <a href="/admin/audit"
+            class="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold transition-all border border-white/10">
+            Cancelar e Voltar
+        </a>
+        <form method="POST" action="/admin/reset" onsubmit="return confirmReset(event)">
+            <button type="submit"
+                class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-600/20 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+                Sim, Resetar Sistema
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmReset(event) {
+        const confirmed = confirm("ATENÇÃO MÁXIMA!\n\nTem ABSOLUTA certeza que deseja apagar todo o banco de dados?\n\nIsso não pode ser desfeito.");
+        if (!confirmed) {
+            event.preventDefault();
+            return false;
+        }
+
+        const doubleCheck = prompt("Digite 'DELETAR' (em maiúsculo) para confirmar a exclusão total:");
+        if (doubleCheck !== "DELETAR") {
+            alert("Ação cancelada. O texto digitado não confere.");
+            event.preventDefault();
+            return false;
+        }
+
+        return true;
+    }
+</script>
+{% endblock %}
