@@ -4,7 +4,7 @@ services:
     runtime: docker
     plan: free
     region: ohio
-    startCommand: "bash migrate.sh && uvicorn app.main:app --host 0.0.0.0 --port 10000"
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
