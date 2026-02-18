@@ -163,10 +163,11 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         worker_consumption = dict(sorted(worker_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
         # Top Produced Products (Top 5 in last 30 days)
-        # Based on Shipments updated (returned materials)
-        recent_shipments_out = db.query(Shipment).filter(
+        # Based on Shipments updated (returned materials) - ONLY COMPOSITE PRODUCTS
+        recent_shipments_out = db.query(Shipment).join(Product).filter(
             Shipment.updated_at >= thirty_days_ago,
-            Shipment.returned_quantity > 0
+            Shipment.returned_quantity > 0,
+            Product.is_composite == True
         ).all()
         
         production_raw = {}
