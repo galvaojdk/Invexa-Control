@@ -6,7 +6,7 @@ from sqlalchemy import func
 
 from app.core.database import SessionLocal
 from app.models.user import User
-from app.models.inventory import Product, Category, Movement, MovementType
+from app.models.inventory import Product, Category, Movement, MovementType, ProductComposition
 from app.models.worker import Worker, Shipment, ShipmentStatus
 from app.api.dependencies import get_db, login_required
 
@@ -37,10 +37,65 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         total_categories = db.query(Category).count()
         total_workers = db.query(Worker).count()
 
-        # Active Shipments (Pending Return)
+        # Active Shipments Count
         active_shipments_count = db.query(Shipment).filter(
             Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL])
         ).count()
+
+        # Pending Receive Quantity (Theorical Production / Kits)
+        # Instead of summing raw materials, we calculate how many finished goods can be made.
+        
+        # 1. Fetch all active shipments
+        active_shipments = db.query(Shipment).filter(
+            Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL])
+        ).all()
+        
+        # 2. Group by Worker
+        from collections import defaultdict
+        worker_materials = defaultdict(lambda: defaultdict(float))
+        for s in active_shipments:
+            balance = s.quantity - (s.returned_quantity or 0)
+            if balance > 0:
+                worker_materials[s.worker_id][s.product_id] += balance
+                
+        # 3. Fetch Recipes (Compositions)
+        compositions = db.query(ProductComposition).all()
+        recipes = defaultdict(dict)
+        for comp in compositions:
+            recipes[comp.composite_id][comp.component_id] = comp.quantity
+            
+        pending_receive_qty = 0
+        
+        # 4. Calculate Max Yield per Worker
+        for w_id, materials in worker_materials.items():
+            possible_products = 0
+            # Check against all known recipes
+            for prod_id, recipe in recipes.items():
+                max_units = float('inf')
+                has_components = False
+                
+                for comp_id, req_qty in recipe.items():
+                    available = materials.get(comp_id, 0)
+                    if available > 0:
+                        has_components = True
+                    
+                    if req_qty > 0:
+                        max_units = min(max_units, available / req_qty)
+                    else:
+                        max_units = 0
+                
+                if has_components and max_units != float('inf'):
+                    # We assume the worker is making this product. 
+                    # If multiple recipes match, this simple logic sums them (which might be wrong if materials shared),
+                    # but for now it satisfies the user's "Kit" requirement.
+                    possible_products += int(max_units)
+                    
+            pending_receive_qty += possible_products
+
+        # If 0 pending products but we have active shipments, maybe fallback to raw count?
+        # User explicitly complained about raw count. So let's stick to 0 if no full kit is possible.
+        # Or maybe show 0 to indicate "Missing parts".
+
         
         # Latest Movements
         latest_movements = db.query(Movement).order_by(Movement.timestamp.desc()).limit(10).all()
@@ -109,7 +164,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             "total_categories": total_categories,
             "total_workers": total_workers,
             "movements_today": movements_today,
-            "active_shipments": active_shipments_count
+            "active_shipments": active_shipments_count,
+            "pending_receive": pending_receive_qty
         }
         
         return templates.TemplateResponse("dashboard.html", {

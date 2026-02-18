@@ -306,49 +306,104 @@
                     {{ worker_data.name }}
                 </h4>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-zinc-950/30 border-b border-white/5 print:bg-zinc-50 print:border-zinc-200">
-                            <th
-                                class="px-6 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
-                                Produto</th>
-                            <th
-                                class="px-6 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
-                                Total Enviado</th>
-                            <th
-                                class="px-6 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
-                                Total Devolvido</th>
-                            <th
-                                class="px-6 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
-                                Saldo (A Devolver)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5 print:divide-zinc-200">
-                        {% for item in worker_data.worker_items %}
-                        <tr class="hover:bg-white/5 transition-colors print:hover:bg-transparent">
-                            <td class="px-6 py-3 text-sm text-zinc-200 font-medium print:text-black">
-                                {{ item.product }} <span
-                                    class="text-xs text-zinc-500 font-normal print:text-zinc-600">({{ item.unit
-                                    }})</span>
-                            </td>
-                            <td class="px-6 py-3 text-sm font-mono text-center text-indigo-400 print:text-black">{{
-                                item.sent }}</td>
-                            <td class="px-6 py-3 text-sm font-mono text-center text-emerald-400 print:text-black">{{
-                                item.returned }}</td>
-                            <td
-                                class="px-6 py-3 text-sm font-mono text-center font-bold text-amber-400 print:text-black bg-amber-500/5 print:bg-transparent">
-                                {{ item.balance }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/5">
+                <!-- Tabela 1: Materiais em Poder (Saldo) -->
+                <div class="p-0">
+                    <div class="p-3 bg-white/5 border-b border-white/5">
+                        <h5 class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8 4-8-4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                            Materiais em Poder (Saldo)
+                        </h5>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-zinc-950/30 border-b border-white/5">
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase">Produto</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                        Enviado</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                        Devolvido</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                        Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                {% for item in worker_data.materials %}
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="px-4 py-2 text-xs text-zinc-200">{{ item.product }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.sent }}
+                                    </td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.returned
+                                        }}</td>
+                                    <td
+                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-amber-400 bg-amber-500/5">
+                                        {{ item.balance }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                        Nenhum material pendente.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tabela 2: Produção Entregue -->
+                <div class="p-0">
+                    <div class="p-3 bg-white/5 border-b border-white/5">
+                        <h5
+                            class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Produção Entregue (Acabados)
+                        </h5>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-zinc-950/30 border-b border-white/5">
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase">Produto Acabado
+                                    </th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">Qtd
+                                        Entregue</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-right">
+                                        Última Entrega</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                {% for item in worker_data.delivered %}
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="px-4 py-2 text-xs text-zinc-200">{{ item.product }}</td>
+                                    <td
+                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-emerald-400 bg-emerald-500/5">
+                                        {{ item.quantity }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-zinc-400 text-right">{{
+                                        item.last_date.strftime('%d/%m/%Y') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                        Nenhuma produção entregue no período.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
         {% else %}
         <div class="p-12 text-center text-zinc-500 italic bg-surface/30 rounded-2xl border border-white/5">
-            Nenhum saldo pendente encontrado para os filtros selecionados.
+            Nenhum registro encontrado para os filtros selecionados.
         </div>
         {% endfor %}
     </div>

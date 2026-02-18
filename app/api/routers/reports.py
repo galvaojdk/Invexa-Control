@@ -86,49 +86,79 @@ async def reports_view(
         context["report_data"] = report_data
 
     elif report_type == "worker_review":
-        # Review Report: Items currently with workers (Balance > 0)
-        query = db.query(Shipment).join(Worker).join(Product)\
+        # 1. Fetch Materials in Power (Pending Shipments)
+        shipments_query = db.query(Shipment).join(Worker).join(Product)\
             .filter(Shipment.status != ShipmentStatus.CANCELLED)\
             .filter(Shipment.quantity > Shipment.returned_quantity)\
             .order_by(Worker.name, Product.name)
             
         if filter_start:
-             query = query.filter(Shipment.created_at >= filter_start)
+             shipments_query = shipments_query.filter(Shipment.created_at >= filter_start)
         if filter_end:
-             query = query.filter(Shipment.created_at <= filter_end)
+             shipments_query = shipments_query.filter(Shipment.created_at <= filter_end)
         if worker_id:
-             query = query.filter(Shipment.worker_id == worker_id)
+             shipments_query = shipments_query.filter(Shipment.worker_id == worker_id)
         if product_id:
-             query = query.filter(Shipment.product_id == product_id)
+             shipments_query = shipments_query.filter(Shipment.product_id == product_id)
+        
+        pending_shipments = shipments_query.all()
+        
+        # 2. Fetch Production History (Delivered Finished Goods)
+        # Assuming Production Entries are movements of Type IN with specific reason or sector
+        # Ideally production creates a Movement IN with reason "Produção Recebida de {worker_name}"
+        # We can filter by reason string pattern if we don't have a structured link.
+        # This is Fragile but fits current implementation of production.py
+        
+        movements_query = db.query(Movement).join(Product)\
+            .filter(Movement.type == MovementType.IN)\
+            .filter(Movement.reason.like("Produção Recebida de%"))\
+            .order_by(Movement.timestamp.desc())
+
+        if filter_start:
+             movements_query = movements_query.filter(Movement.timestamp >= filter_start)
+        if filter_end:
+             movements_query = movements_query.filter(Movement.timestamp <= filter_end)
+        
+        # We need to filter by worker name extracted from reason string if filtering by worker_id?
+        # That's very hard with just SQL LIKE.
+        # Better approach: If worker_id is present, get worker name and filter by exact string.
+        # If no worker_id, we fetch all and group in python.
+        
+        if worker_id:
+            target_worker = db.query(Worker).get(worker_id)
+            if target_worker:
+                 movements_query = movements_query.filter(Movement.reason == f"Produção Recebida de {target_worker.name}")
+        
+        if product_id:
+             movements_query = movements_query.filter(Movement.product_id == product_id)
              
-        shipments = query.all()
+        production_movements = movements_query.all()
         
-        # Aggregate by Worker
-        # Structure: { worker_id: { name: str, items: [ { product, sent, returned, balance, date } ] } }
+        # 3. Aggregate Data by Worker
         aggregated = {}
-        
-        for s in shipments:
-            if s.worker_id not in aggregated:
-                aggregated[s.worker_id] = {
+
+        # Process Pending Materials
+        for s in pending_shipments:
+            w_id = s.worker_id
+            if w_id not in aggregated:
+                aggregated[w_id] = {
                     "name": s.worker.name,
-                    "worker_items": []
+                    "materials": [],
+                    "delivered": []
                 }
             
-            # Check if product already exists for this worker to merge (optional, but shipments are usually distinct records)
-            # User might want to see individual shipments or total per product. 
-            # Usually "what he has" implies total per product. Let's aggregate per product per worker.
-            
-            existing_item = next((i for i in aggregated[s.worker_id]["worker_items"] if i["product_id"] == s.product_id), None)
-            
+            # Aggregate by product for cleaner view
             balance = s.quantity - s.returned_quantity
             
-            if existing_item:
-                existing_item["sent"] += s.quantity
-                existing_item["returned"] += s.returned_quantity
-                existing_item["balance"] += balance
-                # Keep checking latest date?
+            # Helper to find if prod exists in materials list
+            existing = next((i for i in aggregated[w_id]["materials"] if i["product_id"] == s.product_id), None)
+            
+            if existing:
+                existing["sent"] += s.quantity
+                existing["returned"] += s.returned_quantity
+                existing["balance"] += balance
             else:
-                aggregated[s.worker_id]["worker_items"].append({
+                aggregated[w_id]["materials"].append({
                     "product_id": s.product_id,
                     "product": s.product.name,
                     "unit": s.product.unit,
@@ -136,9 +166,86 @@ async def reports_view(
                     "returned": s.returned_quantity,
                     "balance": balance
                 })
+
+        # Process Delivered Production
+        for m in production_movements:
+            # Extract worker name from reason string: "Produção Recebida de NomeDoWorker"
+            try:
+                # This assumes format is constant.
+                worker_name = m.reason.replace("Produção Recebida de ", "").strip()
+                
+                # We need a worker_id to key into 'aggregated'. 
+                # This is tricky because Movement doesn't link to Worker table, only User.
+                # We will key by Name if ID not found, but we started aggregated with ID.
+                # Let's switch aggregation key to Worker Name for simplicity in this mixed report.
+                
+                # BUT wait, the loop above used ID.
+                # Let's map Name -> ID? Or just use Name as key for everything?
+                # Using Name as key is safer here since Movements don't have worker_id.
+                pass
+            except:
+                continue
+
+        # RE-STRATEGY: Aggregate by Worker Name (String)
+        final_data = {}
         
-        # Convert to list for template
-        report_data = list(aggregated.values())
+        # Re-process Pending (Shipments have Worker relation, so we know name)
+        for s in pending_shipments:
+            w_name = s.worker.name
+            if w_name not in final_data:
+                final_data[w_name] = {"name": w_name, "materials": [], "delivered": []}
+            
+            balance = s.quantity - s.returned_quantity
+            existing = next((i for i in final_data[w_name]["materials"] if i["product_id"] == s.product_id), None)
+            
+            if existing:
+                existing["sent"] += s.quantity
+                existing["returned"] += s.returned_quantity
+                existing["balance"] += balance
+            else:
+                final_data[w_name]["materials"].append({
+                    "product_id": s.product_id,
+                    "product": s.product.name,
+                    "unit": s.product.unit,
+                    "sent": s.quantity,
+                    "returned": s.returned_quantity,
+                    "balance": balance
+                })
+                
+        # Process Production Movements
+        for m in production_movements:
+            if "Produção Recebida de " not in m.reason:
+                continue
+                
+            w_name = m.reason.replace("Produção Recebida de ", "").strip()
+            
+            # Filter if worker_id was passed (safety check if names match)
+            if worker_id:
+                target_worker = db.query(Worker).get(worker_id)
+                if target_worker and target_worker.name != w_name:
+                    continue
+
+            if w_name not in final_data:
+                 final_data[w_name] = {"name": w_name, "materials": [], "delivered": []}
+            
+            # Aggregate Delivered Items (Finished Goods)
+            existing = next((i for i in final_data[w_name]["delivered"] if i["product_id"] == m.product_id), None)
+             
+            if existing:
+                existing["quantity"] += m.quantity
+            else:
+                final_data[w_name]["delivered"].append({
+                    "product_id": m.product_id,
+                    "product": m.product.name,
+                    "unit": m.product.unit,
+                    "quantity": m.quantity,
+                    "last_date": m.timestamp
+                })
+
+        report_data = list(final_data.values())
+        # Sort by Name
+        report_data.sort(key=lambda x: x["name"])
+        
         context["report_data"] = report_data
         
     elif report_type == "movements_history":

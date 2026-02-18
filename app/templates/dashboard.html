@@ -8,7 +8,7 @@
 
 
 <!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
     <!-- Total Products -->
     <div
         class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
@@ -91,6 +91,26 @@
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Remessas Ativas</p>
             <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
+        </div>
+    </div>
+
+    <!-- Products To Receive -->
+    <div
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-amber-500/10 transition-all duration-300">
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+        </div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div
+                    class="p-2 bg-amber-500/10 rounded-xl text-amber-400 group-hover:scale-110 transition-transform duration-300 border border-amber-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">A Receber</p>
+            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.pending_receive }}</h3>
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
 @echo off
-set PYTHON_EXE="C:\Users\IAP9978\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\python.exe"
+set PYTHON_EXE=python
 echo ==========================================
 echo   Invexa Control - Inicializando Sistema
 echo ==========================================
@@ -21,11 +21,11 @@ echo.
 echo [3/3] Iniciando Servidor Web...
 echo ==========================================
 echo Acesse no seu navegador: http://localhost:8001
-echo Para outros na rede: http://10.85.1.186:8001
+echo (Acesso restrito a esta maquina)
 echo Pressione CTRL+C para parar o sistema.
 echo ==========================================
 echo.
 
-%PYTHON_EXE% -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+%PYTHON_EXE% -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
 
 pause

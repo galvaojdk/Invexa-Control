@@ -54,6 +54,8 @@ from app.api.routers import dashboard
 app.include_router(dashboard.router)
 from app.api.routers import shipments
 app.include_router(shipments.router)
+from app.api.routers import production
+app.include_router(production.router)
 
 @app.get("/")
 async def root():
