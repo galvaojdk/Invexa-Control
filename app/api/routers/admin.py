@@ -76,11 +76,27 @@ async def backup_database(user: User = Depends(admin_required)):
         
         try:
             import subprocess
+            import shutil
             
+            # Locate pg_dump explicitly
+            pg_dump_path = shutil.which("pg_dump")
+            if not pg_dump_path:
+                print("BACKUP ERROR: pg_dump not found in PATH.")
+                print(f"Current PATH: {os.environ.get('PATH')}")
+                # Fallback to common locations just in case
+                if os.path.exists("/usr/bin/pg_dump"):
+                    pg_dump_path = "/usr/bin/pg_dump"
+                elif os.path.exists("/usr/local/bin/pg_dump"):
+                    pg_dump_path = "/usr/local/bin/pg_dump"
+                else:
+                    raise HTTPException(status_code=500, detail="Ferramenta pg_dump não encontrada no servidor.")
+            
+            print(f"Using pg_dump at: {pg_dump_path}")
+
             # Using Popen to execute pg_dump
             # Note: Render instances usually have pg_dump installed.
             process = subprocess.Popen(
-                ["pg_dump", "-d", db_url, "-F", "c", "-b", "-v", "-f", backup_path],
+                [pg_dump_path, "-d", db_url, "-F", "c", "-b", "-v", "-f", backup_path],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
@@ -92,6 +108,8 @@ async def backup_database(user: User = Depends(admin_required)):
                 
             return FileResponse(path=backup_path, filename=backup_filename, media_type='application/octet-stream')
             
+        except HTTPException as he:
+            raise he
         except Exception as e:
             print(f"Backup Exception: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Erro interno de backup: {str(e)}")
