@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Backup & Restore - Invexa Control{% endblock %}
+{% block header_title %}Manutenção de Dados{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Backup Section -->
+    <div
+        class="bg-surface/50 border border-white/5 rounded-2xl p-8 backdrop-blur-xl shadow-lg relative overflow-hidden group">
+        <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+            <svg class="w-32 h-32 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+        </div>
+
+        <div class="relative z-10">
+            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <span class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><svg class="w-6 h-6" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg></span>
+                Gerar Backup
+            </h3>
+            <p class="text-zinc-400 mb-6 max-w-lg">
+                Baixe uma cópia completa de todos os dados do sistema (Produtos, Movimentações, Usuários, etc.) para
+                segurança.
+            </p>
+
+            <a href="/admin/backup/download"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-600/20">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Baixar Backup Agora
+            </a>
+        </div>
+    </div>
+
+    <!-- Restore Section -->
+    <div
+        class="bg-surface/50 border border-white/5 rounded-2xl p-8 backdrop-blur-xl shadow-lg relative overflow-hidden group">
+        <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+            <svg class="w-32 h-32 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m-4 4v12"></path>
+            </svg>
+        </div>
+
+        <div class="relative z-10">
+            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <span class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"><svg class="w-6 h-6" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                        </path>
+                    </svg></span>
+                Restaurar Backup
+            </h3>
+            <p class="text-zinc-400 mb-6 max-w-lg">
+                Recupere o sistema a partir de um arquivo de backup anterior.
+            </p>
+
+            <div
+                class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-6 text-sm text-amber-200 flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+                <div>
+                    <strong class="block mb-1 text-amber-400">Atenção: Ação Destrutiva</strong>
+                    Ao restaurar, <u>todos os dados atuais serão substituídos</u> pelos dados do arquivo. Certifique-se
+                    de que este é o arquivo correto.
+                </div>
+            </div>
+
+            <form action="/admin/backup/restore" method="POST" enctype="multipart/form-data"
+                class="flex flex-col sm:flex-row gap-4 items-end" onsubmit="return confirmRestore()">
+                <div class="w-full sm:w-auto flex-1">
+                    <label class="block text-xs font-medium text-zinc-500 uppercase mb-2">Arquivo de Backup (.dump ou
+                        .db)</label>
+                    <input type="file" name="file" accept=".dump,.db,.sql" required
+                        class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 transition-all cursor-pointer bg-zinc-900/50 rounded-xl border border-white/5">
+                </div>
+                <button type="submit"
+                    class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20 h-[42px]">
+                    Restaurar Dados
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function confirmRestore() {
+        return confirm("Tem certeza que deseja RESTAURAR o banco de dados?\n\nIsso apagará os dados atuais e os substituirá pelos do backup.\nRecomendamos fazer um backup do estado atual antes.");
+    }
+</script>
+{% endblock %}
