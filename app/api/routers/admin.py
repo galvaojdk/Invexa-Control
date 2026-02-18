@@ -48,7 +48,7 @@ async def admin_audit_log(
     return templates.TemplateResponse("admin_audit.html", {
         "request": request,
         "user": user,
-        "logs": logs
+        "audit_logs": logs
     })
 
 from fastapi.responses import FileResponse
