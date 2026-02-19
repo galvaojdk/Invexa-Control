@@ -7,7 +7,7 @@
 <div class="flex flex-col gap-8">
     <!-- Report Selection -->
     <div
-        class="flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl">
+        class="print:hidden flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl">
         <div>
             <h3 class="text-lg font-bold text-white tracking-tight">Selecione o Relatório</h3>
             <p class="text-sm text-zinc-400">Escolha abaixo qual relatório deseja visualizar.</p>
@@ -53,7 +53,7 @@
 
     <!-- Date Filters -->
     <div
-        class="bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
+        class="print:hidden bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
         <form action="" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
             <input type="hidden" name="report_type" value="{{ report_type }}">
 
@@ -130,18 +130,18 @@
     <!-- Stock Position Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950/30">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950/30 print:bg-transparent">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Posição de Estoque Atual</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
-                        class="gen-date"></span></p>
+                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Posição de Estoque Atual</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                    Gerado em: <span class="gen-date"></span></p>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3 print:hidden">
                 <button onclick="window.print()"
                     class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
                         </path>
                     </svg>
                     Imprimir / PDF
@@ -161,11 +161,16 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-zinc-950/30 border-b border-white/5">
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Produto
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Categoria
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Categoria
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
                             Atual</th>
                     </tr>
                 </thead>
@@ -175,14 +180,15 @@
                         <td class="px-6 py-4">
                             <div class="flex flex-col">
                                 <span
-                                    class="text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">{{
+                                    class="text-sm font-bold text-zinc-200 group-hover:text-white transition-colors print:text-black">{{
                                     p.name }}</span>
-                                <span class="text-[10px] font-mono text-zinc-500">{{ p.sku }}</span>
+                                <span class="text-[10px] font-mono text-zinc-500 print:text-zinc-600">{{ p.sku }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-zinc-400">{{ p.category.name if p.category else 'Sem
+                        <td class="px-6 py-4 text-sm text-zinc-400 print:text-black">{{ p.category.name if p.category
+                            else 'Sem
                             Categoria' }}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-emerald-400">
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-emerald-400 print:text-black">
                             {{ p.current_stock }} {{ p.unit }}
                         </td>
                     </tr>
@@ -195,13 +201,14 @@
     <!-- Outsourced Shipments Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:bg-transparent">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Relatório de Saídas por Terceirizado</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
-                        class="gen-date"></span></p>
+                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Relatório de Saídas por
+                    Terceirizado</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                    Gerado em: <span class="gen-date"></span></p>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3 print:hidden">
                 <button onclick="window.print()"
                     class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,43 +224,56 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-zinc-900/30 border-b border-white/5">
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Prestador
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Data</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Prestador
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Produto
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
                             Qtd. Enviada</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
                             Qtd. Retornada</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
                             Saldo (Pendente)</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right print:text-black">
                             Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for row in report_data %}
                     <tr class="hover:bg-white/5 transition-all duration-200 group">
-                        <td class="px-6 py-4 text-sm font-mono text-zinc-400">{{ row.date.strftime('%d/%m/%Y') }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-200">{{ row.worker }}</td>
-                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.product }}</td>
-                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-indigo-400">{{ row.quantity }}
+                        <td class="px-6 py-4 text-sm font-mono text-zinc-400 print:text-black">{{
+                            row.date.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-zinc-200 print:text-black">{{ row.worker }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400 print:text-black">{{ row.product }}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-indigo-400 print:text-black">
+                            {{ row.quantity }}
                         </td>
-                        <td class="px-6 py-4 text-sm font-mono text-center text-emerald-400">{{ row.returned }}</td>
+                        <td class="px-6 py-4 text-sm font-mono text-center text-emerald-400 print:text-black">{{
+                            row.returned }}</td>
                         <td class="px-6 py-4 text-sm font-mono text-center">
                             {% if row.balance > 0 %}
-                            <span class="text-amber-400 font-bold">{{ row.balance }}</span>
+                            <span class="text-amber-400 font-bold print:text-black">{{ row.balance }}</span>
                             {% else %}
-                            <span class="text-zinc-600 font-bold">0</span>
+                            <span class="text-zinc-600 font-bold print:text-black">0</span>
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-right">
                             <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold border uppercase tracking-wider
-                                    {% if row.status == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20
-                                    {% elif row.status == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20
-                                    {% elif row.status == 'finalizado' %}bg-emerald-500/10 text-emerald-500 border-emerald-500/20
-                                    {% elif row.status == 'cancelado' %}bg-red-500/10 text-red-500 border-red-500/20
+                                    {% if row.status == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20 print:border-black print:text-black
+                                    {% elif row.status == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20 print:border-black print:text-black
+                                    {% elif row.status == 'finalizado' %}bg-emerald-500/10 text-emerald-500 border-emerald-500/20 print:border-black print:text-black
+                                    {% elif row.status == 'cancelado' %}bg-red-500/10 text-red-500 border-red-500/20 print:border-black print:text-black
                                     {% endif %}">
                                 {{ row.status|upper }}
                             </span>
@@ -261,7 +281,8 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum registro
+                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic print:text-black">
+                            Nenhum registro
                             encontrado.</td>
                     </tr>
                     {% endfor %}
@@ -307,11 +328,13 @@
                 </h4>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/5">
+            <div
+                class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/5 print:block print:divide-y print:divide-zinc-200">
                 <!-- Tabela 1: Materiais em Poder (Saldo) -->
-                <div class="p-0">
-                    <div class="p-3 bg-white/5 border-b border-white/5">
-                        <h5 class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                <div class="p-0 print:border-b print:border-zinc-200">
+                    <div class="p-3 bg-white/5 border-b border-white/5 print:bg-white print:border-zinc-200">
+                        <h5
+                            class="text-xs font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2 print:text-black">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20 7l-8 4-8-4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -322,35 +345,46 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-zinc-950/30 border-b border-white/5">
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase">Produto</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                <tr
+                                    class="bg-zinc-950/30 border-b border-white/5 print:bg-zinc-100 print:border-zinc-300">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase print:text-black">
+                                        Produto</th>
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
                                         Data Envio</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
                                         Enviado</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
                                         Devolvido</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
                                         Saldo</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5">
+                            <tbody class="divide-y divide-white/5 print:divide-zinc-200">
                                 {% for item in worker_data.materials %}
                                 <tr class="hover:bg-white/5 transition-colors">
-                                    <td class="px-4 py-2 text-xs text-zinc-200">{{ item.product }}</td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{
+                                    <td class="px-4 py-2 text-xs text-zinc-200 print:text-black">{{ item.product }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                        {{
                                         item.last_sent_date.strftime('%d/%m/%Y') }}</td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.sent }}
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                        {{ item.sent }}
                                     </td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.returned
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                        {{ item.returned
                                         }}</td>
                                     <td
-                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-amber-400 bg-amber-500/5">
+                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-amber-400 bg-amber-500/5 print:text-black print:bg-transparent">
                                         {{ item.balance }}</td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="5" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                    <td colspan="5"
+                                        class="px-4 py-6 text-center text-[10px] text-zinc-500 italic print:text-black">
                                         Nenhum material pendente.</td>
                                 </tr>
                                 {% endfor %}
@@ -361,9 +395,9 @@
 
                 <!-- Tabela 2: Produção Entregue -->
                 <div class="p-0">
-                    <div class="p-3 bg-white/5 border-b border-white/5">
+                    <div class="p-3 bg-white/5 border-b border-white/5 print:bg-white print:border-zinc-200">
                         <h5
-                            class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                            class="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-2 print:text-black">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -374,33 +408,42 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-zinc-950/30 border-b border-white/5">
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase">Produto Acabado
+                                <tr
+                                    class="bg-zinc-950/30 border-b border-white/5 print:bg-zinc-100 print:border-zinc-300">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase print:text-black">
+                                        Produto Acabado
                                     </th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">Qtd
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
+                                        Qtd
                                         Entregue</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center print:text-black">
                                         Pendente (Estimado)</th>
-                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-right">
+                                    <th
+                                        class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-right print:text-black">
                                         Última Entrega</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5">
+                            <tbody class="divide-y divide-white/5 print:divide-zinc-200">
                                 {% for item in worker_data.delivered %}
                                 <tr class="hover:bg-white/5 transition-colors">
-                                    <td class="px-4 py-2 text-xs text-zinc-200">{{ item.product }}</td>
+                                    <td class="px-4 py-2 text-xs text-zinc-200 print:text-black">{{ item.product }}</td>
                                     <td
-                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-emerald-400 bg-emerald-500/5">
+                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-emerald-400 bg-emerald-500/5 print:text-black print:bg-transparent">
                                         {{ item.quantity }}</td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center font-bold text-zinc-500">
+                                    <td
+                                        class="px-4 py-2 text-xs font-mono text-center font-bold text-zinc-500 print:text-black">
                                         {{ item.potential }}
                                     </td>
-                                    <td class="px-4 py-2 text-xs font-mono text-zinc-400 text-right">{{
+                                    <td class="px-4 py-2 text-xs font-mono text-zinc-400 text-right print:text-black">{{
                                         item.last_date.strftime('%d/%m/%Y') }}</td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="4" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                    <td colspan="4"
+                                        class="px-4 py-6 text-center text-[10px] text-zinc-500 italic print:text-black">
                                         Nenhuma produção entregue no período.</td>
                                 </tr>
                                 {% endfor %}
@@ -420,13 +463,14 @@
     <!-- Movements History Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:bg-transparent">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Histórico Geral de Movimentações</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório Gerado em: <span
-                        class="gen-date"></span></p>
+                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Histórico Geral de
+                    Movimentações</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                    Gerado em: <span class="gen-date"></span></p>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3 print:hidden">
                 <button onclick="window.print()"
                     class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -442,44 +486,61 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-zinc-900/30 border-b border-white/5">
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data/Hora
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Data/Hora
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Produto
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Produto
                         </th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Tipo</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Tipo</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center print:text-black">
                             Quantidade</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Setor</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Motivo</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Usuário
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Setor</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Motivo</th>
+                        <th
+                            class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest print:text-black">
+                            Usuário
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for row in report_data %}
                     <tr class="hover:bg-white/5 transition-all duration-200 group">
-                        <td class="px-6 py-4 text-sm font-mono text-zinc-400">{{ row.date.strftime('%d/%m/%Y %H:%M') }}
+                        <td class="px-6 py-4 text-sm font-mono text-zinc-400 print:text-black">{{
+                            row.date.strftime('%d/%m/%Y %H:%M') }}
                         </td>
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-200 group-hover:text-white transition-colors">
+                        <td
+                            class="px-6 py-4 text-sm font-bold text-zinc-200 group-hover:text-white transition-colors print:text-black">
                             {{ row.product }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 print:text-black">
                             {% if row.type == 'entrada' %}
                             <span
-                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 uppercase tracking-wider">ENTRADA</span>
+                                class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 uppercase tracking-wider print:text-black print:border-black">ENTRADA</span>
                             {% else %}
                             <span
-                                class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider">SAÍDA</span>
+                                class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider print:text-black print:border-black">SAÍDA</span>
                             {% endif %}
                         </td>
-                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-zinc-200">{{ row.quantity }}
+                        <td class="px-6 py-4 text-sm font-mono text-center font-bold text-zinc-200 print:text-black">{{
+                            row.quantity }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.sector }}</td>
-                        <td class="px-6 py-4 text-sm text-zinc-400">{{ row.reason }}</td>
-                        <td class="px-6 py-4 text-sm text-zinc-500">{{ row.user }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400 print:text-black">{{ row.sector }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400 print:text-black">{{ row.reason }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-500 print:text-black">{{ row.user }}</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum registro
+                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic print:text-black">
+                            Nenhum registro
                             encontrado.</td>
                     </tr>
                     {% endfor %}
@@ -509,18 +570,16 @@
             padding: 0 !important;
         }
 
-        /* 2. Hide everything by default */
+        /* 2. Hide everything by default that we use for UI navigation */
         header,
         aside,
         #sidebar,
         .md\:hidden,
         button,
         a,
-        .grid,
-        .bg-surface\/30,
-        .shadow-xl,
-        .shadow-2xl,
-        .custom-scrollbar {
+        a.px-6,
+        /* Hides large selection links if they aren't caught by print:hidden */
+        .print\:hidden {
             display: none !important;
             visibility: hidden !important;
         }
@@ -543,7 +602,7 @@
             margin: 0 !important;
         }
 
-        /* 5. Show ONLY the Stock Table Section with specific ID */
+        /* 5. Show ONLY the Report Content */
         #report-content {
             display: block !important;
             visibility: visible !important;
@@ -569,6 +628,7 @@
             border: 1px solid #ddd !important;
             padding: 8px !important;
             text-align: left !important;
+            color: black !important;
         }
 
         th {
@@ -576,15 +636,18 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             font-weight: bold !important;
+            color: black !important;
         }
 
-        /* Ensure texts are visible and black */
+        /* Override dark mode text colors */
         .text-white,
+        .text-zinc-200,
         .text-zinc-300,
         .text-zinc-400,
         .text-zinc-500,
         .text-emerald-400,
         .text-red-400,
+        .text-amber-400,
         .font-mono {
             color: black !important;
         }
@@ -592,6 +655,17 @@
         /* Remove animations */
         .animate-pulse {
             animation: none !important;
+        }
+
+        /* Ensure grid layouts work reasonably well */
+        .grid {
+            display: block !important;
+            /* Stack grids for better safety or keep as grid if supported */
+        }
+
+        .lg\:grid-cols-2 {
+            grid-template-columns: 1fr !important;
+            /* Force stack on print usually safer */
         }
     }
 </style>
