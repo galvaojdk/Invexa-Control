@@ -167,6 +167,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         recent_shipments_out = db.query(Shipment).join(Product).filter(
             Shipment.updated_at >= thirty_days_ago,
             Shipment.returned_quantity > 0,
+            Shipment.status != ShipmentStatus.CANCELLED,
             Product.is_composite == True
         ).all()
         
