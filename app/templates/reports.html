@@ -325,6 +325,8 @@
                                 <tr class="bg-zinc-950/30 border-b border-white/5">
                                     <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase">Produto</th>
                                     <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                        Data Envio</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
                                         Enviado</th>
                                     <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
                                         Devolvido</th>
@@ -336,6 +338,8 @@
                                 {% for item in worker_data.materials %}
                                 <tr class="hover:bg-white/5 transition-colors">
                                     <td class="px-4 py-2 text-xs text-zinc-200">{{ item.product }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{
+                                        item.last_sent_date.strftime('%d/%m/%Y') }}</td>
                                     <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.sent }}
                                     </td>
                                     <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400">{{ item.returned
@@ -346,7 +350,7 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="4" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                    <td colspan="5" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
                                         Nenhum material pendente.</td>
                                 </tr>
                                 {% endfor %}
@@ -375,6 +379,8 @@
                                     </th>
                                     <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">Qtd
                                         Entregue</th>
+                                    <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-center">
+                                        Pendente (Estimado)</th>
                                     <th class="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase text-right">
                                         Última Entrega</th>
                                 </tr>
@@ -386,12 +392,15 @@
                                     <td
                                         class="px-4 py-2 text-xs font-mono text-center font-bold text-emerald-400 bg-emerald-500/5">
                                         {{ item.quantity }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center font-bold text-zinc-500">
+                                        {{ item.potential }}
+                                    </td>
                                     <td class="px-4 py-2 text-xs font-mono text-zinc-400 text-right">{{
                                         item.last_date.strftime('%d/%m/%Y') }}</td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="3" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
+                                    <td colspan="4" class="px-4 py-6 text-center text-[10px] text-zinc-500 italic">
                                         Nenhuma produção entregue no período.</td>
                                 </tr>
                                 {% endfor %}

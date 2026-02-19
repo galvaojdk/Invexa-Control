@@ -113,11 +113,6 @@ async def reports_view(
         pending_shipments = shipments_query.all()
         
         # 2. Fetch Production History (Delivered Finished Goods)
-        # Assuming Production Entries are movements of Type IN with specific reason or sector
-        # Ideally production creates a Movement IN with reason "Produção Recebida de {worker_name}"
-        # We can filter by reason string pattern if we don't have a structured link.
-        # This is Fragile but fits current implementation of production.py
-        
         movements_query = db.query(Movement).join(Product)\
             .filter(Movement.type == MovementType.IN)\
             .filter(Movement.reason.like("Produção Recebida de%"))\
@@ -128,11 +123,6 @@ async def reports_view(
         if filter_end:
              movements_query = movements_query.filter(Movement.timestamp <= filter_end)
         
-        # We need to filter by worker name extracted from reason string if filtering by worker_id?
-        # That's very hard with just SQL LIKE.
-        # Better approach: If worker_id is present, get worker name and filter by exact string.
-        # If no worker_id, we fetch all and group in python.
-        
         if worker_id:
             target_worker = db.query(Worker).get(worker_id)
             if target_worker:
@@ -142,63 +132,23 @@ async def reports_view(
              movements_query = movements_query.filter(Movement.product_id == product_id)
              
         production_movements = movements_query.all()
+
+        # Fetch Product Compositions for potential production calculation
+        from app.models.inventory import ProductComposition
+        all_compositions = db.query(ProductComposition).all()
+        compositions_map = {}
+        for c in all_compositions:
+            if c.composite_id not in compositions_map:
+                compositions_map[c.composite_id] = []
+            compositions_map[c.composite_id].append({
+                "component_id": c.component_id,
+                "quantity": c.quantity
+            })
         
         # 3. Aggregate Data by Worker
-        aggregated = {}
-
-        # Process Pending Materials
-        for s in pending_shipments:
-            w_id = s.worker_id
-            if w_id not in aggregated:
-                aggregated[w_id] = {
-                    "name": s.worker.name,
-                    "materials": [],
-                    "delivered": []
-                }
-            
-            # Aggregate by product for cleaner view
-            balance = s.quantity - s.returned_quantity
-            
-            # Helper to find if prod exists in materials list
-            existing = next((i for i in aggregated[w_id]["materials"] if i["product_id"] == s.product_id), None)
-            
-            if existing:
-                existing["sent"] += s.quantity
-                existing["returned"] += s.returned_quantity
-                existing["balance"] += balance
-            else:
-                aggregated[w_id]["materials"].append({
-                    "product_id": s.product_id,
-                    "product": s.product.name,
-                    "unit": s.product.unit,
-                    "sent": s.quantity,
-                    "returned": s.returned_quantity,
-                    "balance": balance
-                })
-
-        # Process Delivered Production
-        for m in production_movements:
-            # Extract worker name from reason string: "Produção Recebida de NomeDoWorker"
-            try:
-                # This assumes format is constant.
-                worker_name = m.reason.replace("Produção Recebida de ", "").strip()
-                
-                # We need a worker_id to key into 'aggregated'. 
-                # This is tricky because Movement doesn't link to Worker table, only User.
-                # We will key by Name if ID not found, but we started aggregated with ID.
-                # Let's switch aggregation key to Worker Name for simplicity in this mixed report.
-                
-                # BUT wait, the loop above used ID.
-                # Let's map Name -> ID? Or just use Name as key for everything?
-                # Using Name as key is safer here since Movements don't have worker_id.
-                pass
-            except:
-                continue
-
-        # RE-STRATEGY: Aggregate by Worker Name (String)
         final_data = {}
         
-        # Re-process Pending (Shipments have Worker relation, so we know name)
+        # Process Pending (Shipments have Worker relation, so we know name)
         for s in pending_shipments:
             w_name = s.worker.name
             if w_name not in final_data:
@@ -211,6 +161,9 @@ async def reports_view(
                 existing["sent"] += s.quantity
                 existing["returned"] += s.returned_quantity
                 existing["balance"] += balance
+                # Update last sent date if this shipment is newer
+                if s.created_at > existing["last_sent_date"]:
+                    existing["last_sent_date"] = s.created_at
             else:
                 final_data[w_name]["materials"].append({
                     "product_id": s.product_id,
@@ -218,7 +171,8 @@ async def reports_view(
                     "unit": s.product.unit,
                     "sent": s.quantity,
                     "returned": s.returned_quantity,
-                    "balance": balance
+                    "balance": balance,
+                    "last_sent_date": s.created_at
                 })
                 
         # Process Production Movements
@@ -242,14 +196,40 @@ async def reports_view(
              
             if existing:
                 existing["quantity"] += m.quantity
+                if m.timestamp > existing["last_date"]:
+                    existing["last_date"] = m.timestamp
             else:
                 final_data[w_name]["delivered"].append({
                     "product_id": m.product_id,
                     "product": m.product.name,
                     "unit": m.product.unit,
                     "quantity": m.quantity,
-                    "last_date": m.timestamp
+                    "last_date": m.timestamp,
+                    "potential": 0 # Placeholder
                 })
+
+        # Calculate Potential Production
+        for w_data in final_data.values():
+            materials_map = {m["product_id"]: m["balance"] for m in w_data["materials"]}
+            
+            for item in w_data["delivered"]:
+                pid = item["product_id"]
+                if pid in compositions_map:
+                    possible_counts = []
+                    for comp in compositions_map[pid]:
+                        cid = comp["component_id"]
+                        req_qty = comp["quantity"]
+                        
+                        if req_qty > 0 and cid in materials_map and materials_map[cid] > 0:
+                            count = int(materials_map[cid] / req_qty)
+                            possible_counts.append(count)
+                        else:
+                            possible_counts.append(0)
+                    
+                    # The limiting factor determines the potential
+                    item["potential"] = min(possible_counts) if possible_counts else 0
+                else:
+                    item["potential"] = 0
 
         report_data = list(final_data.values())
         # Sort by Name
