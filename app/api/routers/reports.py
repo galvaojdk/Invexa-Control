@@ -237,6 +237,52 @@ async def reports_view(
         
         context["report_data"] = report_data
         
+    elif report_type == "worker_deliveries":
+        # Report for Delivered Finished Goods (Production Received) from Workers
+        
+        # We query Movements of type IN where the reason indicates "Produção Recebida de {WorkerName}"
+        query = db.query(Movement).join(Product).filter(
+            Movement.type == MovementType.IN,
+            Movement.reason.like("Produção Recebida de%")
+        ).order_by(Movement.timestamp.desc())
+
+        if filter_start:
+            query = query.filter(Movement.timestamp >= filter_start)
+        if filter_end:
+            query = query.filter(Movement.timestamp <= filter_end)
+        if product_id:
+            query = query.filter(Movement.product_id == product_id)
+        
+        # If worker_id is provided, we need to filter by name because the Movement record 
+        # stores the worker name in the 'reason' string, not the ID directly in a relationship 
+        # (though ideally it should have a sector link or separate table).
+        if worker_id:
+            target_worker = db.query(Worker).get(worker_id)
+            if target_worker:
+                 query = query.filter(Movement.reason == f"Produção Recebida de {target_worker.name}")
+            else:
+                 # Worker ID provided but not found? Return empty result or handle error.
+                 # For safety, filter by impossible condition
+                 query = query.filter(Movement.id == -1)
+
+        movements = query.all()
+
+        report_data = []
+        for m in movements:
+            # Extract Worker Name from Reason
+            # Format: "Produção Recebida de {Name}"
+            worker_name = m.reason.replace("Produção Recebida de ", "").strip()
+            
+            report_data.append({
+                "date": m.timestamp,
+                "worker": worker_name,
+                "product": m.product.name,
+                "unit": m.product.unit,
+                "quantity": m.quantity
+            })
+            
+        context["report_data"] = report_data
+
     elif report_type == "movements_history":
         # Global Movements History Report
         query = db.query(Movement).join(Product).order_by(Movement.timestamp.desc())
