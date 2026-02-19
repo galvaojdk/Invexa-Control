@@ -7,15 +7,15 @@
 <div class="flex flex-col gap-8">
     <!-- Report Selection -->
     <div
-        class="print:hidden flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-xl">
+        class="print:hidden flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-4 rounded-2xl border border-white/5 shadow-xl">
         <div>
-            <h3 class="text-lg font-bold text-white tracking-tight">Selecione o Relatório</h3>
-            <p class="text-sm text-zinc-400">Escolha abaixo qual relatório deseja visualizar.</p>
+            <h3 class="text-base font-bold text-white tracking-tight">Selecione o Relatório</h3>
+            <p class="text-xs text-zinc-400">Escolha abaixo qual relatório deseja visualizar.</p>
         </div>
-        <div class="flex gap-4">
+        <div class="flex flex-wrap gap-2 justify-center md:justify-end">
             <a href="?report_type=stock"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
                     </path>
@@ -23,8 +23,8 @@
                 Posição de Estoque
             </a>
             <a href="?report_type=outsourced"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                     </path>
@@ -32,8 +32,8 @@
                 Saídas por Terceirizado
             </a>
             <a href="?report_type=worker_review"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'worker_review' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'worker_review' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                     </path>
@@ -41,8 +41,8 @@
                 Review de Terceirizados
             </a>
             <a href="?report_type=movements_history"
-                class="px-6 py-3 rounded-xl border font-bold transition-all flex items-center gap-2 {% if report_type == 'movements_history' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'movements_history' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
