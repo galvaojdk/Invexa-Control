@@ -163,22 +163,19 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         worker_consumption = dict(sorted(worker_consumption_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
         # Top Produced Products (Top 5 in last 30 days)
-        # Based on Shipments updated (returned materials) - ONLY COMPOSITE PRODUCTS
-        recent_shipments_out = db.query(Shipment).join(Product).filter(
-            Shipment.updated_at >= thirty_days_ago,
-            Shipment.returned_quantity > 0,
-            Shipment.status != ShipmentStatus.CANCELLED,
+        # Based on ALL Movements IN for Composite Products (covers both Shipment Returns and Manual Entries)
+        recent_production = db.query(
+            Product.name,
+            func.sum(Movement.quantity).label('total_qty')
+        ).join(Movement).filter(
+            Movement.timestamp >= thirty_days_ago,
+            Movement.type == MovementType.IN,
             Product.is_composite == True
-        ).all()
+        ).group_by(Product.name).all()
         
-        production_raw = {}
-        total_produced_qty = 0
+        production_raw = {r.name: r.total_qty for r in recent_production}
+        total_produced_qty = sum(production_raw.values())
         
-        for s in recent_shipments_out:
-            prod_name = s.product.name
-            production_raw[prod_name] = production_raw.get(prod_name, 0) + s.returned_quantity
-            total_produced_qty += s.returned_quantity
-            
         top_production = dict(sorted(production_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
         # Fetch all products ordered by name for quick actions/modals
