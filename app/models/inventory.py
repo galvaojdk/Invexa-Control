@@ -28,6 +28,8 @@ class Product(Base):
     description = Column(String) # Descrição Completa
     unit = Column(String, default="un") # Und, Metro, KG, etc
     current_stock = Column(Float, default=0.0)
+    unit_cost = Column(Float, default=0.0) # Custo unitário de compra/produção
+    markup_percentage = Column(Float, default=0.0) # Porcentagem de lucro sobre o custo
 
     is_composite = Column(Boolean, default=False)
     is_primary = Column(Boolean, default=False)

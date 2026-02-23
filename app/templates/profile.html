@@ -4,11 +4,11 @@
 {% block header_title %}Perfil do Usuário{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto space-y-8">
+<div class="max-w-4xl mx-auto space-y-6">
 
     <!-- Header Section -->
     <div
-        class="flex items-center gap-6 mb-8 p-6 bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl">
+        class="flex items-center gap-4 mb-6 p-5 bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl">
         <div class="relative group">
             <div
                 class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/20 overflow-hidden ring-4 ring-white/5">
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="flex-1">
-            <h2 class="text-2xl font-bold text-white tracking-tight">{{ user.full_name or 'Usuário' }}</h2>
+            <h2 class="text-xl font-bold text-white tracking-tight">{{ user.full_name or 'Usuário' }}</h2>
             <p class="text-zinc-400 font-mono text-sm">{{ user.email }}</p>
 
             <div class="flex gap-2 mt-3">
@@ -71,19 +71,23 @@
     </div>
     {% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Sidebar Navigation -->
         <div class="md:col-span-1 space-y-2">
             <button onclick="showSection('personal')" id="nav-personal"
-                class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/5">
+                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/5">
                 Dados Pessoais
             </button>
             <button onclick="showSection('security')" id="nav-security"
-                class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
+                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
                 Segurança
             </button>
+            <button onclick="showSection('company')" id="nav-company"
+                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
+                Minha Empresa
+            </button>
             <button onclick="showSection('subscription')" id="nav-subscription"
-                class="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
+                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
                 Plano e Faturamento
             </button>
         </div>
@@ -92,8 +96,8 @@
         <div class="md:col-span-2 space-y-6">
             <!-- Personal Info -->
             <div id="section-personal"
-                class="bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                class="bg-surface/30 backdrop-blur-xl rounded-2xl p-5 border border-white/5 shadow-xl">
+                <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -128,7 +132,67 @@
                 </form>
             </div>
 
-            <!-- Security Section -->
+            <!-- Company Section -->
+            <div id="section-company"
+                class="hidden bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                        </path>
+                    </svg>
+                    Configurações da Empresa
+                </h3>
+
+                <form action="/profile/company" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest">Identidade Visual
+                            (Logo)</label>
+
+                        <div
+                            class="flex flex-col md:flex-row items-center gap-6 p-6 bg-dark/50 rounded-2xl border border-white/5 border-dashed">
+                            <div
+                                class="w-48 h-24 bg-zinc-900 rounded-xl flex items-center justify-center border border-white/5 overflow-hidden">
+                                {% if company.logo_data %}
+                                <img id="logo-preview" src="{{ company.logo_data }}"
+                                    class="max-w-full max-h-full object-contain">
+                                {% else %}
+                                <div id="logo-placeholder" class="text-zinc-600 flex flex-col items-center gap-2">
+                                    <svg class="w-8 h-8 opacity-20" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest">Sem Logo</span>
+                                </div>
+                                <img id="logo-preview" class="hidden max-w-full max-h-full object-contain">
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-1 space-y-3">
+                                <p class="text-xs text-zinc-400">Envie o logo da sua empresa para que ele apareça
+                                    automaticamente nos cabeçalhos dos relatórios.</p>
+                                <ul class="text-[10px] text-zinc-500 space-y-1">
+                                    <li>• Formatos aceitos: PNG, JPG ou WEBP</li>
+                                    <li>• Sugestão: Imagem com fundo transparente</li>
+                                    <li>• O sistema ajustará o tamanho automaticamente</li>
+                                </ul>
+                                <input type="file" name="logo" accept="image/*"
+                                    class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-500/20 file:text-indigo-400 hover:file:bg-indigo-500/30 transition-all cursor-pointer"
+                                    onchange="previewImage(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button type="submit"
+                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-emerald-500/20 transform active:scale-[0.98]">
+                            Salvar Logomarca
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div id="section-security"
                 class="hidden bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
                 <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
@@ -238,7 +302,7 @@
 <script>
     function showSection(sectionId) {
         // IDs das seções e botões
-        const sections = ['personal', 'security', 'subscription'];
+        const sections = ['personal', 'security', 'subscription', 'company'];
 
         sections.forEach(id => {
             const section = document.getElementById(`section-${id}`);
@@ -269,10 +333,30 @@
         return true;
     }
 
+    function previewImage(input) {
+        const preview = document.getElementById('logo-preview');
+        const placeholder = document.getElementById('logo-placeholder');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     // Carrega a aba salva ao iniciar
     document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sectionParam = urlParams.get('section');
         const savedTab = localStorage.getItem('profile_active_tab');
-        if (savedTab) {
+
+        if (sectionParam) {
+            showSection(sectionParam);
+        } else if (savedTab) {
             showSection(savedTab);
         }
     });

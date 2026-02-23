@@ -4,7 +4,7 @@
 {% block header_title %}Controle de Estoque{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-6" x-data="{ 
+<div class="flex flex-col gap-4" x-data="{ 
     activeTab: new URLSearchParams(window.location.search).get('tab') || 'products',
     error: new URLSearchParams(window.location.search).get('error')
 }">
@@ -27,12 +27,12 @@
     <div class="flex gap-4 border-b border-white/5">
         <button @click="activeTab = 'products'"
             :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'products', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'products' }"
-            class="px-4 py-2 text-sm font-bold transition-all uppercase tracking-wide">
+            class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Produtos
         </button>
         <button @click="activeTab = 'categories'"
             :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'categories', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'categories' }"
-            class="px-4 py-2 text-sm font-bold transition-all uppercase tracking-wide">
+            class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Categorias
         </button>
     </div>
@@ -44,7 +44,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="relative group w-full max-w-md">
                 <input type="text" placeholder="Buscar produto..."
-                    class="pl-10 pr-4 py-2.5 bg-surface/50 backdrop-blur-sm border border-white/5 rounded-xl text-sm text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all group-hover:bg-surface/80">
+                    class="pl-10 pr-4 py-2 bg-surface/50 backdrop-blur-sm border border-white/5 rounded-xl text-sm text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all group-hover:bg-surface/80">
                 <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-3" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -53,7 +53,7 @@
             </div>
             <div class="flex items-center gap-3 w-full md:w-auto">
                 <a href="/inventory/export"
-                    class="px-4 py-2.5 rounded-xl bg-surface hover:bg-white/5 text-zinc-400 hover:text-white font-bold border border-white/5 transition-all text-xs flex items-center gap-2 group">
+                    class="px-4 py-2 rounded-xl bg-surface hover:bg-white/5 text-zinc-400 hover:text-white font-bold border border-white/5 transition-all text-xs flex items-center gap-2 group">
                     <svg class="w-4 h-4 group-hover:text-emerald-400 transition-colors" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -63,7 +63,7 @@
                     Exportar
                 </a>
                 <button onclick="openImportModal()"
-                    class="px-4 py-2.5 rounded-xl bg-surface hover:bg-white/5 text-zinc-400 hover:text-white font-bold border border-white/5 transition-all text-xs flex items-center gap-2 group">
+                    class="px-4 py-2 rounded-xl bg-surface hover:bg-white/5 text-zinc-400 hover:text-white font-bold border border-white/5 transition-all text-xs flex items-center gap-2 group">
                     <svg class="w-4 h-4 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -73,7 +73,7 @@
                     Importar
                 </button>
                 <button onclick="openModal()"
-                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold shadow-lg shadow-indigo-500/20 transition-all text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                    class="px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold shadow-lg shadow-indigo-500/20 transition-all text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -87,16 +87,16 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-zinc-950/30 border-b border-white/5">
-                            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                 Descrição
                             </th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                 Categoria
                             </th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                 Tipo
                             </th>
-                            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                 Unidade</th>
                             <th
                                 class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
@@ -106,13 +106,13 @@
                     <tbody class="divide-y divide-white/5">
                         {% for product in products %}
                         <tr class="hover:bg-white/5 transition-colors group">
-                            <td
-                                class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                            <td <td
+                                class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
                                 {{ product.name }}</td>
-                            <td class="px-6 py-4 text-sm text-zinc-500">{{ product.category.name if product.category
+                            <td class="px-5 py-2.5 text-sm text-zinc-500">{{ product.category.name if product.category
                                 else
                                 '-' }}</td>
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-5 py-2.5 text-sm">
                                 {% if product.is_composite %}
                                 <span
                                     class="px-2 py-1 rounded-lg bg-violet-500/10 text-violet-400 text-[10px] font-bold border border-violet-500/20 uppercase tracking-wider">COMPOSTO</span>
@@ -123,13 +123,14 @@
                                 <span class="text-zinc-600 text-[10px] font-bold uppercase tracking-wider">PADRÃO</span>
                                 {% endif %}
                             </td>
-                            <td class="px-6 py-4 text-sm font-mono text-zinc-400">
+                            <td class="px-5 py-2.5 text-sm font-mono text-zinc-400">
                                 {{ product.unit }}
                             </td>
 
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <button onclick="openEditModal({{ product.id }})"
+                                    <button onclick="openEditModal(this.getAttribute('data-id'))"
+                                        data-id="{{ product.id }}"
                                         class="p-2 rounded-lg hover:bg-indigo-500/10 text-zinc-500 hover:text-indigo-400 transition-all"
                                         title="Editar">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +139,9 @@
                                             </path>
                                         </svg>
                                     </button>
-                                    <button onclick="deleteProduct({{ product.id }}, '{{ product.name }}')"
+                                    <button
+                                        onclick="deleteProduct(this.getAttribute('data-id'), this.getAttribute('data-name'))"
+                                        data-id="{{ product.id }}" data-name="{{ product.name }}"
                                         class="p-2 rounded-lg hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-all"
                                         title="Excluir">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,8 +174,8 @@
             <!-- Formulário de Cadastro -->
             <div class="lg:col-span-1">
                 <div
-                    class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl p-5 shadow-xl sticky top-8">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl p-4 shadow-xl sticky top-8">
+                    <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
@@ -188,7 +191,7 @@
                                 placeholder="Ex: Embalagens, Ferragens...">
                         </div>
                         <button type="submit"
-                            class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                            class="w-full py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 13l4 4L19 7"></path>
@@ -202,20 +205,20 @@
             <!-- Lista de Categorias -->
             <div class="lg:col-span-2">
                 <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-                    <div class="p-5 border-b border-white/5 bg-surface/30">
-                        <h3 class="text-lg font-bold text-white">Categorias Existentes</h3>
+                    <div class="p-4 border-b border-white/5 bg-surface/30">
+                        <h3 class="text-base font-bold text-white">Categorias Existentes</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-zinc-950/30 border-b border-white/5">
-                                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                         ID</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                                         Nome
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                                        class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
                                         Ações</th>
                                 </tr>
                             </thead>
@@ -223,12 +226,12 @@
                                 {% for cat in categories %}
                                 <tr class="hover:bg-white/5 transition-colors group">
                                     <td
-                                        class="px-6 py-4 text-xs font-mono text-zinc-500 w-16 group-hover:text-zinc-400">
+                                        class="px-5 py-2.5 text-xs font-mono text-zinc-500 w-16 group-hover:text-zinc-400">
                                         #{{ cat.id }}</td>
                                     <td
-                                        class="px-6 py-4 text-sm font-medium text-zinc-300 group-hover:text-emerald-400 transition-colors">
+                                        class="px-5 py-2.5 text-sm font-medium text-zinc-300 group-hover:text-emerald-400 transition-colors">
                                         {{ cat.name }}</td>
-                                    <td class="px-6 py-4 text-right">
+                                    <td class="px-5 py-2.5 text-right">
                                         <form action="/inventory/categories/{{ cat.id }}/delete" method="POST"
                                             class="inline"
                                             onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?')">
@@ -255,9 +258,9 @@
     <div id="productModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all">
         <div
-            class="bg-surface border border-white/10 w-full max-w-5xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
-            <div class="p-5 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h3 class="text-lg font-bold text-white tracking-tight">Novo Produto</h3>
+            class="bg-surface border border-white/10 w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
+            <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h3 class="text-base font-bold text-white tracking-tight">Novo Produto</h3>
                 <button onclick="closeModal()"
                     class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,7 +269,7 @@
                     </svg>
                 </button>
             </div>
-            <form action="/inventory/products" method="POST" class="p-5 space-y-4 overflow-y-auto" x-data="{ 
+            <form action="/inventory/products" method="POST" class="p-4 space-y-4 overflow-y-auto" x-data="{ 
                 isComposite: false, 
                 composition: [],
                 newItemId: '',
@@ -298,15 +301,15 @@
             }">
                 <input type="hidden" name="composition_data" :value="JSON.stringify(composition)">
 
-                <div :class="{'grid grid-cols-1 lg:grid-cols-2 gap-8': isComposite, 'space-y-5': !isComposite}">
+                <div :class="{'grid grid-cols-1 lg:grid-cols-2 gap-6': isComposite, 'space-y-4': !isComposite}">
 
                     <!-- Coluna da Esquerda: Dados Básicos -->
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
                                 Reduzida</label>
                             <input type="text" name="name" required
-                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
                                 placeholder="Ex: Parafuso Sextavado M8">
                         </div>
 
@@ -314,7 +317,7 @@
                             <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
                                 Completa</label>
                             <textarea name="description" rows="2"
-                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-white/20"
                                 placeholder="Detalhes técnicos, especificações..."></textarea>
                         </div>
 
@@ -323,7 +326,7 @@
                                 <label
                                     class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
                                 <select name="category_id" required
-                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
                                     <option value="" disabled selected>Selecione...</option>
                                     {% for category in categories %}
                                     <option value="{{ category.id }}">{{ category.name }}</option>
@@ -334,7 +337,7 @@
                             <div class="space-y-1.5">
                                 <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
                                 <select name="unit" required
-                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
                                     <option value="un">Unidade (un)</option>
                                     <option value="kg">Quilograma (kg)</option>
                                     <option value="m">Metro (m)</option>
@@ -345,11 +348,27 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estoque
+                                    Inicial</label>
+                                <input type="number" name="current_stock" value="0" step="0.01" required
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                            </div>
+                            <div class="space-y-1.5" x-show="!isComposite">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Custo Unitário
+                                    (R$)</label>
+                                <input type="number" name="unit_cost" value="0.00" step="0.01"
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all placeholder-white/20">
+                            </div>
+                        </div>
+
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Estoque
-                                Inicial</label>
-                            <input type="number" name="current_stock" value="0" step="0.01" required
-                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Margem de Lucro
+                                (%)</label>
+                            <input type="number" name="markup_percentage" value="0" step="0.1"
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"
+                                placeholder="Margem sugerida sobre o custo">
                         </div>
 
                         <div class="flex gap-6 py-2">
@@ -372,7 +391,7 @@
                     <div x-show="isComposite" x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 translate-x-4"
                         x-transition:enter-end="opacity-100 translate-x-0"
-                        class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-6 space-y-6 flex flex-col h-full">
+                        class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4 flex flex-col h-full">
 
                         <h4
                             class="text-lg font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2 pb-2 border-b border-white/5">
@@ -387,7 +406,7 @@
                         <div class="flex gap-2">
                             <div class="flex-1 relative">
                                 <select x-model="newItemId"
-                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 appearance-none">
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 appearance-none">
                                     <option value="">Selecione um componente...</option>
                                     <template x-for="p in primaryProducts" :key="p.id">
                                         <option :value="p.id" x-text="p.name + ' (' + p.unit + ')'"></option>
@@ -402,7 +421,7 @@
                                 </div>
                             </div>
                             <input type="number" x-model="newItemQty" min="0.1" step="0.1"
-                                class="w-24 bg-dark/50 border border-white/10 rounded-lg px-3 py-3 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 text-center"
+                                class="w-24 bg-dark/50 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 text-center"
                                 placeholder="Qtd">
                             <button type="button" @click="addToComposition()" :disabled="!newItemId"
                                 class="p-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors shadow-lg shadow-indigo-500/20">
@@ -416,7 +435,7 @@
                         <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar min-h-[200px]">
                             <template x-for="(item, index) in composition" :key="index">
                                 <div
-                                    class="flex justify-between items-center bg-dark/30 hover:bg-dark/50 p-3 rounded-lg border border-white/5 transition-colors group">
+                                    class="flex justify-between items-center bg-dark/30 hover:bg-dark/50 p-2 rounded-lg border border-white/5 transition-colors group">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-xs"
                                             x-text="index + 1"></div>
@@ -450,9 +469,9 @@
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-white/5 flex justify-end">
+                <div class="pt-4 border-t border-white/5 flex justify-end">
                     <button type="submit"
-                        class="py-3 px-8 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                        class="py-2 px-8 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
                         Salvar Produto
                     </button>
                 </div>
@@ -464,9 +483,9 @@
     <div id="editProductModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div
-            class="bg-surface border border-white/10 w-full max-w-5xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all">
-            <div class="p-5 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h3 class="text-lg font-bold text-white">Editar Produto</h3>
+            class="bg-surface border border-white/10 w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h3 class="text-base font-bold text-white">Editar Produto</h3>
                 <button onclick="closeEditModal()"
                     class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,22 +494,22 @@
                     </svg>
                 </button>
             </div>
-            <form id="editProductForm" method="POST" class="p-5 space-y-4 overflow-y-auto">
+            <form id="editProductForm" method="POST" class="p-4 space-y-4 overflow-y-auto">
                 <div id="edit-form-grid" class="space-y-4">
                     <!-- Esquerda: Dados Básicos -->
-                    <div class="space-y-5">
+                    <div class="space-y-4">
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
                                 Reduzida</label>
                             <input type="text" name="name" id="edit-name" required
-                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all">
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Descrição
                                 Completa</label>
                             <textarea name="description" id="edit-description" rows="2"
-                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"></textarea>
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"></textarea>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -498,7 +517,7 @@
                                 <label
                                     class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Categoria</label>
                                 <select name="category_id" id="edit-category_id" required
-                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
                                     <option value="">Selecione...</option>
                                     {% for cat in categories %}
                                     <option value="{{ cat.id }}">{{ cat.name }}</option>
@@ -508,7 +527,7 @@
                             <div class="space-y-1.5">
                                 <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unidade</label>
                                 <select name="unit" id="edit-unit" required
-                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
                                     <option value="Und">Und</option>
                                     <option value="Metro">Metro</option>
                                     <option value="KG">KG</option>
@@ -518,9 +537,39 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Estoque
+                                    Atual</label>
                                 <input type="number" step="0.01" name="current_stock" id="edit-current_stock" disabled
-                                    class="w-full bg-dark/20 border border-white/5 rounded-lg px-3 py-2 text-sm text-zinc-500 cursor-not-allowed">
+                                    class="w-full bg-dark/20 border border-white/5 rounded-lg px-3 py-1 text-sm text-zinc-500 cursor-not-allowed">
                                 <p class="text-[10px] text-zinc-500 italic">* Use "Movimentações" para ajustar.</p>
+                            </div>
+                            <div class="space-y-1.5" id="edit-unit-cost-container">
+                                <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Custo Unitário
+                                    (R$)</label>
+                                <input type="number" step="0.01" name="unit_cost" id="edit-unit_cost"
+                                    class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Margem de Lucro
+                                (%)</label>
+                            <input type="number" step="0.1" name="markup_percentage" id="edit-markup_percentage"
+                                class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-1 text-sm text-white outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all">
+                        </div>
+
+                        <!-- Financial Summary for Composite -->
+                        <div id="financial-summary"
+                            class="hidden p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Custo Estimado
+                                    (Matérias-primas):</span>
+                                <span id="est-total-cost" class="text-emerald-400 font-mono font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between items-center border-t border-white/5 pt-2">
+                                <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Preço Sugerido
+                                    (Venda):</span>
+                                <span id="est-suggested-price" class="text-white font-mono font-bold">R$ 0,00</span>
                             </div>
                         </div>
 
@@ -542,7 +591,7 @@
 
                     <!-- Composition Edit Section (Vanilla JS) -->
                     <div id="edit-composition-wrapper"
-                        class="hidden bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-6 space-y-6 flex flex-col h-full">
+                        class="hidden bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 space-y-4 flex flex-col h-full">
                         <h4 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -585,9 +634,9 @@
                     </div>
                 </div> <!-- Close edit-form-grid -->
 
-                <div class="pt-6 border-t border-white/5 flex justify-end">
+                <div class="pt-4 border-t border-white/5 flex justify-end">
                     <button type="submit"
-                        class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all">
+                        class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all">
                         Salvar Alterações
                     </button>
                 </div>
@@ -676,13 +725,17 @@
             document.getElementById('edit-current_stock').value = data.current_stock;
             document.getElementById('edit-current_stock').value = data.current_stock;
             // document.getElementById('edit-min_stock').value = data.min_stock; // Removed
-            document.getElementById('edit-is_composite').checked = data.is_composite;
-            document.getElementById('edit-is_composite').checked = data.is_composite;
             document.getElementById('edit-is_primary').checked = data.is_primary;
+            document.getElementById('edit-unit_cost').value = data.unit_cost || 0;
+            document.getElementById('edit-markup_percentage').value = data.markup_percentage || 0;
 
             // Load composition
             editComposition = data.composition || [];
             renderEditComposition();
+
+            // Add listener for real-time calculation
+            document.getElementById('edit-markup_percentage').oninput = renderEditComposition;
+            document.getElementById('edit-unit_cost').oninput = renderEditComposition;
 
             // Helper to set category by text if ID not available in API (API v1 returns category name)
             // Ideally API should return ID. Let's fix API or loop select options.
@@ -745,17 +798,38 @@
         const isCompositeObj = document.getElementById('edit-is_composite');
         const wrapper = document.getElementById('edit-composition-wrapper');
         const gridContainer = document.getElementById('edit-form-grid');
+        const unitCostContainer = document.getElementById('edit-unit-cost-container');
+        const financialSummary = document.getElementById('financial-summary');
 
         if (isCompositeObj.checked) {
             wrapper.classList.remove('hidden');
+            unitCostContainer.classList.add('hidden'); // Hide simple cost input if composite
+            financialSummary.classList.remove('hidden');
+
             // Enable Grid Mode
-            gridContainer.classList.remove('space-y-5');
-            gridContainer.classList.add('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-8');
+            gridContainer.classList.remove('space-y-4');
+            gridContainer.classList.add('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-6');
+
+            // Calculate estimated cost and suggestions
+            let total = 0;
+            editComposition.forEach(item => {
+                total += (item.unit_cost || 0) * item.quantity;
+            });
+
+            const markup = parseFloat(document.getElementById('edit-markup_percentage').value) || 0;
+            const suggested = total * (1 + (markup / 100));
+
+            document.getElementById('est-total-cost').innerText = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('est-suggested-price').innerText = `R$ ${suggested.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
         } else {
             wrapper.classList.add('hidden');
+            unitCostContainer.classList.remove('hidden'); // Show simple cost input
+            financialSummary.classList.add('hidden');
+
             // Disable Grid Mode (Standard vertical stack)
-            gridContainer.classList.add('space-y-5');
-            gridContainer.classList.remove('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-8');
+            gridContainer.classList.add('space-y-4');
+            gridContainer.classList.remove('grid', 'grid-cols-1', 'lg:grid-cols-2', 'gap-6');
         }
     }
 

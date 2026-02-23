@@ -4,17 +4,17 @@
 {% block header_title %}Central de Relatórios{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-4">
     <!-- Report Selection -->
     <div
-        class="print:hidden flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-4 rounded-2xl border border-white/5 shadow-xl">
+        class="print:hidden flex flex-col md:flex-row gap-4 justify-between items-center bg-surface/30 backdrop-blur-xl p-3 rounded-2xl border border-white/5 shadow-xl">
         <div>
             <h3 class="text-base font-bold text-white tracking-tight">Selecione o Relatório</h3>
             <p class="text-xs text-zinc-400">Escolha abaixo qual relatório deseja visualizar.</p>
         </div>
         <div class="flex flex-wrap gap-2 justify-center md:justify-end">
             <a href="?report_type=stock"
-                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                class="px-3 py-1.5 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'stock' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
@@ -23,7 +23,7 @@
                 Posição de Estoque
             </a>
             <a href="?report_type=outsourced"
-                class="px-4 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
+                class="px-3 py-1.5 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 {% if report_type == 'outsourced' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20 transform scale-105{% else %}bg-zinc-900/50 border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:border-white/10{% endif %}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
@@ -61,26 +61,26 @@
 
     <!-- Date Filters -->
     <div
-        class="print:hidden bg-surface/30 backdrop-blur-xl p-6 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
+        class="print:hidden bg-surface/30 backdrop-blur-xl p-4 rounded-2xl border border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
         <form action="" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
             <input type="hidden" name="report_type" value="{{ report_type }}">
 
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">De:</label>
                 <input type="date" name="start_date" value="{{ request.query_params.get('start_date', '') }}"
-                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
             </div>
 
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Até:</label>
                 <input type="date" name="end_date" value="{{ request.query_params.get('end_date', '') }}"
-                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto">
             </div>
 
             <!-- Category Filter -->
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <select name="category_id"
-                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
                     <option value="" class="text-zinc-500">Todas Categorias</option>
                     {% for c in all_categories %}
                     <option value="{{ c.id }}" {% if category_id and category_id==c.id %}selected{% endif %}>{{ c.name
@@ -92,7 +92,7 @@
             <!-- Product Filter -->
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <select name="product_id"
-                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-2 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
+                    class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all w-full md:w-auto appearance-none cursor-pointer">
                     <option value="" class="text-zinc-500">Todos Produtos</option>
                     {% for p in all_products %}
                     <option value="{{ p.id }}" {% if product_id and product_id==p.id %}selected{% endif %}>{{ p.name }}
@@ -138,10 +138,31 @@
     <!-- Stock Position Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950/30 print:bg-transparent">
+        <!-- Professional Header (Visible in PDF/Print) -->
+        <div class="hidden print:flex items-center justify-between p-6 border-b-2 border-zinc-200 mb-6 bg-white">
+            <div class="flex items-center gap-4">
+                {% if user.company.logo_data %}
+                <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
+                {% else %}
+                <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
+                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-lg font-bold text-zinc-900">Relatório de Estoque</h2>
+                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+            </div>
+        </div>
+
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950/30 print:hidden">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Posição de Estoque Atual</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                <h3 class="text-xl font-bold text-white tracking-tight">Posição de Estoque Atual</h3>
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório
                     Gerado em: <span class="gen-date"></span></p>
             </div>
             <div class="flex gap-3 print:hidden">
@@ -209,11 +230,33 @@
     <!-- Outsourced Shipments Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:bg-transparent">
+
+        <!-- Professional Header (Visible in PDF/Print) -->
+        <div class="hidden print:flex items-center justify-between p-6 border-b-2 border-zinc-200 mb-6 bg-white">
+            <div class="flex items-center gap-4">
+                {% if user.company.logo_data %}
+                <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
+                {% else %}
+                <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
+                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-lg font-bold text-zinc-900">Saídas por Terceirizado</h2>
+                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+            </div>
+        </div>
+
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:hidden">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Relatório de Saídas por
+                <h3 class="text-xl font-bold text-white tracking-tight">Relatório de Saídas por
                     Terceirizado</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório
                     Gerado em: <span class="gen-date"></span></p>
             </div>
             <div class="flex gap-3 print:hidden">
@@ -302,11 +345,11 @@
     <!-- Worker Review Table (Grouped by Worker) -->
     <div id="report-content" class="space-y-6">
         <div
-            class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl p-6 flex justify-between items-center print:border-none print:shadow-none print:bg-transparent print:p-0">
+            class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl p-6 flex justify-between items-center print:hidden">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Relatório de Review de
+                <h3 class="text-xl font-bold text-white tracking-tight">Relatório de Review de
                     Terceirizados</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Saldos
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Saldos
                     Pendentes a Devolver • Gerado em: <span class="gen-date"></span></p>
             </div>
             <div>
@@ -319,6 +362,28 @@
                     </svg>
                     Imprimir / PDF
                 </button>
+            </div>
+        </div>
+
+        <!-- Professional Header (Visible in PDF/Print) -->
+        <div
+            class="hidden print:flex items-center justify-between p-6 border-b-2 border-zinc-200 mb-6 bg-white rounded-2xl border border-zinc-200">
+            <div class="flex items-center gap-4">
+                {% if user.company.logo_data %}
+                <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
+                {% else %}
+                <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
+                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-lg font-bold text-zinc-900">Review de Terceirizados</h2>
+                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -471,11 +536,33 @@
     <!-- Worker Deliveries Report -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:bg-transparent">
+
+        <!-- Professional Header (Visible in PDF/Print) -->
+        <div class="hidden print:flex items-center justify-between p-6 border-b-2 border-zinc-200 mb-6 bg-white">
+            <div class="flex items-center gap-4">
+                {% if user.company.logo_data %}
+                <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
+                {% else %}
+                <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
+                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-lg font-bold text-zinc-900">Entregas por Terceirizado</h2>
+                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+            </div>
+        </div>
+
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:hidden">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Relatório de Entregas por
+                <h3 class="text-xl font-bold text-white tracking-tight">Relatório de Entregas por
                     Terceirizado</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório
                     Gerado em: <span class="gen-date"></span></p>
             </div>
             <div class="flex gap-3 print:hidden">
@@ -536,11 +623,33 @@
     <!-- Movements History Table -->
     <div id="report-content"
         class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:bg-transparent">
+
+        <!-- Professional Header (Visible in PDF/Print) -->
+        <div class="hidden print:flex items-center justify-between p-6 border-b-2 border-zinc-200 mb-6 bg-white">
+            <div class="flex items-center gap-4">
+                {% if user.company.logo_data %}
+                <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
+                {% else %}
+                <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
+                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-lg font-bold text-zinc-900">Histórico de Movimentações</h2>
+                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+            </div>
+        </div>
+
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30 print:hidden">
             <div>
-                <h3 class="text-xl font-bold text-white tracking-tight print:text-black">Histórico Geral de
+                <h3 class="text-xl font-bold text-white tracking-tight">Histórico Geral de
                     Movimentações</h3>
-                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono print:text-black">Relatório
+                <p class="text-xs text-zinc-500 mt-1 uppercase tracking-widest font-mono">Relatório
                     Gerado em: <span class="gen-date"></span></p>
             </div>
             <div class="flex gap-3 print:hidden">
@@ -625,7 +734,9 @@
 </div>
 
 <script>
-    document.getElementById('gen-date').innerText = new Date().toLocaleString('pt-BR');
+    document.querySelectorAll('.gen-date').forEach(el => {
+        el.innerText = new Date().toLocaleString('pt-BR');
+    });
 </script>
 
 <style>

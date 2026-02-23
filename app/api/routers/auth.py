@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Request, Depends, Form, status
+import base64
+import json
+from io import BytesIO
+from PIL import Image
+from fastapi import APIRouter, Request, Depends, Form, status, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -82,9 +86,49 @@ async def profile_view(
     return templates.TemplateResponse("profile.html", {
         "request": request, 
         "user": user,
+        "company": user.company,
         "success": success,
         "error": error
     })
+
+@router.post("/profile/company")
+async def profile_company_update(
+    logo: UploadFile = File(None),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    if not user.company:
+        return RedirectResponse(url="/profile?error=Empresa não encontrada", status_code=status.HTTP_303_SEE_OTHER)
+    
+    if logo and logo.filename:
+        try:
+            # Read and Resize Image
+            contents = await logo.read()
+            img = Image.open(BytesIO(contents))
+            
+            # Convert to RGB if necessary (e.g. for JPEG)
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGBA")
+            else:
+                img = img.convert("RGB")
+
+            # Max size 400x120 for reports header
+            img.thumbnail((400, 120))
+            
+            # Save to buffer as PNG for consistent support
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+            
+            # Save Base64 to Company model
+            user.company.logo_data = f"data:image/png;base64,{img_str}"
+            db.commit()
+            
+            return RedirectResponse(url="/profile?section=company&success=Logomarca atualizada com sucesso", status_code=status.HTTP_303_SEE_OTHER)
+        except Exception as e:
+            return RedirectResponse(url=f"/profile?section=company&error=Erro ao processar imagem: {str(e)}", status_code=status.HTTP_303_SEE_OTHER)
+            
+    return RedirectResponse(url="/profile?section=company", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post("/profile/update")
 async def profile_update(

@@ -8,10 +8,10 @@
 
 
 <!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <!-- Total Products -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Produtos Cadastrados</p>
-            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_products }}</h3>
+            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_products }}</h3>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Movimentações (Hoje)</p>
-            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.movements_today }}</h3>
+            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.movements_today }}</h3>
         </div>
     </div>
 
@@ -69,7 +69,7 @@
                 </div>
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Terceirizados</p>
-            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_workers }}</h3>
+            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_workers }}</h3>
         </div>
     </div>
 
@@ -90,7 +90,7 @@
                 </div>
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Remessas Ativas</p>
-            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
+            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
         </div>
     </div>
 
@@ -110,14 +110,14 @@
                 </div>
             </div>
             <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">A Receber</p>
-            <h3 class="text-3xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.pending_receive }}</h3>
+            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.pending_receive }}</h3>
         </div>
     </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Movements Chart -->
-    <div class="bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg">
+    <div class="bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg">
         <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Movimentações (7 Dias)</h3>
         <div class="relative h-64 w-full">
             <canvas id="movementsChart"></canvas>
@@ -125,7 +125,7 @@
     </div>
 
     <!-- Categories Chart -->
-    <div class="bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg">
+    <div class="bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg">
         <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Distribuição por Categoria</h3>
         <div class="relative h-64 w-full flex justify-center">
             <canvas id="categoriesChart"></canvas>
@@ -146,7 +146,7 @@
                 Consumo por Terceirizado (30 dias)
             </h4>
         </div>
-        <div class="p-6">
+        <div class="p-5">
             <div class="space-y-4">
                 {% for worker_name, quantity in worker_consumption.items() %}
                 <div class="flex flex-col gap-1.5">
@@ -168,7 +168,7 @@
     </div>
 
     <!-- Top Production -->
-    <div class="bg-surface/50 border border-white/5 rounded-2xl p-6 shadow-lg backdrop-blur-xl flex flex-col">
+    <div class="bg-surface/50 border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-xl flex flex-col">
         <div class="p-0 border-b border-white/5 pb-5 mb-5">
             <h4 class="text-sm font-bold text-white flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,8 +206,8 @@
     </div>
 </div>
 
-<div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden mb-8 backdrop-blur-xl shadow-lg">
-    <div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface/30">
+<div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden mb-6 backdrop-blur-xl shadow-lg">
+    <div class="p-5 border-b border-white/5 flex justify-between items-center bg-surface/30">
         <h3 class="text-sm font-bold text-white uppercase tracking-wider">Últimas Movimentações</h3>
 
     </div>
@@ -215,30 +215,30 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-zinc-950/30 border-b border-white/5">
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Data</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Produto</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Tipo</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Qtd
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Qtd
                     </th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Setor</th>
-                    <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         Motivo</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
                 {% for mov in latest_movements %}
                 <tr class="hover:bg-white/5 transition-colors group">
-                    <td class="px-6 py-4 text-xs font-mono text-zinc-400 group-hover:text-zinc-300">{{
+                    <td class="px-5 py-2.5 text-xs font-mono text-zinc-400 group-hover:text-zinc-300">{{
                         mov.timestamp.strftime('%d/%m
                         %H:%M') }}
                     </td>
-                    <td class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white">{{ mov.product.name
+                    <td class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white">{{ mov.product.name
                         }}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-5 py-2.5">
                         {% if mov.type.value == 'entrada' %}
                         <span
                             class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 uppercase tracking-wider">ENTRADA</span>
@@ -247,9 +247,9 @@
                             class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider">SAÍDA</span>
                         {% endif %}
                     </td>
-                    <td class="px-6 py-4 text-sm font-mono text-zinc-300">{{ mov.quantity }}</td>
-                    <td class="px-6 py-4 text-xs text-zinc-400">{{ mov.sector or '-' }}</td>
-                    <td class="px-6 py-4 text-xs text-zinc-500">{{ mov.reason or '-' }}</td>
+                    <td class="px-5 py-2.5 text-sm font-mono text-zinc-300">{{ mov.quantity }}</td>
+                    <td class="px-5 py-2.5 text-xs text-zinc-400">{{ mov.sector or '-' }}</td>
+                    <td class="px-5 py-2.5 text-xs text-zinc-500">{{ mov.reason or '-' }}</td>
                 </tr>
                 {% else %}
                 <tr>

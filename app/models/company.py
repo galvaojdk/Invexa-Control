@@ -9,6 +9,7 @@ class Company(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     is_active = Column(Boolean, default=True)
+    logo_data = Column(String, nullable=True) # Base64 image data
     created_at = Column(DateTime, default=datetime.now)
     
     users = relationship("User", back_populates="company")

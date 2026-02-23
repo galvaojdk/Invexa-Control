@@ -30,6 +30,32 @@ def init_multitenancy(db: Session):
                 db.rollback()
                 print(f"Migration Error on {table}: {e}")
 
+    # 0.1 Handle Financial columns in Products
+    try:
+        db.execute(text("SELECT unit_cost FROM products LIMIT 1"))
+    except Exception:
+        db.rollback()
+        db.execute(text("ALTER TABLE products ADD COLUMN unit_cost FLOAT DEFAULT 0.0"))
+        db.commit()
+        print("Migration: Added unit_cost to products")
+    
+    try:
+        db.execute(text("SELECT markup_percentage FROM products LIMIT 1"))
+    except Exception:
+        db.rollback()
+        db.execute(text("ALTER TABLE products ADD COLUMN markup_percentage FLOAT DEFAULT 0.0"))
+        db.commit()
+        print("Migration: Added markup_percentage to products")
+
+    # 0.2 Handle Logo column in Companies
+    try:
+        db.execute(text("SELECT logo_data FROM companies LIMIT 1"))
+    except Exception:
+        db.rollback()
+        db.execute(text("ALTER TABLE companies ADD COLUMN logo_data TEXT"))
+        db.commit()
+        print("Migration: Added logo_data to companies")
+
     # 1. Ensure "Demonstração" company exists
     demo_company = db.query(Company).filter(Company.name == "Demonstração").first()
     if not demo_company:

@@ -36,6 +36,8 @@ async def create_product(
     is_primary: bool = Form(False),
     sku: str = Form(None),
     composition_data: str = Form(None), # JSON string
+    unit_cost: float = Form(0.0),
+    markup_percentage: float = Form(0.0),
 
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
@@ -52,6 +54,8 @@ async def create_product(
         is_composite=is_composite,
         is_primary=is_primary,
         current_stock=0.0,
+        unit_cost=unit_cost,
+        markup_percentage=markup_percentage,
         company_id=user.company_id
     )
     db.add(new_product)
@@ -84,7 +88,6 @@ async def create_product(
     
     db.commit()
     return RedirectResponse(url="/inventory", status_code=status.HTTP_303_SEE_OTHER)
-
 @router.post("/products/{product_id}/update")
 async def update_product(
     product_id: int,
@@ -94,6 +97,8 @@ async def update_product(
     unit: str = Form("Und"),
     is_composite: bool = Form(False),
     is_primary: bool = Form(False),
+    unit_cost: float = Form(0.0),
+    markup_percentage: float = Form(0.0),
     composition_data: str = Form(None), # JSON string
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
@@ -108,6 +113,8 @@ async def update_product(
     product.unit = unit
     product.is_composite = is_composite
     product.is_primary = is_primary
+    product.unit_cost = unit_cost
+    product.markup_percentage = markup_percentage
     
     # Process Composition Update
     if is_composite:
@@ -344,7 +351,8 @@ async def get_product_details(
             "id": c.component.id,
             "name": c.component.name,
             "quantity": c.quantity,
-            "unit": c.component.unit
+            "unit": c.component.unit,
+            "unit_cost": c.component.unit_cost or 0.0
         })
 
     return {
@@ -355,16 +363,28 @@ async def get_product_details(
         "category": product.category.name if product.category else "-",
         "unit": product.unit or "un",
         "current_stock": product.current_stock,
+        "unit_cost": product.unit_cost or 0.0,
+        "markup_percentage": product.markup_percentage or 0.0,
         "is_composite": product.is_composite,
         "is_primary": product.is_primary,
         "composition": comp_list,
-        "history": [
-            {
-                "type": m.type.value,
-                "quantity": m.quantity,
-                "reason": m.reason,
-                "sector": m.sector or "-",
-                "timestamp": m.timestamp.strftime("%d/%m/%Y %H:%M")
-            } for m in history
-        ]
+        "estimated_cost": 0.0, # Will be calculated below
+        "suggested_price": 0.0,
     }
+    
+    # Calculate Estimated Cost for Composite
+    total_cost = 0.0
+    if product.is_composite:
+        for c in composition:
+            total_cost += (c.component.unit_cost or 0.0) * c.quantity
+        # Add a default facção cost if available (future) or just the worker average
+        # For now, it's just the materials
+        res["estimated_cost"] = total_cost
+        if product.markup_percentage:
+            res["suggested_price"] = total_cost * (1 + (product.markup_percentage / 100))
+    else:
+        # For non-composite, suggested price is based on its own unit_cost
+        if product.unit_cost and product.markup_percentage:
+            res["suggested_price"] = product.unit_cost * (1 + (product.markup_percentage / 100))
+
+    return res
