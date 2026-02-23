@@ -4,10 +4,10 @@
 {% block header_title %}Registro de Auditoria{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-4">
     <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
-            <h3 class="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
+        <div class="p-4 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
+            <h3 class="text-base font-bold text-white flex items-center gap-2 tracking-tight">
                 <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
@@ -15,41 +15,55 @@
                 </svg>
                 Log de Auditoria
             </h3>
-            <button onclick="confirmClearLogs()"
-                class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                    </path>
-                </svg>
-                Limpar Logs
-            </button>
+            <div class="flex items-center gap-4">
+                <form id="filter-form" action="/admin/audit" method="GET" class="flex items-center gap-2">
+                    <select name="company_id" onchange="this.form.submit()"
+                        class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                        <option value="">Todas as Empresas</option>
+                        {% for company in companies %}
+                        <option value="{{ company.id }}" {% if selected_company_id==company.id %}selected{% endif %}>
+                            {{ company.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <button onclick="confirmClearLogs()"
+                    class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Limpar Logs
+                </button>
+            </div>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-zinc-950/30 border-b border-white/5">
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest w-32">
+                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest w-32">
                             Data/Hora</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
                             USUÁRIO</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Ação</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
-                            RECURSO</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                            EMPRESA</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                             Detalhes</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for log in audit_logs %}
                     <tr class="hover:bg-white/5 transition-colors group">
-                        <td class="px-6 py-4 text-xs text-zinc-400 font-mono">{{ log.timestamp.strftime('%d/%m/%Y
+                        <td class="px-5 py-2.5 text-xs text-zinc-400 font-mono">{{ log.timestamp.strftime('%d/%m/%Y
                             %H:%M') }}</td>
                         <td
-                            class="px-6 py-4 text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+                            class="px-5 py-2.5 text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
                             {{ log.user.full_name or log.user.email }}</td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-5 py-2.5 text-center">
                             {% if log.action == 'CREATE' %}
                             <span
                                 class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wide">CRIAR</span>
@@ -65,15 +79,22 @@
                                 log.action }}</span>
                             {% endif %}
                         </td>
-                        <td class="px-6 py-4 text-xs font-mono text-zinc-400">{{ log.resource_type }}</td>
-                        <td class="px-6 py-4 text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors max-w-xs truncate"
+                        <td class="px-5 py-2.5">
+                            {% if log.company %}
+                            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">{{ log.company.name
+                                }}</span>
+                            {% else %}
+                            <span class="text-xs text-zinc-600 italic">Global</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-5 py-2.5 text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors max-w-xs truncate"
                             title="{{ log.description }}">
                             {{ log.description }}
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-zinc-500 text-sm italic">
+                        <td colspan="5" class="px-5 py-10 text-center text-zinc-500 text-sm italic">
                             <div class="flex flex-col items-center gap-2">
                                 <svg class="w-12 h-12 text-zinc-700" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">

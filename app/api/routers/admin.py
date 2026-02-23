@@ -158,14 +158,23 @@ async def create_company(
 @router.get("/audit")
 async def admin_audit_log(
     request: Request,
+    company_id: int = None,
     user: User = Depends(admin_required),
     db: Session = Depends(get_db)
 ):
-    logs = db.query(AuditLog).order_by(AuditLog.timestamp.desc()).all()
+    query = db.query(AuditLog)
+    if company_id:
+        query = query.filter(AuditLog.company_id == company_id)
+    
+    logs = query.order_by(AuditLog.timestamp.desc()).all()
+    companies = db.query(Company).all()
+    
     return templates.TemplateResponse("admin_audit.html", {
         "request": request,
         "user": user,
-        "audit_logs": logs
+        "audit_logs": logs,
+        "companies": companies,
+        "selected_company_id": company_id
     })
 
 @router.post("/audit/clear")

@@ -91,5 +91,6 @@ class AuditLog(Base):
     timestamp = Column(DateTime, default=datetime.now)
     
     user = relationship("User")
+    company = relationship("Company")
 
 
