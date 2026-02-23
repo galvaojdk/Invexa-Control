@@ -17,8 +17,8 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("")
 @router.get("/")
 async def inventory_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
-    products = db.query(Product).all()
-    categories = db.query(Category).all()
+    products = db.query(Product).filter(Product.company_id == user.company_id).all()
+    categories = db.query(Category).filter(Category.company_id == user.company_id).all()
     return templates.TemplateResponse("inventory.html", {
         "request": request, 
         "user": user, 
@@ -51,7 +51,8 @@ async def create_product(
         unit=unit,
         is_composite=is_composite,
         is_primary=is_primary,
-        current_stock=0.0 # Force 0 on creation
+        current_stock=0.0,
+        company_id=user.company_id
     )
     db.add(new_product)
     db.flush()
@@ -64,7 +65,8 @@ async def create_product(
                 comp = ProductComposition(
                     composite_id=new_product.id,
                     component_id=int(item['id']),
-                    quantity=float(item['quantity'])
+                    quantity=float(item['quantity']),
+                    company_id=user.company_id
                 )
                 db.add(comp)
         except Exception as e:
@@ -73,13 +75,13 @@ async def create_product(
     
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="CREATE_PRODUCT",
         resource_type="product",
         resource_id=new_product.id,
         description=f"Produto '{name}' (Unidade: {unit}) criado. Classificação: {'Composto' if is_composite else ''} {'Primário' if is_primary else ''}"
     ))
     
-    db.commit()
     db.commit()
     return RedirectResponse(url="/inventory", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -96,7 +98,7 @@ async def update_product(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     
@@ -111,25 +113,33 @@ async def update_product(
     if is_composite:
         # Simple strategy: Delete all and recreate
         try:
-            db.query(ProductComposition).filter(ProductComposition.composite_id == product.id).delete()
+            db.query(ProductComposition).filter(
+                ProductComposition.composite_id == product.id,
+                ProductComposition.company_id == user.company_id
+            ).delete()
             if composition_data:
                 items = json.loads(composition_data)
                 for item in items:
                     comp = ProductComposition(
                         composite_id=product.id,
                         component_id=int(item['id']),
-                        quantity=float(item['quantity'])
+                        quantity=float(item['quantity']),
+                        company_id=user.company_id
                     )
                     db.add(comp)
         except Exception as e:
              print(f"Error updating composition: {e}")
     else:
         # If not composite anymore, cleanup
-        db.query(ProductComposition).filter(ProductComposition.composite_id == product.id).delete()
+        db.query(ProductComposition).filter(
+            ProductComposition.composite_id == product.id,
+            ProductComposition.company_id == user.company_id
+        ).delete()
 
     
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="UPDATE_PRODUCT",
         resource_type="product",
         resource_id=product.id,
@@ -144,24 +154,25 @@ async def delete_product(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     
     # Check Verification
     # 1. Movements
-    mov_count = db.query(Movement).filter(Movement.product_id == product_id).count()
+    mov_count = db.query(Movement).filter(Movement.product_id == product_id, Movement.company_id == user.company_id).count()
     if mov_count > 0:
         raise HTTPException(status_code=400, detail=f"Não é possível excluir: existem {mov_count} movimentações registradas.")
     
     # 2. Shipments
     from app.models.worker import Shipment
-    ship_count = db.query(Shipment).filter(Shipment.product_id == product_id).count()
+    ship_count = db.query(Shipment).filter(Shipment.product_id == product_id, Shipment.company_id == user.company_id).count()
     if ship_count > 0:
         raise HTTPException(status_code=400, detail=f"Não é possível excluir: existem {ship_count} remessas para terceirizados.")
 
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="DELETE_PRODUCT",
         resource_type="product",
         resource_id=product_id,
@@ -176,7 +187,7 @@ async def export_inventory(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    products = db.query(Product).all()
+    products = db.query(Product).filter(Product.company_id == user.company_id).all()
     output = io.StringIO()
     writer = csv.DictWriter(output, fieldnames=[
         "sku", "name", "description", "category", "current_stock", "unit"
@@ -213,14 +224,14 @@ async def import_inventory(
         # If SKU provided, check existence. If not, generated later for new products.
         product = None
         if sku:
-            product = db.query(Product).filter(Product.sku == sku).first()
+            product = db.query(Product).filter(Product.sku == sku, Product.company_id == user.company_id).first()
             
         cat_name = row.get("category")
         category_id = None
         if cat_name:
-            cat = db.query(Category).filter(Category.name == cat_name).first()
+            cat = db.query(Category).filter(Category.name == cat_name, Category.company_id == user.company_id).first()
             if not cat:
-                cat = Category(name=cat_name)
+                cat = Category(name=cat_name, company_id=user.company_id)
                 db.add(cat)
                 db.flush()
             category_id = cat.id
@@ -242,7 +253,8 @@ async def import_inventory(
                 description=row.get("description", ""),
                 category_id=category_id,
                 current_stock=float(row.get("current_stock", 0)),
-                unit=row.get("unit", "un")
+                unit=row.get("unit", "un"),
+                company_id=user.company_id
             )
             db.add(new_product)
     db.commit()
@@ -251,7 +263,7 @@ async def import_inventory(
 @router.get("/categories")
 @router.get("/categories/")
 async def categories_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
-    categories = db.query(Category).all()
+    categories = db.query(Category).filter(Category.company_id == user.company_id).all()
     return RedirectResponse(url="/inventory?tab=categories", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post("/categories")
@@ -261,13 +273,14 @@ async def create_category(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    existing = db.query(Category).filter(Category.name == name).first()
+    existing = db.query(Category).filter(Category.name == name, Category.company_id == user.company_id).first()
     if not existing:
-        new_cat = Category(name=name)
+        new_cat = Category(name=name, company_id=user.company_id)
         db.add(new_cat)
         db.flush()
         db.add(AuditLog(
             user_id=user.id,
+            company_id=user.company_id,
             action="CREATE_CATEGORY",
             resource_type="category",
             resource_id=new_cat.id,
@@ -283,12 +296,12 @@ async def delete_category(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    category = db.query(Category).filter(Category.id == category_id).first()
+    category = db.query(Category).filter(Category.id == category_id, Category.company_id == user.company_id).first()
     if not category:
         raise HTTPException(status_code=404, detail="Categoria não encontrada")
-    product_count = db.query(Product).filter(Product.category_id == category_id).count()
+    product_count = db.query(Product).filter(Product.category_id == category_id, Product.company_id == user.company_id).count()
     if product_count > 0:
-        categories = db.query(Category).all()
+        categories = db.query(Category).filter(Category.company_id == user.company_id).all()
         # Redirect with error query param to be displayed by frontend
         # Alternatively, could render inventory.html with error, but redirection is simpler for now
         # We'll use a session cookie or query param. Query param is easiest:
@@ -298,6 +311,7 @@ async def delete_category(
         )
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="DELETE_CATEGORY",
         resource_type="category",
         resource_id=category_id,
@@ -313,14 +327,17 @@ async def get_product_details(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
         
-    history = db.query(Movement).filter(Movement.product_id == product_id).order_by(Movement.timestamp.desc()).limit(10).all()
+    history = db.query(Movement).filter(Movement.product_id == product_id, Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).limit(10).all()
     
     # Fetch Composition
-    composition = db.query(ProductComposition).filter(ProductComposition.composite_id == product_id).all()
+    composition = db.query(ProductComposition).filter(
+        ProductComposition.composite_id == product_id,
+        ProductComposition.company_id == user.company_id
+    ).all()
     comp_list = []
     for c in composition:
         comp_list.append({

@@ -26,6 +26,9 @@ class Worker(Base):
     
     worker_type_id = Column(Integer, ForeignKey("worker_types.id"), nullable=True)
     
+    company_id = Column(Integer, ForeignKey("companies.id"))
+    company = relationship("Company", back_populates="workers")
+    
     daily_rate = Column(Float, default=0.0)
     active = Column(Boolean, default=True)
     notes = Column(Text, nullable=True)
@@ -41,6 +44,8 @@ class Shipment(Base):
     id = Column(Integer, primary_key=True, index=True)
     worker_id = Column(Integer, ForeignKey("workers.id"))
     product_id = Column(Integer, ForeignKey("products.id"))
+    
+    company_id = Column(Integer, ForeignKey("companies.id"))
     
     quantity = Column(Float, nullable=False) # Quantidade enviada
     returned_quantity = Column(Float, default=0.0) # Quantidade já retornada

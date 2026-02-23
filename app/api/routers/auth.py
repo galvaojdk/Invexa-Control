@@ -51,8 +51,17 @@ async def register(
     if db_user:
         return "Usuário já existe"
         
+    from app.models.company import Company
+    demo_company = db.query(Company).filter(Company.name == "Demonstração").first()
+    company_id = demo_company.id if demo_company else None
+
     hashed_password = security.get_password_hash(password)
-    new_user = User(email=email, hashed_password=hashed_password, full_name=full_name)
+    new_user = User(
+        email=email, 
+        hashed_password=hashed_password, 
+        full_name=full_name,
+        company_id=company_id
+    )
     db.add(new_user)
     db.commit()
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)

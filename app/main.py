@@ -1,7 +1,7 @@
 import os
 from datetime import date
 from fastapi import FastAPI, Request, Depends, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -9,14 +9,24 @@ from sqlalchemy import func
 
 from app.core.database import SessionLocal, Base, engine
 
+from app.models.company import Company
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement
 from app.api.dependencies import get_db, login_required
 from app.api.routers import auth, inventory, movements, admin, reports
 from app.models.worker import Worker, Shipment
+from app.core.init_db import init_multitenancy
 
 # Create tables on startup
+# Create tables on startup
 Base.metadata.create_all(bind=engine)
+
+# Initialize multi-tenancy (ensure demo company and migrate orphaned data)
+db = SessionLocal()
+try:
+    init_multitenancy(db)
+finally:
+    db.close()
 
 app = FastAPI(title="Invexa Control")
 

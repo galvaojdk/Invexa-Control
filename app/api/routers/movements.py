@@ -17,9 +17,9 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("")
 @router.get("/")
 async def movements_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
-    movements_list = db.query(Movement).order_by(Movement.timestamp.desc()).all()
-    products = db.query(Product).all()
-    workers = db.query(Worker).filter(Worker.active == True).all()
+    movements_list = db.query(Movement).filter(Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).all()
+    products = db.query(Product).filter(Product.company_id == user.company_id).all()
+    workers = db.query(Worker).filter(Worker.company_id == user.company_id, Worker.active == True).all()
     return templates.TemplateResponse("movements.html", {
         "request": request, 
         "user": user, 
@@ -51,6 +51,7 @@ async def register_movement(
             quantity=quantity,
             mov_type=m_type,
             user_id=user.id,
+            company_id=user.company_id,
             reason=reason,
             sector=sector
         )
@@ -112,6 +113,7 @@ async def register_batch_movements(
                 quantity=item.quantity,
                 mov_type=m_type,
                 user_id=user.id,
+                company_id=user.company_id,
                 reason=data.reason,
                 sector=final_sector
             )
@@ -124,7 +126,8 @@ async def register_batch_movements(
                     product_id=item.product_id,
                     quantity=item.quantity,
                     status=ShipmentStatus.PENDING,
-                    notes=data.reason
+                    notes=data.reason,
+                    company_id=user.company_id
                 )
                 db.add(new_shipment)
 
@@ -163,7 +166,7 @@ async def print_batch_packing_list(
         if not id_list:
              raise HTTPException(status_code=400, detail="Nenhum ID fornecido")
              
-        movements = db.query(Movement).filter(Movement.id.in_(id_list)).all()
+        movements = db.query(Movement).filter(Movement.id.in_(id_list), Movement.company_id == user.company_id).all()
         
         if not movements:
             raise HTTPException(status_code=404, detail="Nenhuma movimentação encontrada")
@@ -195,11 +198,11 @@ async def get_product_details_api(
     """
     Relocated from main.py, keeping original structure for frontend compatibility.
     """
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
         
-    history = db.query(Movement).filter(Movement.product_id == product_id).order_by(Movement.timestamp.desc()).limit(10).all()
+    history = db.query(Movement).filter(Movement.product_id == product_id, Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).limit(10).all()
     
     return {
         "id": product.id,

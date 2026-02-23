@@ -19,11 +19,11 @@ async def register_production(
     user: User = Depends(login_required)
 ):
     # 1. Validate Worker and Product
-    worker = db.query(Worker).filter(Worker.id == worker_id).first()
+    worker = db.query(Worker).filter(Worker.id == worker_id, Worker.company_id == user.company_id).first()
     if not worker:
         raise HTTPException(status_code=404, detail="Terceirizado não encontrado")
         
-    product = db.query(Product).filter(Product.id == product_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
         
@@ -38,7 +38,10 @@ async def register_production(
          # For now, let's assume it MUST be composite to trigger component deduction.
          pass 
 
-    components = db.query(ProductComposition).filter(ProductComposition.composite_id == product_id).all()
+    components = db.query(ProductComposition).join(Product, ProductComposition.composite_id == Product.id).filter(
+        ProductComposition.composite_id == product_id,
+        Product.company_id == user.company_id
+    ).all()
     
     if not components and product.is_composite:
          raise HTTPException(status_code=400, detail="Produto marcado como composto mas sem composição definida.")
@@ -56,7 +59,8 @@ async def register_production(
             Shipment.worker_id == worker_id,
             Shipment.product_id == comp.component_id,
             Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]),
-            (Shipment.quantity - Shipment.returned_quantity) > 0 # Has balance
+            (Shipment.quantity - Shipment.returned_quantity) > 0, # Has balance
+            Shipment.company_id == user.company_id
         ).order_by(Shipment.created_at.asc()).all()
         
         remaining_to_deduct = required_qty
@@ -90,6 +94,7 @@ async def register_production(
         type=MovementType.IN,
         reason=f"Produção Recebida de {worker.name}",
         user_id=user.id,
+        company_id=user.company_id,
         timestamp=datetime.now()
     )
     db.add(movement)

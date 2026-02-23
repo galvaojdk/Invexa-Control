@@ -34,11 +34,11 @@ async def reports_view(
     if worker_id: worker_id = int(worker_id)
 
     # Fetch common data for filters
-    all_products = db.query(Product).order_by(Product.name).all()
+    all_products = db.query(Product).filter(Product.company_id == user.company_id).order_by(Product.name).all()
     # Need to import Category if not imported, or query it dynamically if model is available
     from app.models.inventory import Category # local import to ensure availability or assume global import
-    all_categories = db.query(Category).order_by(Category.name).all()
-    all_workers = db.query(Worker).order_by(Worker.name).all()
+    all_categories = db.query(Category).filter(Category.company_id == user.company_id).order_by(Category.name).all()
+    all_workers = db.query(Worker).filter(Worker.company_id == user.company_id).order_by(Worker.name).all()
 
     # Common context
     context = {
@@ -63,7 +63,7 @@ async def reports_view(
 
     if report_type == "outsourced":
         # Fetch data for Outsourced Shipments Report
-        query = db.query(Shipment).join(Worker).join(Product).order_by(Shipment.created_at.desc())
+        query = db.query(Shipment).join(Worker).join(Product).filter(Shipment.company_id == user.company_id).order_by(Shipment.created_at.desc())
         
         if filter_start:
             query = query.filter(Shipment.created_at >= filter_start)
@@ -99,6 +99,7 @@ async def reports_view(
         shipments_query = db.query(Shipment).join(Worker).join(Product)\
             .filter(Shipment.status != ShipmentStatus.CANCELLED)\
             .filter(Shipment.quantity > Shipment.returned_quantity)\
+            .filter(Shipment.company_id == user.company_id)\
             .order_by(Worker.name, Product.name)
             
         if filter_start:
@@ -116,6 +117,7 @@ async def reports_view(
         movements_query = db.query(Movement).join(Product)\
             .filter(Movement.type == MovementType.IN)\
             .filter(Movement.reason.like("Produção Recebida de%"))\
+            .filter(Movement.company_id == user.company_id)\
             .order_by(Movement.timestamp.desc())
 
         if filter_start:
@@ -124,7 +126,7 @@ async def reports_view(
              movements_query = movements_query.filter(Movement.timestamp <= filter_end)
         
         if worker_id:
-            target_worker = db.query(Worker).get(worker_id)
+            target_worker = db.query(Worker).filter(Worker.id == worker_id, Worker.company_id == user.company_id).first()
             if target_worker:
                  movements_query = movements_query.filter(Movement.reason == f"Produção Recebida de {target_worker.name}")
         
@@ -135,7 +137,9 @@ async def reports_view(
 
         # Fetch Product Compositions for potential production calculation
         from app.models.inventory import ProductComposition
-        all_compositions = db.query(ProductComposition).all()
+        all_compositions = db.query(ProductComposition).join(Product, ProductComposition.composite_id == Product.id).filter(
+            Product.company_id == user.company_id
+        ).all()
         compositions_map = {}
         for c in all_compositions:
             if c.composite_id not in compositions_map:
@@ -184,7 +188,7 @@ async def reports_view(
             
             # Filter if worker_id was passed (safety check if names match)
             if worker_id:
-                target_worker = db.query(Worker).get(worker_id)
+                target_worker = db.query(Worker).filter(Worker.id == worker_id, Worker.company_id == user.company_id).first()
                 if target_worker and target_worker.name != w_name:
                     continue
 
@@ -243,7 +247,8 @@ async def reports_view(
         # We query Movements of type IN where the reason indicates "Produção Recebida de {WorkerName}"
         query = db.query(Movement).join(Product).filter(
             Movement.type == MovementType.IN,
-            Movement.reason.like("Produção Recebida de%")
+            Movement.reason.like("Produção Recebida de%"),
+            Movement.company_id == user.company_id
         ).order_by(Movement.timestamp.desc())
 
         if filter_start:
@@ -257,7 +262,7 @@ async def reports_view(
         # stores the worker name in the 'reason' string, not the ID directly in a relationship 
         # (though ideally it should have a sector link or separate table).
         if worker_id:
-            target_worker = db.query(Worker).get(worker_id)
+            target_worker = db.query(Worker).filter(Worker.id == worker_id, Worker.company_id == user.company_id).first()
             if target_worker:
                  query = query.filter(Movement.reason == f"Produção Recebida de {target_worker.name}")
             else:
@@ -285,7 +290,7 @@ async def reports_view(
 
     elif report_type == "movements_history":
         # Global Movements History Report
-        query = db.query(Movement).join(Product).order_by(Movement.timestamp.desc())
+        query = db.query(Movement).join(Product).filter(Movement.company_id == user.company_id).order_by(Movement.timestamp.desc())
 
         if filter_start:
             query = query.filter(Movement.timestamp >= filter_start)
@@ -317,7 +322,7 @@ async def reports_view(
 
     else: # Default: 'stock'
         # Stock Position Report
-        query = db.query(Product)
+        query = db.query(Product).filter(Product.company_id == user.company_id)
         
         if category_id:
             query = query.filter(Product.category_id == category_id)

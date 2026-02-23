@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Gestão de Empresas - Invexa Control{% endblock %}
+{% block header_title %}Administração de Empresas{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-6">
+    <!-- New Company Form -->
+    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-xl">
+        <h3 class="text-lg font-bold text-white mb-4">Nova Empresa</h3>
+        <form action="/admin/companies/create" method="POST" class="flex gap-4">
+            <input type="text" name="name" placeholder="Nome da Empresa" required
+                class="flex-1 bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-2 text-white focus:border-indigo-500 outline-none transition-all">
+            <button type="submit"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/20">
+                Cadastrar
+            </button>
+        </form>
+    </div>
+
+    <!-- Companies List -->
+    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                    </path>
+                </svg>
+                Empresas Registradas
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-zinc-950/30 border-b border-white/5">
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">ID</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Nome</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data de
+                            Cadastro</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                            Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for c in companies %}
+                    <tr class="hover:bg-white/5 transition-colors group">
+                        <td class="px-6 py-4 text-sm text-zinc-500 font-mono">{{ c.id }}</td>
+                        <td
+                            class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                            {{ c.name }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-400">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="text-xs text-zinc-600 italic">Gestão Individual em breve</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 class User(Base):
@@ -8,6 +9,10 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
+    
+    # Multi-tenancy
+    company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
+    company = relationship("Company", back_populates="users")
     
     # Premium Fields
     is_premium = Column(Boolean, default=False)

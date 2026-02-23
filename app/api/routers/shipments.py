@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("")
 @router.get("/")
 async def shipments_view(request: Request, status_filter: str = "active", user: User = Depends(login_required), db: Session = Depends(get_db)):
-    query = db.query(Shipment).order_by(Shipment.created_at.desc())
+    query = db.query(Shipment).filter(Shipment.company_id == user.company_id).order_by(Shipment.created_at.desc())
     
     if status_filter == "active":
         query = query.filter(Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]))
@@ -23,8 +23,8 @@ async def shipments_view(request: Request, status_filter: str = "active", user: 
     shipments = query.all()
     
     # Fetch data for modals
-    workers = db.query(Worker).filter(Worker.active == True).all()
-    products = db.query(Product).order_by(Product.name).all()
+    workers = db.query(Worker).filter(Worker.active == True, Worker.company_id == user.company_id).all()
+    products = db.query(Product).filter(Product.company_id == user.company_id).order_by(Product.name).all()
 
     return templates.TemplateResponse("shipments.html", {
         "request": request,
@@ -45,8 +45,8 @@ async def create_shipment(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    worker = db.query(Worker).filter(Worker.id == worker_id).first()
-    product = db.query(Product).filter(Product.id == product_id).first()
+    worker = db.query(Worker).filter(Worker.id == worker_id, Worker.company_id == user.company_id).first()
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
     
     if not worker or not product:
         raise HTTPException(status_code=404, detail="Recurso não encontrado")
@@ -65,7 +65,8 @@ async def create_shipment(
         quantity=quantity,
         cost_per_unit=cost_per_unit,
         notes=notes,
-        status=ShipmentStatus.PENDING
+        status=ShipmentStatus.PENDING,
+        company_id=user.company_id
     )
     db.add(shipment)
     
@@ -79,6 +80,7 @@ async def create_shipment(
         type=MovementType.OUT,
         reason=f"Remessa para {worker.name}",
         user_id=user.id,
+        company_id=user.company_id,
         sector="Terceirizado",
         timestamp=datetime.now()
     )
@@ -122,6 +124,7 @@ async def return_shipment(
         type=MovementType.IN,
         reason=f"Retorno de {shipment.worker.name}",
         user_id=user.id,
+        company_id=user.company_id,
         sector="Estoque Principal",
         timestamp=datetime.now()
     )
@@ -167,6 +170,7 @@ async def cancel_shipment(
             type=MovementType.IN,
             reason=f"Cancelamento de remessa para {shipment.worker.name}",
             user_id=user.id,
+            company_id=user.company_id,
             sector="Estoque Principal",
             timestamp=datetime.now()
         )

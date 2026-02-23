@@ -5,6 +5,17 @@
 
 {% block content %}
 <div class="flex flex-col gap-6">
+    {% set success_msg = request.query_params.get('success') %}
+    {% if success_msg %}
+    <div
+        class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        {{ success_msg }}
+    </div>
+    {% endif %}
+
     <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
         <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
             <h3 class="text-lg font-bold text-white flex items-center gap-2 tracking-tight">
@@ -27,6 +38,8 @@
                             Premium</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
                             Papel</th>
+                        <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                            Empresa</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
                             Ações</th>
                     </tr>
@@ -36,7 +49,12 @@
                     <tr class="hover:bg-white/5 transition-colors group">
                         <td
                             class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
-                            {{ u.full_name }}</td>
+                            {{ u.full_name or 'N/A' }}
+                            {% if not u.is_active %}
+                            <span
+                                class="ml-2 px-1.5 py-0.5 bg-red-500/10 text-red-400 text-[8px] font-bold rounded border border-red-500/20 uppercase">Inativo</span>
+                            {% endif %}
+                        </td>
                         <td class="px-6 py-4 text-sm text-zinc-400 font-mono">{{ u.email }}</td>
                         <td class="px-6 py-4 text-center">
                             {% if u.is_premium %}
@@ -56,29 +74,75 @@
                                 class="px-2 py-1 bg-zinc-500/10 text-zinc-500 text-[10px] font-bold rounded-lg border border-zinc-500/20 uppercase tracking-wider">USER</span>
                             {% endif %}
                         </td>
+                        <td class="px-6 py-4 text-center">
+                            <form action="/admin/users/{{ u.id }}/assign-company" method="POST"
+                                class="flex items-center gap-2 justify-center">
+                                <select name="company_id"
+                                    class="text-[11px] bg-zinc-900/50 border border-white/10 rounded px-2 py-1 text-zinc-300 focus:border-indigo-500 outline-none transition-all"
+                                    onchange="this.form.submit()">
+                                    <option value="">Sem Empresa</option>
+                                    {% for company in companies %}
+                                    <option value="{{ company.id }}" {% if u.company_id==company.id %}selected{% endif
+                                        %}>{{ company.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
                         <td class="px-6 py-4 text-right">
-                            <form action="/admin/users/{{ u.id }}/toggle-premium" method="POST" class="inline">
-                                <button type="submit" class="text-xs font-bold transition-all px-3 py-1.5 rounded-lg border uppercase tracking-wider
-                                    {% if u.is_premium %}
-                                    text-red-400 border-red-400/20 hover:bg-red-400/10
-                                    {% else %}
-                                    text-emerald-400 border-emerald-400/20 hover:bg-emerald-400/10
-                                    {% endif %}">
-                                    {% if u.is_premium %}Remover Premium{% else %}Tornar Premium{% endif %}
-                                </button>
-                            </form>
+                            <div class="flex items-center justify-end gap-2">
+                                <form action="/admin/users/{{ u.id }}/toggle-premium" method="POST" class="inline">
+                                    <button type="submit" class="text-[10px] font-bold transition-all px-2 py-1 rounded-lg border uppercase tracking-wider
+                                        {% if u.is_premium %}
+                                        text-red-400 border-red-400/20 hover:bg-red-400/10
+                                        {% else %}
+                                        text-emerald-400 border-emerald-400/20 hover:bg-emerald-400/10
+                                        {% endif %}">
+                                        {% if u.is_premium %}Remover P.{% else %}Tornar P.{% endif %}
+                                    </button>
+                                </form>
 
-                            <form action="/admin/users/{{ u.id }}/toggle-admin" method="POST" class="inline ml-2">
-                                <button type="submit" class="text-xs font-bold transition-all px-3 py-1.5 rounded-lg border uppercase tracking-wider
-                                    {% if u.is_admin %}
-                                    text-red-400 border-red-400/20 hover:bg-red-400/10
-                                    {% else %}
-                                    text-indigo-400 border-indigo-400/20 hover:bg-indigo-400/10
-                                    {% endif %}" {% if u.id==user.id %}disabled opacity-50
-                                    title="Você não pode remover seu próprio acesso" {% endif %}>
-                                    {% if u.is_admin %}Remover Admin{% else %}Tornar Admin{% endif %}
+                                <form action="/admin/users/{{ u.id }}/toggle-admin" method="POST" class="inline">
+                                    <button type="submit" class="text-[10px] font-bold transition-all px-2 py-1 rounded-lg border uppercase tracking-wider
+                                         {% if u.is_admin %}
+                                         text-red-400 border-red-400/20 hover:bg-red-400/10
+                                         {% else %}
+                                         text-indigo-400 border-indigo-400/20 hover:bg-indigo-400/10
+                                         {% endif %}" {% if u.id==user.id %}disabled opacity-50
+                                        title="Você não pode remover seu próprio acesso" {% endif %}>
+                                        {% if u.is_admin %}Remover A.{% else %}Tornar A.{% endif %}
+                                    </button>
+                                </form>
+
+                                <form id="reset-form-{{ u.id }}" action="/admin/users/{{ u.id }}/reset-password"
+                                    method="POST" class="hidden">
+                                    <input type="hidden" name="new_password" id="new-password-{{ u.id }}">
+                                </form>
+                                <button type="button"
+                                    onclick="const p = prompt('Digite a nova senha para {{ u.email }}:'); if(p) { document.getElementById('new-password-{{ u.id }}').value = p; document.getElementById('reset-form-{{ u.id }}').submit(); }"
+                                    class="text-[10px] font-bold transition-all px-2 py-1 rounded-lg border border-indigo-400/20 text-indigo-400 hover:bg-indigo-400/10 uppercase tracking-wider">
+                                    Senha
                                 </button>
-                            </form>
+
+                                <form action="/admin/users/{{ u.id }}/toggle-active" method="POST" class="inline">
+                                    <button type="submit" class="text-[10px] font-bold transition-all px-2 py-1 rounded-lg border uppercase tracking-wider
+                                         {% if u.is_active %}
+                                         text-amber-400 border-amber-400/20 hover:bg-amber-400/10
+                                         {% else %}
+                                         text-emerald-400 border-emerald-400/20 hover:bg-emerald-400/10
+                                         {% endif %}" {% if u.id==user.id %}disabled opacity-50{% endif %}>
+                                        {% if u.is_active %}Inativar{% else %}Ativar{% endif %}
+                                    </button>
+                                </form>
+
+                                <form action="/admin/users/{{ u.id }}/delete" method="POST" class="inline"
+                                    onsubmit="return confirm('Tem certeza que deseja excluir este usuário permanentemente?')">
+                                    <button type="submit"
+                                        class="text-[10px] font-bold transition-all px-2 py-1 rounded-lg border border-red-500/20 text-red-500 hover:bg-red-500/10 uppercase tracking-wider"
+                                        {% if u.id==user.id %}disabled opacity-50{% endif %}>
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

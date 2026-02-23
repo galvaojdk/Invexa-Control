@@ -1,5 +1,10 @@
 @echo off
 set PYTHON_EXE=python
+python --version >nul 2>&1
+if %errorlevel% neq 0 (
+    set PYTHON_EXE=C:\Users\IAP9978\AppData\Local\Programs\Python\Python313\python.exe
+)
+echo Usando: %PYTHON_EXE%
 echo ==========================================
 echo   Invexa Control - Inicializando Sistema
 echo ==========================================

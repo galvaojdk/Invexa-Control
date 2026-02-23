@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi import APIRouter, Request, Depends, HTTPException, status, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.models.inventory import AuditLog
+from app.models.company import Company
+from app.models.inventory import AuditLog, Product, Category, ProductComposition, Movement
 from app.api.dependencies import get_db, admin_required
+from app.models.worker import Worker, Shipment
+from app.models.worker_type import WorkerType
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 templates = Jinja2Templates(directory="app/templates")
@@ -16,10 +19,12 @@ async def admin_users_list(
     db: Session = Depends(get_db)
 ):
     users = db.query(User).all()
+    companies = db.query(Company).all()
     return templates.TemplateResponse("admin_users.html", {
         "request": request, 
         "user": user, 
-        "users": users
+        "users": users,
+        "companies": companies
     })
 
 @router.post("/users/{user_id}/toggle-premium")
@@ -56,6 +61,99 @@ async def toggle_user_admin(
     user.is_admin = not user.is_admin
     db.commit()
     return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/users/{user_id}/assign-company")
+async def assign_user_company(
+    user_id: int,
+    company_id: int = Form(...),
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user.company_id = company_id
+    db.commit()
+    return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/users/{user_id}/toggle-active")
+async def toggle_user_active(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    if user_id == admin.id:
+        return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user.is_active = not user.is_active
+    db.commit()
+    return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/users/{user_id}/delete")
+async def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    if user_id == admin.id:
+        return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    db.delete(user)
+    db.commit()
+    return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/users/{user_id}/reset-password")
+async def reset_user_password(
+    user_id: int,
+    new_password: str = Form(...),
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    from app.core.security import get_password_hash
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    user.hashed_password = get_password_hash(new_password)
+    db.commit()
+    return RedirectResponse(url="/admin/users?success=Senha redefinida com sucesso", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/companies")
+async def admin_companies_list(
+    request: Request,
+    user: User = Depends(admin_required),
+    db: Session = Depends(get_db)
+):
+    companies = db.query(Company).all()
+    return templates.TemplateResponse("admin_companies.html", {
+        "request": request,
+        "user": user,
+        "companies": companies
+    })
+
+@router.post("/companies/create")
+async def create_company(
+    name: str = Form(...),
+    db: Session = Depends(get_db),
+    admin: User = Depends(admin_required)
+):
+    existing = db.query(Company).filter(Company.name == name).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Empresa já existe")
+    
+    new_company = Company(name=name)
+    db.add(new_company)
+    db.commit()
+    return RedirectResponse(url="/admin/companies", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.get("/audit")
 async def admin_audit_log(
@@ -251,8 +349,13 @@ async def admin_reset_database(
         from app.models.worker import Worker, Shipment
         from app.models.worker_type import WorkerType
         
+        # Filter by company if requested, or show all if admin
+        # For multi-tenancy audit, usually each company sees its own, 
+        # but the global admin sees everything.
+        # Let's add a company filter if needed.
+        
         # Delete in order of dependencies (reverse creation)
-        db.query(AuditLog).delete()
+        db.query(AuditLog).delete() # Be careful: this clears EVERYTHING
         db.query(Movement).delete()
         db.query(Shipment).delete()
         db.query(ProductComposition).delete()

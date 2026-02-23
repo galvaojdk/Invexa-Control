@@ -19,11 +19,11 @@ async def create_worker_type(
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
-    existing = db.query(WorkerType).filter(WorkerType.name == name).first()
+    existing = db.query(WorkerType).filter(WorkerType.name == name, WorkerType.company_id == user.company_id).first()
     if existing:
         raise HTTPException(status_code=400, detail="Tipo já existe")
     
-    new_type = WorkerType(name=name)
+    new_type = WorkerType(name=name, company_id=user.company_id)
     db.add(new_type)
     db.commit()
     
@@ -55,7 +55,7 @@ async def delete_worker_type(
         raise HTTPException(status_code=404, detail="Tipo não encontrado")
     
     # Check for dependent workers
-    dependent_count = db.query(Worker).filter(Worker.worker_type_id == type_id, Worker.active == True).count()
+    dependent_count = db.query(Worker).filter(Worker.worker_type_id == type_id, Worker.active == True, Worker.company_id == user.company_id).count()
     if dependent_count > 0:
          # TODO: Handle error gracefully in frontend (flash message?), for now raising HTTP exception
          raise HTTPException(status_code=400, detail=f"Não é possível excluir. Existem {dependent_count} terceirizados vinculados a este tipo.")
@@ -67,9 +67,9 @@ async def delete_worker_type(
 @router.get("")
 @router.get("/")
 async def workers_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
-    workers = db.query(Worker).filter(Worker.active == True).all()
-    products = db.query(Product).all()
-    worker_types = db.query(WorkerType).all()
+    workers = db.query(Worker).filter(Worker.active == True, Worker.company_id == user.company_id).all()
+    products = db.query(Product).filter(Product.company_id == user.company_id).all()
+    worker_types = db.query(WorkerType).filter(WorkerType.company_id == user.company_id).all()
     
     return templates.TemplateResponse("workers.html", {
         "request": request,
@@ -98,13 +98,15 @@ async def create_worker(
         zip_code=zip_code,
         worker_type_id=worker_type_id,
         phone=phone,
-        role=role_name # Keeping role populated for backward compatibility/logging if needed
+        role=role_name,
+        company_id=user.company_id
     )
     db.add(new_worker)
     db.flush()
     
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="CREATE_WORKER",
         resource_type="worker",
         resource_id=new_worker.id,
@@ -141,6 +143,7 @@ async def update_worker(
 
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="UPDATE_WORKER",
         resource_type="worker",
         resource_id=worker.id,
@@ -160,7 +163,7 @@ async def delete_worker(
         raise HTTPException(status_code=404, detail="Terceirizado não encontrado")
 
     # Check for existing shipments
-    shipment_count = db.query(Shipment).filter(Shipment.worker_id == worker_id).count()
+    shipment_count = db.query(Shipment).filter(Shipment.worker_id == worker_id, Shipment.company_id == user.company_id).count()
     if shipment_count > 0:
         return RedirectResponse(
             url=f"/workers?error=Não é possível excluir. Existem {shipment_count} remessas vinculadas a este terceirizado.",
@@ -170,6 +173,7 @@ async def delete_worker(
     worker.active = False
     db.add(AuditLog(
         user_id=user.id,
+        company_id=user.company_id,
         action="DELETE_WORKER",
         resource_type="worker",
         resource_id=worker.id,

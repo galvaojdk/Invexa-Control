@@ -11,6 +11,7 @@ class InventoryService:
         quantity: float,
         mov_type: MovementType,
         user_id: int,
+        company_id: int,
         reason: str = None,
         sector: str = None
     ) -> Movement:
@@ -18,9 +19,9 @@ class InventoryService:
         Centrally handles stock updates, movement records, and audit logs.
         Refined to ensure atomic operation and consistent state.
         """
-        product = db.query(Product).filter(Product.id == product_id).first()
+        product = db.query(Product).filter(Product.id == product_id, Product.company_id == company_id).first()
         if not product:
-            raise ValueError("Produto não encontrado")
+            raise ValueError("Produto não encontrado ou acesso negado")
 
         # Update Stock
         if mov_type == MovementType.IN:
@@ -39,6 +40,7 @@ class InventoryService:
             reason=reason,
             timestamp=datetime.now(),
             user_id=user_id,
+            company_id=company_id,
             sector=sector
         )
         db.add(movement)
@@ -48,6 +50,7 @@ class InventoryService:
         action_type = "ENTRADA_ESTOQUE" if mov_type == MovementType.IN else "SAIDA_ESTOQUE"
         audit = AuditLog(
             user_id=user_id,
+            company_id=company_id,
             action=action_type,
             resource_type="movement",
             resource_id=movement.id,
@@ -70,6 +73,7 @@ class InventoryService:
                 quantity=item['quantity'],
                 mov_type=item['type'],
                 user_id=user.id,
+                company_id=user.company_id,
                 reason=item.get('reason'),
                 sector=item.get('sector')
             )

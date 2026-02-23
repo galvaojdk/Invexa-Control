@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 async def dashboard_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
     try:
         # Basic Stats
-        total_products = db.query(Product).count()
+        total_products = db.query(Product).filter(Product.company_id == user.company_id).count()
         # low_stock removed as per request
         
         today = date.today()
@@ -31,15 +31,17 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         
         movements_today = db.query(Movement).filter(
             Movement.timestamp >= start_of_day,
-            Movement.timestamp <= end_of_day
+            Movement.timestamp <= end_of_day,
+            Movement.company_id == user.company_id
         ).count()
         
-        total_categories = db.query(Category).count()
-        total_workers = db.query(Worker).count()
+        total_categories = db.query(Category).filter(Category.company_id == user.company_id).count()
+        total_workers = db.query(Worker).filter(Worker.company_id == user.company_id).count()
 
         # Active Shipments Count
         active_shipments_count = db.query(Shipment).filter(
-            Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL])
+            Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]),
+            Shipment.company_id == user.company_id
         ).count()
 
         # Pending Receive Quantity (Theorical Production / Kits)
@@ -47,7 +49,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         
         # 1. Fetch all active shipments
         active_shipments = db.query(Shipment).filter(
-            Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL])
+            Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]),
+            Shipment.company_id == user.company_id
         ).all()
         
         # 2. Group by Worker
@@ -59,7 +62,9 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
                 worker_materials[s.worker_id][s.product_id] += balance
                 
         # 3. Fetch Recipes (Compositions)
-        compositions = db.query(ProductComposition).all()
+        compositions = db.query(ProductComposition).join(Product, ProductComposition.composite_id == Product.id).filter(
+            Product.company_id == user.company_id
+        ).all()
         recipes = defaultdict(dict)
         for comp in compositions:
             recipes[comp.composite_id][comp.component_id] = comp.quantity
@@ -98,7 +103,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
 
         
         # Latest Movements
-        latest_movements = db.query(Movement).order_by(Movement.timestamp.desc()).limit(10).all()
+        latest_movements = db.query(Movement).filter(Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).limit(10).all()
         
         # Chart Data: Movements Last 7 Days
         seven_days_ago = today - timedelta(days=6)
@@ -109,7 +114,8 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
             Movement.type,
             func.sum(Movement.quantity).label('total')
         ).filter(
-            Movement.timestamp >= datetime.combine(seven_days_ago, datetime.min.time())
+            Movement.timestamp >= datetime.combine(seven_days_ago, datetime.min.time()),
+            Movement.company_id == user.company_id
         ).group_by(
             func.date(Movement.timestamp), Movement.type
         ).all()
@@ -133,7 +139,10 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         cat_data = db.query(
             Category.name,
             func.count(Product.id).label('count')
-        ).join(Product).group_by(Category.name).all()
+        ).join(Product).filter(
+            Category.company_id == user.company_id,
+            Product.company_id == user.company_id
+        ).group_by(Category.name).all()
         
         category_labels = [c.name for c in cat_data]
         category_counts = [c.count for c in cat_data]
@@ -142,13 +151,17 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         
         # Additional Dashboard Metrics (moved from Reports)
         thirty_days_ago = datetime.now() - timedelta(days=30)
-        recent_movements = db.query(Movement).filter(Movement.timestamp >= thirty_days_ago).all()
+        recent_movements = db.query(Movement).filter(
+            Movement.timestamp >= thirty_days_ago,
+            Movement.company_id == user.company_id
+        ).all()
         recent_count = len(recent_movements)
         
         # Worker Consumption (Top 5 in last 30 days)
         # Based on Shipments created (sent materials)
         recent_shipments_in = db.query(Shipment).filter(
-            Shipment.created_at >= thirty_days_ago
+            Shipment.created_at >= thirty_days_ago,
+            Shipment.company_id == user.company_id
         ).all()
         
         worker_consumption_raw = {}
@@ -167,10 +180,12 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         recent_production = db.query(
             Product.name,
             func.sum(Movement.quantity).label('total_qty')
-        ).join(Movement).filter(
+        ).join(Movement, Movement.product_id == Product.id).filter(
             Movement.timestamp >= thirty_days_ago,
             Movement.type == MovementType.IN,
-            Product.is_composite == True
+            Product.is_composite == True,
+            Product.company_id == user.company_id,
+            Movement.company_id == user.company_id
         ).group_by(Product.name).all()
         
         production_raw = {r.name: r.total_qty for r in recent_production}
@@ -179,7 +194,7 @@ async def dashboard_view(request: Request, user: User = Depends(login_required),
         top_production = dict(sorted(production_raw.items(), key=lambda item: item[1], reverse=True)[:5])
 
         # Fetch all products ordered by name for quick actions/modals
-        all_products = db.query(Product).order_by(Product.name).all()
+        all_products = db.query(Product).filter(Product.company_id == user.company_id).order_by(Product.name).all()
 
         stats = {
             "total_products": total_products,
