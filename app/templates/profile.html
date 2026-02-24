@@ -71,29 +71,9 @@
     </div>
     {% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Sidebar Navigation -->
-        <div class="md:col-span-1 space-y-2">
-            <button onclick="showSection('personal')" id="nav-personal"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold transition-all bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 shadow-lg shadow-indigo-500/5">
-                Dados Pessoais
-            </button>
-            <button onclick="showSection('security')" id="nav-security"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
-                Segurança
-            </button>
-            <button onclick="showSection('company')" id="nav-company"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
-                Logo da Empresa
-            </button>
-            <button onclick="showSection('subscription')" id="nav-subscription"
-                class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold text-zinc-400 hover:bg-white/5 hover:text-white transition-all">
-                Plano e Faturamento
-            </button>
-        </div>
-
+    <div class="w-full space-y-6">
         <!-- Content Area -->
-        <div class="md:col-span-2 space-y-6">
+        <div class="space-y-6">
             <!-- Personal Info -->
             <div id="section-personal"
                 class="bg-surface/30 backdrop-blur-xl rounded-2xl p-5 border border-white/5 shadow-xl">
@@ -301,26 +281,16 @@
 
 <script>
     function showSection(sectionId) {
-        // IDs das seções e botões
         const sections = ['personal', 'security', 'subscription', 'company'];
 
         sections.forEach(id => {
             const section = document.getElementById(`section-${id}`);
-            const nav = document.getElementById(`nav-${id}`);
-
             if (id === sectionId) {
                 section.classList.remove('hidden');
-                nav.classList.add('bg-indigo-600/10', 'text-indigo-400', 'border', 'border-indigo-500/20', 'shadow-lg');
-                nav.classList.remove('text-zinc-400', 'hover:bg-white/5', 'hover:text-white');
             } else {
                 section.classList.add('hidden');
-                nav.classList.remove('bg-indigo-600/10', 'text-indigo-400', 'border', 'border-indigo-500/20', 'shadow-lg');
-                nav.classList.add('text-zinc-400', 'hover:bg-white/5', 'hover:text-white');
             }
         });
-
-        // Salva a preferência no localStorage
-        localStorage.setItem('profile_active_tab', sectionId);
     }
 
     function validatePasswords() {
@@ -348,18 +318,20 @@
         }
     }
 
-    // Carrega a aba salva ao iniciar
-    document.addEventListener('DOMContentLoaded', () => {
+    // Carrega a aba correta ao iniciar ou quando a URL mudar
+    function updateFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         const sectionParam = urlParams.get('section');
-        const savedTab = localStorage.getItem('profile_active_tab');
 
         if (sectionParam) {
             showSection(sectionParam);
-        } else if (savedTab) {
-            showSection(savedTab);
+        } else {
+            showSection('personal'); // Default
         }
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', updateFromUrl);
+    window.addEventListener('popstate', updateFromUrl);
 </script>
 
 <style>
