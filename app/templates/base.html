@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Invexa Control{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#10b981', // Emerald 500 (Kept for compatibility)
-                        secondary: '#6366f1', // Indigo 500
-                        dark: '#09090b', // Zinc 950
-                        darker: '#000000', // Black
-                        surface: '#18181b', // Zinc 900
-                        // Add custom palette for Glassmorphism
+                        primary: '#10b981',
+                        secondary: '#6366f1',
+                        dark: '#09090b',
+                        darker: '#000000',
+                        surface: '#18181b',
                         glass: 'rgba(24, 24, 27, 0.6)',
                     },
                     fontFamily: {
@@ -28,40 +28,6 @@
             }
         }
     </script>
-    <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #09090b;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3f3f46;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #09090b;
-            background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">

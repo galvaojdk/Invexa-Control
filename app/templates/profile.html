@@ -90,22 +90,19 @@
                         <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Nome
                             Completo</label>
                         <input type="text" name="full_name" value="{{ user.full_name or '' }}" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder-zinc-600"
-                            placeholder="Seu nome">
+                            class="input-compact" placeholder="Seu nome">
                     </div>
 
                     <div>
                         <label
                             class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">E-mail</label>
-                        <input type="email" value="{{ user.email }}" disabled
-                            class="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-500 cursor-not-allowed">
+                        <input type="email" value="{{ user.email }}" disabled class="input-compact">
                         <p class="text-[10px] text-zinc-600 mt-2 italic">O e-mail é usado para login e não pode ser
                             alterado.</p>
                     </div>
 
                     <div class="pt-4 flex justify-end">
-                        <button type="submit"
-                            class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-lg shadow-indigo-500/20 transform active:scale-[0.98]">
+                        <button type="submit" class="btn-premium">
                             Salvar Alterações
                         </button>
                     </div>
@@ -334,21 +331,4 @@
     window.addEventListener('popstate', updateFromUrl);
 </script>
 
-<style>
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: fade-in 0.3s ease-out forwards;
-    }
-</style>
 {% endblock %}

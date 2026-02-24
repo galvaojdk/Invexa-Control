@@ -1,0 +1,107 @@
+/* Estilos Globais Invexa Control */
+
+:root {
+    --primary: #10b981;
+    --secondary: #6366f1;
+    --dark: #09090b;
+    --darker: #000000;
+    --surface: #18181b;
+    --glass: rgba(24, 24, 27, 0.6);
+}
+
+/* Scrollbar Customizada */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}
+
+/* Fundo Global */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), 
+        radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+}
+
+/* Utilitários */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Padronização de Componentes - Estilo Compacto e Premium */
+.input-compact {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem; /* 12px */
+    padding: 0.625rem 1rem; /* 10px 16px */
+    color: white;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.input-compact:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.input-compact:disabled {
+    background-color: rgba(24, 24, 27, 0.5);
+    color: #71717a;
+    cursor: not-allowed;
+    border-color: rgba(39, 39, 42, 1);
+}
+
+.btn-premium {
+    background: linear-gradient(to right, #4f46e5, #7c3aed);
+    color: white;
+    font-weight: 700;
+    padding: 0.625rem 2rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+}
+
+.btn-premium:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.btn-premium:active {
+    transform: scale(0.98);
+}
+
+/* Animações */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+}
