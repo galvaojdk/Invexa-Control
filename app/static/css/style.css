@@ -7,15 +7,15 @@
     --bg-main: #f1f5f9;
     /* Slate 100 - Mais profundo para destacar cards brancos */
     --bg-surface: #ffffff;
-    --text-main: #0f172a;
-    /* Slate 900 - Quase preto para máxima leitura */
-    --text-muted: #475569;
-    /* Slate 600 - Cinza escuro legível */
+    --text-main: #020617;
+    /* Slate 950 - Máximo contraste */
+    --text-muted: #334155;
+    /* Slate 700 - Bem legível */
     --border: rgba(0, 0, 0, 0.1);
     /* Bordas mais visíveis */
     --glass: rgba(255, 255, 255, 0.7);
     --input-bg: #ffffff;
-    --input-text: #0f172a;
+    --input-text: #020617;
 }
 
 html.dark {
