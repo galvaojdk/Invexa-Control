@@ -8,10 +8,10 @@
 
     <!-- Header Section -->
     <div
-        class="flex items-center gap-4 mb-6 p-5 bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl">
+        class="flex items-center gap-4 mb-4 p-4 bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl">
         <div class="relative group">
             <div
-                class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-500/20 overflow-hidden ring-4 ring-white/5">
+                class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-indigo-500/20 overflow-hidden ring-4 ring-white/5">
                 {{ user.full_name[0] if user.full_name else user.email[0].toUpperCase() }}
             </div>
             <div
@@ -71,13 +71,13 @@
     </div>
     {% endif %}
 
-    <div class="w-full space-y-6">
+    <div class="max-w-2xl mx-auto space-y-6">
         <!-- Content Area -->
         <div class="space-y-6">
             <!-- Personal Info -->
             <div id="section-personal"
-                class="bg-surface/30 backdrop-blur-xl rounded-2xl p-5 border border-white/5 shadow-xl">
-                <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                class="bg-surface/30 backdrop-blur-xl rounded-2xl p-4 border border-white/5 shadow-xl">
+                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -90,7 +90,7 @@
                         <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Nome
                             Completo</label>
                         <input type="text" name="full_name" value="{{ user.full_name or '' }}" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder-zinc-600"
+                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder-zinc-600"
                             placeholder="Seu nome">
                     </div>
 
@@ -98,14 +98,14 @@
                         <label
                             class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">E-mail</label>
                         <input type="email" value="{{ user.email }}" disabled
-                            class="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed">
+                            class="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-500 cursor-not-allowed">
                         <p class="text-[10px] text-zinc-600 mt-2 italic">O e-mail é usado para login e não pode ser
                             alterado.</p>
                     </div>
 
                     <div class="pt-4 flex justify-end">
                         <button type="submit"
-                            class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-indigo-500/20 transform active:scale-[0.98]">
+                            class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-lg shadow-indigo-500/20 transform active:scale-[0.98]">
                             Salvar Alterações
                         </button>
                     </div>
