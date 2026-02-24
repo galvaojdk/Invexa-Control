@@ -98,12 +98,11 @@
                             </th>
                             <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                                 Unidade</th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                            <th class="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                                 Ações</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y divide-border">
                         {% for product in products %}
                         <tr class="hover:bg-indigo-500/5 transition-colors group">
                             <td
@@ -131,7 +130,7 @@
                                 <div class="flex items-center justify-end gap-2">
                                     <button onclick="openEditModal(this.getAttribute('data-id'))"
                                         data-id="{{ product.id }}"
-                                        class="p-2 rounded-lg hover:bg-indigo-500/10 text-zinc-500 hover:text-indigo-400 transition-all"
+                                        class="p-2 rounded-lg hover:bg-primary/10 text-muted hover:text-primary transition-all"
                                         title="Editar">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -217,31 +216,30 @@
                                         Nome
                                     </th>
                                     <th
-                                        class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                                        class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                                         Ações</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5">
+                            <tbody class="divide-y divide-border">
                                 {% for cat in categories %}
-                                <tr class="hover:bg-white/5 transition-colors group">
-                                    <td
-                                        class="px-5 py-2.5 text-xs font-mono text-zinc-500 w-16 group-hover:text-zinc-400">
+                                <tr class="hover:bg-primary/5 transition-colors group">
+                                    <td class="px-5 py-2.5 text-xs font-mono text-muted w-16 group-hover:text-primary">
                                         #{{ cat.id }}</td>
                                     <td
-                                        class="px-5 py-2.5 text-sm font-medium text-zinc-300 group-hover:text-emerald-400 transition-colors">
+                                        class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                                         {{ cat.name }}</td>
                                     <td class="px-5 py-2.5 text-right">
                                         <form action="/inventory/categories/{{ cat.id }}/delete" method="POST"
                                             class="inline"
                                             onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?')">
                                             <button type="submit"
-                                                class="text-zinc-600 hover:text-red-400 text-xs font-bold transition-colors uppercase tracking-wider">Excluir</button>
+                                                class="text-red-400 hover:text-red-300 text-[10px] font-bold transition-colors uppercase tracking-wider bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg">Excluir</button>
                                         </form>
                                     </td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="3" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhuma
+                                    <td colspan="3" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma
                                         categoria cadastrada.</td>
                                 </tr>
                                 {% endfor %}
