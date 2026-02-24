@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Invexa Control{% endblock %}</title>
+    <script>
+        // Inicialização imediata do tema para evitar flash de cor
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
     <script>
@@ -301,18 +309,32 @@
                     </div>
 
                     <!-- Dark Mode Toggle -->
-                    <div class="px-4 py-3 flex items-center justify-between border-t border-white/5">
+                    <div class="px-4 py-3 flex items-center justify-between border-t border-white/5" x-data="{ 
+                        dark: document.documentElement.classList.contains('dark'),
+                        toggle() {
+                            this.dark = !this.dark;
+                            if (this.dark) {
+                                document.documentElement.classList.add('dark');
+                                localStorage.setItem('theme', 'dark');
+                            } else {
+                                document.documentElement.classList.remove('dark');
+                                localStorage.setItem('theme', 'light');
+                            }
+                        }
+                    }">
                         <div class="flex items-center gap-3">
                             <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
                                 </path>
                             </svg>
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Tema
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Modo
                                 Escuro</span>
                         </div>
-                        <button class="w-10 h-5 rounded-full bg-indigo-600 relative transition-colors">
-                            <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                        <button @click="toggle()" class="w-10 h-5 rounded-full relative transition-colors duration-200"
+                            :class="dark ? 'bg-indigo-600' : 'bg-zinc-700'">
+                            <div class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-200"
+                                :class="dark ? 'right-0.5' : 'left-0.5'"></div>
                         </button>
                     </div>
 

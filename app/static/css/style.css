@@ -1,12 +1,36 @@
 /* Estilos Globais Invexa Control */
 
 :root {
+    /* Cores do Tema Claro (Padrão) */
     --primary: #10b981;
     --secondary: #6366f1;
-    --dark: #09090b;
-    --darker: #000000;
-    --surface: #18181b;
+    --bg-main: #f8fafc;
+    /* Slate 50 */
+    --bg-surface: #ffffff;
+    --text-main: #0f172a;
+    /* Slate 900 */
+    --text-muted: #64748b;
+    /* Slate 500 */
+    --border: rgba(0, 0, 0, 0.05);
+    --glass: rgba(255, 255, 255, 0.6);
+    --input-bg: rgba(255, 255, 255, 0.8);
+    --input-text: #0f172a;
+}
+
+html.dark {
+    /* Cores do Tema Escuro */
+    --bg-main: #09090b;
+    /* Zinc 950 */
+    --bg-surface: #18181b;
+    /* Zinc 900 */
+    --text-main: #f4f4f5;
+    /* Zinc 100 */
+    --text-muted: #a1a1aa;
+    /* Zinc 400 */
+    --border: rgba(255, 255, 255, 0.05);
     --glass: rgba(24, 24, 27, 0.6);
+    --input-bg: rgba(0, 0, 0, 0.5);
+    --input-text: #ffffff;
 }
 
 /* Scrollbar Customizada */
@@ -16,7 +40,7 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--dark);
+    background: var(--bg-main);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -31,10 +55,12 @@
 /* Fundo Global */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--dark);
-    background-image: 
-        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), 
-        radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Utilitários */
@@ -50,11 +76,13 @@ body {
 /* Padronização de Componentes - Estilo Compacto e Premium */
 .input-compact {
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.75rem; /* 12px */
-    padding: 0.625rem 1rem; /* 10px 16px */
-    color: white;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    /* 12px */
+    padding: 0.625rem 1rem;
+    /* 10px 16px */
+    color: var(--input-text);
     outline: none;
     transition: all 0.2s;
 }
@@ -65,10 +93,10 @@ body {
 }
 
 .input-compact:disabled {
-    background-color: rgba(24, 24, 27, 0.5);
-    color: #71717a;
+    background-color: var(--bg-surface);
+    color: var(--text-muted);
     cursor: not-allowed;
-    border-color: rgba(39, 39, 42, 1);
+    border-color: var(--border);
 }
 
 .btn-premium {
@@ -96,6 +124,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
