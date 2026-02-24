@@ -10,9 +10,9 @@
     --text-muted: 71 85 105;
     --border: 226 232 240;
     --glass: 255 255 255;
-    --input-bg: #ffffff;
-    --input-text: #0f172a;
-    --input-border: #cbd5e1;
+    --input-bg: 255 255 255;
+    --input-text: 15 23 42;
+    --input-border: 203 213 225;
 }
 
 .dark {
@@ -23,8 +23,9 @@
     --text-muted: 161 161 170;
     --border: 39 39 42;
     --glass: 24 24 27;
-    --input-bg: rgba(0, 0, 0, 0.5);
-    --input-text: #ffffff;
+    --input-bg: 9 9 11;
+    --input-text: 244 244 245;
+    --input-border: 63 63 70;
 }
 
 /* Scrollbar Customizada */
@@ -70,18 +71,36 @@ body {
 /* Padronização de Componentes - Estilo Compacto e Premium */
 .input-compact {
     width: 100%;
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
+    background-color: rgb(var(--input-bg));
+    border: 1px solid rgb(var(--input-border));
     border-radius: 0.5rem;
     padding: 0.5rem 0.75rem;
-    color: var(--input-text);
+    color: rgb(var(--input-text));
     font-size: 0.875rem;
     outline: none;
     transition: all 0.2s;
 }
 
 html.dark .input-compact {
-    border-color: var(--border);
+    border-color: rgb(var(--input-border));
+}
+
+/* Fix global para campos em branco no modo escuro */
+html.dark input,
+html.dark select,
+html.dark textarea {
+    background-color: rgb(var(--input-bg)) !important;
+    color: rgb(var(--input-text)) !important;
+}
+
+html.dark select option {
+    background-color: rgb(var(--bg-surface));
+    color: rgb(var(--text-main));
+}
+
+/* Ajuste específico para inputs de data que costumam bugar */
+html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
 }
 
 .input-compact:focus {

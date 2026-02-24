@@ -28,6 +28,10 @@
             --border: 226 232 240;
             /* #e2e8f0 */
             --glass: 255 255 255;
+            --input-bg: 255 255 255;
+            --input-text: 15 23 42;
+            --input-border: 203 213 225;
+            /* #cbd5e1 */
         }
 
         .dark {
@@ -42,6 +46,10 @@
             --border: 39 39 42;
             /* #27272a (Zinc 800) */
             --glass: 24 24 27;
+            --input-bg: 9 9 11;
+            --input-text: 244 244 245;
+            --input-border: 63 63 70;
+            /* #3f3f46 */
         }
     </style>
     <script>
@@ -59,6 +67,8 @@
                         surface: 'rgb(var(--bg-surface) / <alpha-value>)',
                         glass: 'rgb(var(--glass) / <alpha-value>)',
                         border: 'rgb(var(--border) / <alpha-value>)',
+                        'input-bg': 'rgb(var(--input-bg) / <alpha-value>)',
+                        'input-text': 'rgb(var(--input-text) / <alpha-value>)',
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
