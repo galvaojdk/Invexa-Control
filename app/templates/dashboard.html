@@ -25,8 +25,8 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Produtos Cadastrados</p>
-            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_products }}</h3>
+            <p class="text-muted text-xs font-semibold uppercase tracking-wider">Produtos Cadastrados</p>
+            <h3 class="text-2xl font-mono font-bold text-main mt-2 tracking-tight">{{ stats.total_products }}</h3>
         </div>
     </div>
 
@@ -46,8 +46,8 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Movimentações (Hoje)</p>
-            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.movements_today }}</h3>
+            <p class="text-muted text-xs font-semibold uppercase tracking-wider">Movimentações (Hoje)</p>
+            <h3 class="text-2xl font-mono font-bold text-main mt-2 tracking-tight">{{ stats.movements_today }}</h3>
         </div>
     </div>
 
@@ -68,8 +68,8 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Terceirizados</p>
-            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.total_workers }}</h3>
+            <p class="text-muted text-xs font-semibold uppercase tracking-wider">Terceirizados</p>
+            <h3 class="text-2xl font-mono font-bold text-main mt-2 tracking-tight">{{ stats.total_workers }}</h3>
         </div>
     </div>
 
@@ -89,8 +89,8 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">Remessas Ativas</p>
-            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
+            <p class="text-muted text-xs font-semibold uppercase tracking-wider">Remessas Ativas</p>
+            <h3 class="text-2xl font-mono font-bold text-main mt-2 tracking-tight">{{ stats.active_shipments }}</h3>
         </div>
     </div>
 
@@ -109,8 +109,8 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-zinc-400 text-xs font-semibold uppercase tracking-wider">A Receber</p>
-            <h3 class="text-2xl font-mono font-bold text-white mt-2 tracking-tight">{{ stats.pending_receive }}</h3>
+            <p class="text-muted text-xs font-semibold uppercase tracking-wider">A Receber</p>
+            <h3 class="text-2xl font-mono font-bold text-main mt-2 tracking-tight">{{ stats.pending_receive }}</h3>
         </div>
     </div>
 </div>
@@ -231,12 +231,12 @@
             </thead>
             <tbody class="divide-y divide-white/5">
                 {% for mov in latest_movements %}
-                <tr class="hover:bg-white/5 transition-colors group">
-                    <td class="px-5 py-2.5 text-xs font-mono text-zinc-400 group-hover:text-zinc-300">{{
+                <tr class="hover:bg-primary/5 transition-colors group">
+                    <td class="px-5 py-2.5 text-xs font-mono text-muted group-hover:text-main">{{
                         mov.timestamp.strftime('%d/%m
                         %H:%M') }}
                     </td>
-                    <td class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white">{{ mov.product.name
+                    <td class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary">{{ mov.product.name
                         }}</td>
                     <td class="px-5 py-2.5">
                         {% if mov.type.value == 'entrada' %}
@@ -272,6 +272,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Colors configuration
+    const isDark = document.documentElement.classList.contains('dark');
     const colors = {
         emerald: {
             default: 'rgba(16, 185, 129, 0.2)',
@@ -285,11 +286,12 @@
             default: 'rgba(59, 130, 246, 0.2)',
             border: '#3B82F6'
         },
-        slate: '#94a3b8'
+        text: isDark ? '#94a3b8' : '#334155',
+        grid: isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.05)'
     };
 
-    Chart.defaults.color = colors.slate;
-    Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+    Chart.defaults.color = colors.text;
+    Chart.defaults.borderColor = colors.grid;
 
     // Movements Chart
     function openModal(modalId) {
