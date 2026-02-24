@@ -8,13 +8,13 @@
 
     <!-- Filters and Actions -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="flex bg-surface/30 backdrop-blur-md rounded-xl p-0.5 border border-white/5">
+        <div class="flex bg-surface rounded-xl p-1 border border-border">
             <a href="/shipments?status_filter=active"
-                class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all {% if status_filter == 'active' %}bg-white/10 text-white shadow-lg shadow-white/5{% else %}text-zinc-500 hover:text-white hover:bg-white/5{% endif %}">
+                class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all {% if status_filter == 'active' %}bg-primary text-white shadow-md{% else %}text-muted hover:text-main hover:bg-primary/5{% endif %}">
                 Em Aberto
             </a>
             <a href="/shipments?status_filter=all"
-                class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all {% if status_filter == 'all' %}bg-white/10 text-white shadow-lg shadow-white/5{% else %}text-zinc-500 hover:text-white hover:bg-white/5{% endif %}">
+                class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all {% if status_filter == 'all' %}bg-primary text-white shadow-md{% else %}text-muted hover:text-main hover:bg-primary/5{% endif %}">
                 Todas
             </a>
         </div>
@@ -33,38 +33,38 @@
     </div>
 
     <!-- Shipments Table -->
-    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-zinc-950/30 border-b border-white/5">
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Data</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Prestador
+                    <tr class="bg-darker/30 border-b border-border">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Data</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Prestador
                         </th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Motivo /
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Motivo /
                             Observação</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Qtd Enviada</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Qtd Retornada</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Status</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                             Ações</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     {% for shipment in shipments %}
-                    <tr class="hover:bg-white/5 transition-colors group">
-                        <td class="px-5 py-2.5 text-xs text-zinc-500 font-mono">{{
+                    <tr class="hover:bg-primary/5 transition-colors group">
+                        <td class="px-5 py-2.5 text-xs text-muted font-mono">{{
                             shipment.created_at.strftime('%d/%m/%Y') }}</td>
                         <td
-                            class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                            class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                             {{ shipment.worker.name }}</td>
-                        <td class="px-5 py-2.5 text-sm text-zinc-400">{{ shipment.notes or '-' }}</td>
-                        <td class="px-5 py-2.5 text-sm font-bold text-indigo-400 text-center">{{ shipment.quantity }}
+                        <td class="px-5 py-2.5 text-sm text-muted">{{ shipment.notes or '-' }}</td>
+                        <td class="px-5 py-2.5 text-sm font-bold text-indigo-500 text-center">{{ shipment.quantity }}
                         </td>
-                        <td class="px-5 py-2.5 text-sm font-bold text-emerald-400 text-center">{{
+                        <td class="px-5 py-2.5 text-sm font-bold text-emerald-600 text-center">{{
                             shipment.returned_quantity }}</td>
                         <td class="px-5 py-2.5 text-center">
                             <span class="px-2 py-1 rounded-lg text-[10px] font-bold border uppercase tracking-wider
@@ -98,7 +98,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhuma remessa
+                        <td colspan="7" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma remessa
                             encontrada.</td>
                     </tr>
                     {% endfor %}
