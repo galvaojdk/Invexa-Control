@@ -17,8 +17,8 @@
 
     <div class="flex justify-between items-center">
         <div>
-            <h2 class="text-xl font-bold text-white">Nova Saída em Lote</h2>
-            <p class="text-slate-400 text-xs">Registre a saída de múltiplos itens para um terceirizado.</p>
+            <h2 class="text-xl font-bold text-main">Nova Saída em Lote</h2>
+            <p class="text-muted text-xs">Registre a saída de múltiplos itens para um terceirizado.</p>
         </div>
     </div>
 
@@ -28,18 +28,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Sector / Destination -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Destino
+                    <label class="block text-xs font-bold text-muted uppercase tracking-wider">Destino
                         (Terceirizado)</label>
                     <div class="relative">
-                        <select id="batch_sector_select" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                            <option value="" class="text-zinc-500">Selecione o Terceirizado...</option>
+                        <select id="batch_sector_select" required class="input-compact appearance-none cursor-pointer">
+                            <option value="">Selecione o Terceirizado...</option>
                             {% for w in workers %}
                             <option value="WORKER:{{ w.id }}:{{ w.name }}">Terceirizado: {{ w.name }} ({{ w.role }})
                             </option>
                             {% endfor %}
                         </select>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7"></path>
@@ -50,11 +49,11 @@
 
                 <!-- Reason -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider">Motivo /
+                    <label class="block text-xs font-bold text-muted uppercase tracking-wider">Motivo /
                         Observação</label>
                     <input type="text" id="batch_reason"
                         placeholder="Ex: Ordem de Produção #123, Remessa para conserto..." required
-                        class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700">
+                        class="input-compact">
                 </div>
             </div>
         </div>
@@ -139,7 +138,7 @@
             const rowCount = tbody.children.length + 1;
             const tr = document.createElement('tr');
             tr.id = rowId;
-            tr.className = "group hover:bg-white/5 transition-colors";
+            tr.className = "group hover:bg-primary/5 transition-colors";
 
             // Generate product options
             const options = availableProducts.map(p =>
@@ -147,23 +146,23 @@
             ).join('');
 
             tr.innerHTML = `
-                <td class="px-3 py-2 border-r border-white/5 text-center text-zinc-500 font-mono select-none">
+                <td class="px-3 py-2 border-r border-border text-center text-muted font-mono select-none">
                     ${rowCount}
                 </td>
-                <td class="p-0 border-r border-white/5 relative">
-                    <select class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-inset focus:ring-1 focus:ring-indigo-500 focus:bg-dark/50 outline-none appearance-none product-select cursor-pointer">
+                <td class="p-0 border-r border-border relative">
+                    <select class="w-full h-full bg-transparent border-none text-main text-sm px-3 py-2 focus:ring-inset focus:ring-1 focus:ring-primary focus:bg-darker/50 outline-none appearance-none product-select cursor-pointer">
                         <option value="">Selecione um produto...</option>
                         ${options}
                     </select>
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-500">
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                 </td>
-                <td class="p-0 border-r border-white/5">
-                    <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-white text-sm px-3 py-2 focus:ring-inset focus:ring-1 focus:ring-indigo-500 focus:bg-dark/50 outline-none qty-input font-mono" placeholder="0.00">
+                <td class="p-0 border-r border-border">
+                    <input type="number" step="0.01" class="w-full h-full bg-transparent border-none text-main text-sm px-3 py-2 focus:ring-inset focus:ring-1 focus:ring-primary focus:bg-darker/50 outline-none qty-input font-mono" placeholder="0.00">
                 </td>
                 <td class="p-0 text-center">
-                    <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Remover linha">
+                    <button type="button" onclick="removeBatchRow('${rowId}')" class="w-full h-full flex items-center justify-center text-muted hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Remover linha">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>

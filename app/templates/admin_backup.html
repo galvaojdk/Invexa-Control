@@ -7,8 +7,7 @@
 <div class="max-w-4xl mx-auto space-y-8">
 
     <!-- Backup Section -->
-    <div
-        class="bg-surface/50 border border-white/5 rounded-2xl p-8 backdrop-blur-xl shadow-lg relative overflow-hidden group">
+    <div class="bg-surface border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden group">
         <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-32 h-32 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -17,8 +16,8 @@
         </div>
 
         <div class="relative z-10">
-            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                <span class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><svg class="w-6 h-6" fill="none"
+            <h3 class="text-xl font-bold text-main mb-2 flex items-center gap-2">
+                <span class="p-2 bg-emerald-500/10 rounded-lg text-emerald-600"><svg class="w-6 h-6" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -42,8 +41,7 @@
     </div>
 
     <!-- Restore Section -->
-    <div
-        class="bg-surface/50 border border-white/5 rounded-2xl p-8 backdrop-blur-xl shadow-lg relative overflow-hidden group">
+    <div class="bg-surface border border-border rounded-2xl p-8 shadow-sm relative overflow-hidden group">
         <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-32 h-32 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -52,8 +50,8 @@
         </div>
 
         <div class="relative z-10">
-            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                <span class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"><svg class="w-6 h-6" fill="none"
+            <h3 class="text-xl font-bold text-main mb-2 flex items-center gap-2">
+                <span class="p-2 bg-indigo-500/10 rounded-lg text-indigo-600"><svg class="w-6 h-6" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
@@ -83,10 +81,10 @@
             <form action="/admin/backup/restore" method="POST" enctype="multipart/form-data"
                 class="flex flex-col sm:flex-row gap-4 items-end" onsubmit="return confirmRestore()">
                 <div class="w-full sm:w-auto flex-1">
-                    <label class="block text-xs font-medium text-zinc-500 uppercase mb-2">Arquivo de Backup (.dump ou
+                    <label class="block text-xs font-bold text-muted uppercase mb-2">Arquivo de Backup (.dump ou
                         .db)</label>
                     <input type="file" name="file" accept=".dump,.db,.sql" required
-                        class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 transition-all cursor-pointer bg-zinc-900/50 rounded-xl border border-white/5">
+                        class="block w-full text-sm text-muted file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer bg-darker/50 rounded-xl border border-border">
                 </div>
                 <button type="submit"
                     class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-600/20 h-[42px]">

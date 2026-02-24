@@ -36,14 +36,14 @@
     </script>
 
     <!-- Tabs Navigation -->
-    <div class="flex gap-4 border-b border-white/5">
+    <div class="flex gap-4 border-b border-border">
         <button @click="activeTab = 'workers'"
-            :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'workers', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'workers' }"
+            :class="{ 'text-primary border-b-2 border-primary': activeTab === 'workers', 'text-muted hover:text-main': activeTab !== 'workers' }"
             class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Terceirizados
         </button>
         <button @click="activeTab = 'types'"
-            :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'types', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'types' }"
+            :class="{ 'text-primary border-b-2 border-primary': activeTab === 'types', 'text-muted hover:text-main': activeTab !== 'types' }"
             class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Tipos
         </button>
@@ -54,7 +54,7 @@
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0">
         <div class="flex justify-between items-center">
-            <h2 class="text-xl font-bold text-white tracking-tight">Lista de Prestadores</h2>
+            <h2 class="text-xl font-bold text-main tracking-tight">Lista de Prestadores</h2>
             <div class="flex gap-2">
                 <button onclick="openWorkerModal()"
                     class="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold shadow-lg shadow-blue-500/20 transition-all text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
@@ -66,41 +66,40 @@
             </div>
         </div>
 
-        <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-zinc-950/30 border-b border-white/5">
-                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Nome
+                        <tr class="bg-darker/30 border-b border-border">
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Nome
                             </th>
-                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Tipo
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Tipo
                             </th>
-                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                                 Endereço</th>
-                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Contato
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Contato
                             </th>
-                            <th
-                                class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                                 Ações</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y divide-border">
                         {% for worker in workers %}
-                        <tr class="hover:bg-white/5 transition-colors group">
+                        <tr class="hover:bg-primary/5 transition-colors group">
                             <td
-                                class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                                class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                                 {{ worker.name }}</td>
-                            <td class="px-5 py-2.5 text-sm text-zinc-400">
+                            <td class="px-5 py-2.5 text-sm text-muted">
                                 {% if worker.worker_type %}
                                 <span
-                                    class="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 text-[10px] font-bold border border-indigo-500/20 uppercase tracking-wider">{{
+                                    class="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 text-[10px] font-bold border border-indigo-500/20 uppercase tracking-wider">{{
                                     worker.worker_type.name }}</span>
                                 {% else %}
-                                <span class="text-zinc-600 italic text-xs">Sem tipo</span>
+                                <span class="text-muted italic text-xs">Sem tipo</span>
                                 {% endif %}
                             </td>
-                            <td class="px-5 py-2.5 text-sm text-zinc-500">{{ worker.address or '-' }}</td>
-                            <td class="px-5 py-2.5 text-sm text-zinc-500">{{ worker.phone or '-' }}</td>
+                            <td class="px-5 py-2.5 text-sm text-muted">{{ worker.address or '-' }}</td>
+                            <td class="px-5 py-2.5 text-sm text-muted">{{ worker.phone or '-' }}</td>
                             <td class="px-5 py-2.5 text-right flex justify-end gap-2">
                                 <button
                                     onclick="openEditWorkerModal('{{ worker.id }}', '{{ worker.name }}', '{{ worker.worker_type_id or '' }}', '{{ worker.address or '' }}', '{{ worker.zip_code or '' }}', '{{ worker.phone }}')"
@@ -130,7 +129,7 @@
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0">
         <div class="flex justify-between items-center">
-            <h2 class="text-xl font-bold text-white tracking-tight">Tipos de Terceirizados</h2>
+            <h2 class="text-xl font-bold text-main tracking-tight">Tipos de Terceirizados</h2>
             <button onclick="openWorkerTypeModal()"
                 class="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-violet-500/20 transition-all text-sm flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,23 +139,22 @@
             </button>
         </div>
 
-        <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-zinc-950/30 border-b border-white/5">
-                            <th class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Nome do
+                        <tr class="bg-darker/30 border-b border-border">
+                            <th class="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest">Nome do
                                 Tipo</th>
-                            <th
-                                class="px-6 py-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                            <th class="px-6 py-4 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                                 Ações</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y divide-border">
                         {% for type in worker_types %}
-                        <tr class="hover:bg-white/5 transition-colors group">
+                        <tr class="hover:bg-primary/5 transition-colors group">
                             <td
-                                class="px-6 py-4 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                                class="px-6 py-4 text-sm font-medium text-main group-hover:text-primary transition-colors">
                                 {{ type.name }}</td>
                             <td class="px-6 py-4 text-right flex justify-end gap-2">
                                 <button onclick="openEditWorkerTypeModal('{{ type.id }}', '{{ type.name }}')"
@@ -198,50 +196,50 @@
             </div>
             <form id="workerForm" action="/workers/create" method="POST" class="p-4 space-y-4 overflow-y-auto">
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Nome</label>
-                    <input type="text" name="name" id="w_name" required
-                        class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700">
+                    <label class="text-xs font-bold text-muted uppercase tracking-wider">Nome</label>
+                    <input type="text" name="name" id="w_name" required class="input-compact"
+                        placeholder="Ex: João da Silva">
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Tipo</label>
-                    <select name="worker_type_id" id="w_type" required
-                        class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
-                        <option value="" disabled selected class="text-zinc-500">Selecione um tipo...</option>
-                        {% for type in worker_types %}
-                        <option value="{{ type.id }}">{{ type.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="text-[10px] text-right mt-1">
-                        <a href="#" onclick="openWorkerTypeModal()"
-                            class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">Cadastrar novo
-                            tipo</a>
+                    <label class="text-xs font-bold text-muted uppercase tracking-wider">Tipo</label>
+                    <div class="relative">
+                        <select name="worker_type_id" id="w_type" required
+                            class="input-compact appearance-none cursor-pointer">
+                            <option value="" disabled selected>Selecione um tipo...</option>
+                            {% for type in worker_types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="text-[10px] text-right mt-1">
+                            <a href="#" onclick="openWorkerTypeModal()"
+                                class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">Cadastrar novo
+                                tipo</a>
+                        </div>
                     </div>
-                </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Endereço</label>
-                    <input type="text" name="address" id="w_address"
-                        class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">CEP</label>
-                        <input type="text" name="zip_code" id="w_zip"
-                            class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700">
+                        <label class="text-xs font-bold text-muted uppercase tracking-wider">Endereço</label>
+                        <input type="text" name="address" id="w_address" class="input-compact"
+                            placeholder="Rua, Número, Bairro...">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Telefone</label>
-                        <input type="text" name="phone" id="w_phone"
-                            class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700">
-                    </div>
-                </div>
 
-                <div class="pt-2">
-                    <button type="submit"
-                        class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">Salvar</button>
-                </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-muted uppercase tracking-wider">CEP</label>
+                            <input type="text" name="zip_code" id="w_zip" class="input-compact" placeholder="00000-000">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-muted uppercase tracking-wider">Telefone</label>
+                            <input type="text" name="phone" id="w_phone" class="input-compact"
+                                placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">Salvar</button>
+                    </div>
             </form>
         </div>
     </div>

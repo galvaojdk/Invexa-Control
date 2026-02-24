@@ -5,10 +5,10 @@
 
 {% block content %}
 <div class="flex flex-col gap-4">
-    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-4 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
-            <h3 class="text-base font-bold text-white flex items-center gap-2 tracking-tight">
-                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-border flex justify-between items-center bg-darker/30">
+            <h3 class="text-base font-bold text-main flex items-center gap-2 tracking-tight">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
                     </path>
@@ -18,7 +18,7 @@
             <div class="flex items-center gap-4">
                 <form id="filter-form" action="/admin/audit" method="GET" class="flex items-center gap-2">
                     <select name="company_id" onchange="this.form.submit()"
-                        class="bg-dark/50 border border-white/10 rounded-xl px-4 py-1.5 text-white text-sm outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer">
+                        class="bg-darker/50 border border-border rounded-xl px-4 py-1.5 text-main text-sm outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer">
                         <option value="">Todas as Empresas</option>
                         {% for company in companies %}
                         <option value="{{ company.id }}" {% if selected_company_id==company.id %}selected{% endif %}>
@@ -42,26 +42,26 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-zinc-950/30 border-b border-white/5">
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest w-32">
+                    <tr class="bg-darker/30 border-b border-border">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest w-32">
                             Data/Hora</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest font-mono">
                             USUÁRIO</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Ação</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest font-mono">
                             EMPRESA</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                             Detalhes</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5">
+                <tbody class="divide-y divide-border">
                     {% for log in audit_logs %}
-                    <tr class="hover:bg-white/5 transition-colors group">
-                        <td class="px-5 py-2.5 text-xs text-zinc-400 font-mono">{{ log.timestamp.strftime('%d/%m/%Y
+                    <tr class="hover:bg-primary/5 transition-colors group">
+                        <td class="px-5 py-2.5 text-xs text-muted font-mono">{{ log.timestamp.strftime('%d/%m/%Y
                             %H:%M') }}</td>
                         <td
-                            class="px-5 py-2.5 text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+                            class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                             {{ log.user.full_name or log.user.email }}</td>
                         <td class="px-5 py-2.5 text-center">
                             {% if log.action == 'CREATE' %}
@@ -87,7 +87,7 @@
                             <span class="text-xs text-zinc-600 italic">Global</span>
                             {% endif %}
                         </td>
-                        <td class="px-5 py-2.5 text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors max-w-xs truncate"
+                        <td class="px-5 py-2.5 text-sm text-muted group-hover:text-main transition-colors max-w-xs truncate"
                             title="{{ log.description }}">
                             {{ log.description }}
                         </td>

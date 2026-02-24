@@ -16,9 +16,9 @@
     </div>
     {% endif %}
 
-    <div class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl">
-        <div class="p-4 border-b border-white/5 flex justify-between items-center bg-zinc-900/30">
-            <h3 class="text-base font-bold text-white flex items-center gap-2 tracking-tight">
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-border flex justify-between items-center bg-darker/30">
+            <h3 class="text-base font-bold text-main flex items-center gap-2 tracking-tight">
                 <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
@@ -30,32 +30,32 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-zinc-950/30 border-b border-white/5">
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Nome
+                    <tr class="bg-darker/30 border-b border-border">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Nome
                             Completo</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">E-mail</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">E-mail</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Premium</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Papel</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Empresa</th>
-                        <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">
                             Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5">
+                <tbody class="divide-y divide-border">
                     {% for u in users %}
-                    <tr class="hover:bg-white/5 transition-colors group">
+                    <tr class="hover:bg-primary/5 transition-colors group">
                         <td
-                            class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                            class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                             {{ u.full_name or 'N/A' }}
                             {% if not u.is_active %}
                             <span
                                 class="ml-2 px-1.5 py-0.5 bg-red-500/10 text-red-400 text-[8px] font-bold rounded border border-red-500/20 uppercase">Inativo</span>
                             {% endif %}
                         </td>
-                        <td class="px-5 py-2.5 text-sm text-zinc-400 font-mono">{{ u.email }}</td>
+                        <td class="px-5 py-2.5 text-sm text-muted font-mono">{{ u.email }}</td>
                         <td class="px-5 py-2.5 text-center">
                             {% if u.is_premium %}
                             <span
@@ -78,7 +78,7 @@
                             <form action="/admin/users/{{ u.id }}/assign-company" method="POST"
                                 class="flex items-center gap-2 justify-center">
                                 <select name="company_id"
-                                    class="text-[11px] bg-zinc-900/50 border border-white/10 rounded px-2 py-1 text-zinc-300 focus:border-indigo-500 outline-none transition-all"
+                                    class="text-[11px] bg-darker/50 border border-border rounded px-2 py-1 text-muted focus:border-primary outline-none transition-all"
                                     onchange="this.form.submit()">
                                     <option value="">Sem Empresa</option>
                                     {% for company in companies %}

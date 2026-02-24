@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Invexa Control{% endblock %}</title>
+
+    <!-- Theme Management -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -42,10 +53,18 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #09090b;
-            background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, var(--primary-alpha), transparent 50%);
             min-height: 100vh;
+        }
+
+        /* Utility for auth pages alpha */
+        :root {
+            --primary-alpha: rgba(16, 185, 129, 0.1);
+        }
+
+        html.dark {
+            --primary-alpha: rgba(16, 185, 129, 0.15);
         }
     </style>
     <link
@@ -53,7 +72,7 @@
         rel="stylesheet">
 </head>
 
-<body class="bg-dark text-zinc-300 font-sans antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+<body class="bg-main text-main font-sans antialiased selection:bg-primary/30 selection:text-primary">
     <div class="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <!-- Background Elements -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">

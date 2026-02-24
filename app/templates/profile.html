@@ -7,8 +7,7 @@
 <div class="max-w-4xl mx-auto space-y-6">
 
     <!-- Header Section -->
-    <div
-        class="flex items-center gap-4 mb-4 p-4 bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl">
+    <div class="flex items-center gap-4 mb-4 p-4 bg-surface border border-border rounded-2xl shadow-sm">
         <div class="relative group">
             <div
                 class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-indigo-500/20 overflow-hidden ring-4 ring-white/5">
@@ -19,8 +18,8 @@
             </div>
         </div>
         <div class="flex-1">
-            <h2 class="text-xl font-bold text-white tracking-tight">{{ user.full_name or 'Usuário' }}</h2>
-            <p class="text-zinc-400 font-mono text-sm">{{ user.email }}</p>
+            <h2 class="text-xl font-bold text-main tracking-tight">{{ user.full_name or 'Usuário' }}</h2>
+            <p class="text-muted font-mono text-sm">{{ user.email }}</p>
 
             <div class="flex gap-2 mt-3">
                 {% if user.is_premium %}
@@ -34,7 +33,7 @@
                 </span>
                 {% else %}
                 <span
-                    class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-zinc-800 text-zinc-400 border border-white/5 uppercase tracking-wide">
+                    class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-darker/50 text-muted border border-border uppercase tracking-wide">
                     Conta Gratuita
                 </span>
                 {% endif %}
@@ -75,10 +74,9 @@
         <!-- Content Area -->
         <div class="space-y-6">
             <!-- Personal Info -->
-            <div id="section-personal"
-                class="bg-surface/30 backdrop-blur-xl rounded-2xl p-4 border border-white/5 shadow-xl">
-                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="section-personal" class="bg-surface rounded-2xl p-4 border border-border shadow-sm">
+                <h3 class="text-sm font-bold text-main mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
@@ -87,17 +85,16 @@
 
                 <form action="/profile/update" method="POST" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Nome
+                        <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Nome
                             Completo</label>
                         <input type="text" name="full_name" value="{{ user.full_name or '' }}" required
                             class="input-compact" placeholder="Seu nome">
                     </div>
 
                     <div>
-                        <label
-                            class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">E-mail</label>
-                        <input type="email" value="{{ user.email }}" disabled class="input-compact">
-                        <p class="text-[10px] text-zinc-600 mt-2 italic">O e-mail é usado para login e não pode ser
+                        <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">E-mail</label>
+                        <input type="email" value="{{ user.email }}" disabled class="input-compact opacity-60">
+                        <p class="text-[10px] text-muted mt-2 italic">O e-mail é usado para login e não pode ser
                             alterado.</p>
                     </div>
 
@@ -110,9 +107,8 @@
             </div>
 
             <!-- Company Section -->
-            <div id="section-company"
-                class="hidden bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <div id="section-company" class="hidden bg-surface rounded-2xl p-6 border border-border shadow-sm">
+                <h3 class="text-lg font-bold text-main mb-6 flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
@@ -123,13 +119,13 @@
 
                 <form action="/profile/company" method="POST" enctype="multipart/form-data" class="space-y-6">
                     <div class="space-y-4">
-                        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest">Identidade Visual
+                        <label class="block text-xs font-bold text-muted uppercase tracking-widest">Identidade Visual
                             (Logo)</label>
 
                         <div
-                            class="flex flex-col md:flex-row items-center gap-6 p-6 bg-dark/50 rounded-2xl border border-white/5 border-dashed">
+                            class="flex flex-col md:flex-row items-center gap-6 p-6 bg-darker/50 rounded-2xl border border-border border-dashed">
                             <div
-                                class="w-48 h-24 bg-zinc-900 rounded-xl flex items-center justify-center border border-white/5 overflow-hidden">
+                                class="w-48 h-24 bg-darker rounded-xl flex items-center justify-center border border-border overflow-hidden">
                                 {% if company.logo_data %}
                                 <img id="logo-preview" src="{{ company.logo_data }}"
                                     class="max-w-full max-h-full object-contain">
@@ -170,10 +166,9 @@
                     </div>
                 </form>
             </div>
-            <div id="section-security"
-                class="hidden bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="section-security" class="hidden bg-surface rounded-2xl p-6 border border-border shadow-sm">
+                <h3 class="text-lg font-bold text-main mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
                         </path>
@@ -183,18 +178,16 @@
 
                 <form action="/profile/password" method="POST" class="space-y-5" onsubmit="return validatePasswords()">
                     <div>
-                        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Nova
+                        <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Nova
                             Senha</label>
                         <input type="password" name="new_password" id="new_password" minlength="6" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all placeholder-zinc-700"
-                            placeholder="••••••••">
+                            class="input-compact" placeholder="••••••••">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Confirmar
+                        <label class="block text-xs font-bold text-muted uppercase tracking-widest mb-2">Confirmar
                             Nova Senha</label>
-                        <input type="password" id="confirm_password" minlength="6" required
-                            class="w-full bg-dark/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-violet-500/50 outline-none transition-all placeholder-zinc-700"
+                        <input type="password" id="confirm_password" minlength="6" required class="input-compact"
                             placeholder="••••••••">
                     </div>
 
@@ -208,10 +201,9 @@
             </div>
 
             <!-- Subscription Section -->
-            <div id="section-subscription"
-                class="hidden bg-surface/30 backdrop-blur-xl rounded-2xl p-6 border border-white/5 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="section-subscription" class="hidden bg-surface rounded-2xl p-6 border border-border shadow-sm">
+                <h3 class="text-lg font-bold text-main mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
                         </path>
@@ -221,14 +213,14 @@
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-zinc-900/50 p-5 rounded-2xl border border-white/5">
-                            <p class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 font-bold">Plano Atual
+                        <div class="bg-darker/50 p-5 rounded-2xl border border-border">
+                            <p class="text-[10px] text-muted uppercase tracking-widest mb-1 font-bold">Plano Atual
                             </p>
-                            <p class="text-xl font-bold text-white capitalize">{{ user.subscription_plan if
+                            <p class="text-xl font-bold text-main capitalize">{{ user.subscription_plan if
                                 user.is_premium else 'Gratuito' }}</p>
                         </div>
-                        <div class="bg-zinc-900/50 p-5 rounded-2xl border border-white/5">
-                            <p class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 font-bold">Status</p>
+                        <div class="bg-darker/50 p-5 rounded-2xl border border-border">
+                            <p class="text-[10px] text-muted uppercase tracking-widest mb-1 font-bold">Status</p>
                             {% if user.is_premium %}
                             <span class="text-emerald-400 font-bold flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Ativo
@@ -241,10 +233,10 @@
 
                     {% if user.is_premium %}
                     <div
-                        class="bg-indigo-900/20 border border-indigo-500/20 p-5 rounded-2xl flex justify-between items-center">
+                        class="bg-primary/5 border border-primary/20 p-5 rounded-2xl flex justify-between items-center">
                         <div>
-                            <p class="text-xs text-indigo-300 font-medium">Vencimento da assinatura:</p>
-                            <p class="text-lg font-bold text-white">
+                            <p class="text-xs text-primary font-medium">Vencimento da assinatura:</p>
+                            <p class="text-lg font-bold text-main">
                                 {{ user.subscription_end_date.strftime('%d/%m/%Y') if user.subscription_end_date else
                                 'Vitalício' }}
                             </p>

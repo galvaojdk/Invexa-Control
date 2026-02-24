@@ -3,19 +3,18 @@
 {% block title %}Cadastro - Invexa Control{% endblock %}
 
 {% block content %}
-<div
-    class="bg-surface/30 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl p-6 w-full relative overflow-hidden group">
+<div class="bg-surface border border-border rounded-2xl shadow-2xl p-6 w-full relative overflow-hidden group">
     <!-- Decorator -->
     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-indigo-600"></div>
 
     <div class="text-center mb-6 relative z-10">
-        <h2 class="text-xl font-bold text-white tracking-tight">Criar Conta</h2>
-        <p class="text-zinc-500 text-xs mt-1">Comece a gerenciar seu almoxarifado agora.</p>
+        <h2 class="text-xl font-bold text-main tracking-tight">Criar Conta</h2>
+        <p class="text-muted text-xs mt-1">Comece a gerenciar seu almoxarifado agora.</p>
     </div>
 
     <form action="/register" method="POST" class="space-y-4 relative z-10">
         <div>
-            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">Nome
+            <label class="block text-muted text-[10px] font-bold mb-1.5 uppercase tracking-widest">Nome
                 Completo</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -25,12 +24,12 @@
                     </svg>
                 </div>
                 <input type="text" name="full_name"
-                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
+                    class="w-full bg-darker/50 border border-border text-main rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder-muted"
                     placeholder="Ex: João Silva" required>
             </div>
         </div>
         <div>
-            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">E-mail</label>
+            <label class="block text-muted text-[10px] font-bold mb-1.5 uppercase tracking-widest">E-mail</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-4 w-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,12 +39,12 @@
                     </svg>
                 </div>
                 <input type="email" name="email"
-                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
+                    class="w-full bg-darker/50 border border-border text-main rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder-muted"
                     placeholder="seu@email.com" required>
             </div>
         </div>
         <div>
-            <label class="block text-zinc-500 text-[10px] font-bold mb-1.5 uppercase tracking-widest">Senha</label>
+            <label class="block text-muted text-[10px] font-bold mb-1.5 uppercase tracking-widest">Senha</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-4 w-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +54,7 @@
                     </svg>
                 </div>
                 <input type="password" name="password"
-                    class="w-full bg-dark/50 border border-white/10 text-white rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all placeholder-zinc-700"
+                    class="w-full bg-darker/50 border border-border text-main rounded-xl pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder-muted"
                     placeholder="••••••••" required>
             </div>
         </div>
@@ -76,9 +75,9 @@
         </button>
     </form>
 
-    <div class="mt-6 text-center pt-4 border-t border-white/5 relative z-10">
-        <p class="text-xs text-zinc-500">Já tem uma conta? <a href="/login"
-                class="text-indigo-400 font-bold hover:text-indigo-300 transition-colors">Fazer Login</a></p>
+    <div class="mt-6 text-center pt-4 border-t border-border relative z-10">
+        <p class="text-xs text-muted">Já tem uma conta? <a href="/login"
+                class="text-primary font-bold hover:text-primary transition-colors">Fazer Login</a></p>
     </div>
 </div>
 {% endblock %}
