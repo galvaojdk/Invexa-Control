@@ -1,15 +1,15 @@
 /* Estilos Globais Invexa Control */
 
 :root {
-    /* Cores do Tema Claro - Estilo Clean & High Contrast */
+    /* Cores do Tema Claro */
     --primary: #10b981;
     --secondary: #6366f1;
-    --bg-main: #f8fafc;
-    --bg-surface: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --border: #e2e8f0;
-    --glass: rgba(255, 255, 255, 0.8);
+    --bg-main: 248 250 252;
+    --bg-surface: 255 255 255;
+    --text-main: 15 23 42;
+    --text-muted: 71 85 105;
+    --border: 226 232 240;
+    --glass: 255 255 255;
     --input-bg: #ffffff;
     --input-text: #0f172a;
     --input-border: #cbd5e1;
@@ -17,12 +17,12 @@
 
 .dark {
     /* Cores do Tema Escuro */
-    --bg-main: #09090b;
-    --bg-surface: #18181b;
-    --text-main: #f4f4f5;
-    --text-muted: #a1a1aa;
-    --border: rgba(255, 255, 255, 0.05);
-    --glass: rgba(24, 24, 27, 0.6);
+    --bg-main: 9 9 11;
+    --bg-surface: 24 24 27;
+    --text-main: 244 244 245;
+    --text-muted: 161 161 170;
+    --border: 39 39 42;
+    --glass: 24 24 27;
     --input-bg: rgba(0, 0, 0, 0.5);
     --input-text: #ffffff;
 }
@@ -34,11 +34,11 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-main);
+    background: rgb(var(--bg-main));
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: rgb(var(--border));
     border-radius: 3px;
 }
 
@@ -49,8 +49,8 @@
 /* Fundo Global */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-main);
+    background-color: rgb(var(--bg-main));
+    color: rgb(var(--text-main));
     background-image:
         radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
