@@ -5,31 +5,22 @@
     --primary: #10b981;
     --secondary: #6366f1;
     --bg-main: #f8fafc;
-    /* Slate 50 */
     --bg-surface: #ffffff;
     --text-main: #0f172a;
-    /* Slate 900 */
     --text-muted: #475569;
-    /* Slate 600 */
     --border: #e2e8f0;
-    /* Slate 200 */
     --glass: rgba(255, 255, 255, 0.8);
     --input-bg: #ffffff;
     --input-text: #0f172a;
     --input-border: #cbd5e1;
-    /* Slate 300 */
 }
 
-html.dark {
+.dark {
     /* Cores do Tema Escuro */
     --bg-main: #09090b;
-    /* Zinc 950 */
     --bg-surface: #18181b;
-    /* Zinc 900 */
     --text-main: #f4f4f5;
-    /* Zinc 100 */
     --text-muted: #a1a1aa;
-    /* Zinc 400 */
     --border: rgba(255, 255, 255, 0.05);
     --glass: rgba(24, 24, 27, 0.6);
     --input-bg: rgba(0, 0, 0, 0.5);
@@ -42,11 +33,11 @@ html.dark {
     height: 6px;
 }
 
-::webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: var(--bg-main);
 }
 
-::webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 3px;
 }

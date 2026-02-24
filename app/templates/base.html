@@ -15,6 +15,35 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <style>
+        :root {
+            --bg-main: 248, 250, 252;
+            /* #f8fafc */
+            --bg-surface: 255, 255, 255;
+            /* #ffffff */
+            --text-main: 15, 23, 42;
+            /* #0f172a */
+            --text-muted: 71, 85, 105;
+            /* #475569 */
+            --border: 226, 232, 240;
+            /* #e2e8f0 */
+            --glass: 255, 255, 255;
+        }
+
+        .dark {
+            --bg-main: 9, 9, 11;
+            /* #09090b */
+            --bg-surface: 24, 24, 27;
+            /* #18181b */
+            --text-main: 244, 244, 245;
+            /* #f4f4f5 */
+            --text-muted: 161, 161, 170;
+            /* #a1a1aa */
+            --border: 255, 255, 255;
+            /* rgba(255, 255, 255, 0.05) handled by opacity */
+            --glass: 24, 24, 27;
+        }
+    </style>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -23,12 +52,13 @@
                     colors: {
                         primary: '#10b981',
                         secondary: '#6366f1',
-                        dark: 'var(--bg-main)',
-                        darker: 'var(--bg-main)',
-                        surface: 'var(--bg-surface)',
-                        glass: 'var(--glass)',
-                        'text-main': 'var(--text-main)',
-                        'text-muted': 'var(--text-muted)',
+                        main: 'rgb(var(--text-main) / <alpha-value>)',
+                        muted: 'rgb(var(--text-muted) / <alpha-value>)',
+                        dark: 'rgb(var(--bg-main) / <alpha-value>)',
+                        darker: 'rgb(var(--bg-main) / <alpha-value>)',
+                        surface: 'rgb(var(--bg-surface) / <alpha-value>)',
+                        glass: 'rgb(var(--glass) / <alpha-value>)',
+                        border: 'rgb(var(--border) / <alpha-value>)',
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -313,15 +343,19 @@
                     <!-- Dark Mode Toggle -->
                     <div class="px-4 py-3 flex items-center justify-between border-t border-white/5" x-data="{ 
                         dark: document.documentElement.classList.contains('dark'),
+                        init() {
+                            this.$watch('dark', val => {
+                                if (val) {
+                                    document.documentElement.classList.add('dark');
+                                    localStorage.setItem('theme', 'dark');
+                                } else {
+                                    document.documentElement.classList.remove('dark');
+                                    localStorage.setItem('theme', 'light');
+                                }
+                            })
+                        },
                         toggle() {
                             this.dark = !this.dark;
-                            if (this.dark) {
-                                document.documentElement.classList.add('dark');
-                                localStorage.setItem('theme', 'dark');
-                            } else {
-                                document.documentElement.classList.remove('dark');
-                                localStorage.setItem('theme', 'light');
-                            }
                         }
                     }">
                         <div class="flex items-center gap-3">
@@ -361,7 +395,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-h-0 relative w-full bg-dark/50">
+    <main class="flex-1 flex flex-col min-h-0 relative w-full bg-dark">
 
         <div class="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
             {% block content %}{% endblock %}
