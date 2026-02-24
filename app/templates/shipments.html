@@ -53,7 +53,7 @@
                             Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5">
+                <tbody class="divide-y divide-border">
                     {% for shipment in shipments %}
                     <tr class="hover:bg-primary/5 transition-colors group">
                         <td class="px-5 py-2.5 text-xs text-muted font-mono">{{
@@ -80,17 +80,14 @@
                             <div class="flex items-center justify-end gap-2">
                                 <button
                                     onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
-                                    class="text-emerald-400 hover:text-emerald-300 text-[10px] font-bold transition-colors border border-emerald-500/20 px-3 py-1 rounded-lg hover:bg-emerald-500/10 uppercase tracking-wider bg-emerald-500/5">
+                                    class="text-emerald-400 hover:text-emerald-300 text-[10px] font-bold transition-colors uppercase tracking-wider bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1 rounded-lg">
                                     Receber
                                 </button>
                                 <button
                                     onclick="cancelShipment('{{ shipment.id }}', '{{ shipment.product.name }}', '{{ shipment.worker.name }}')"
-                                    class="text-red-400 hover:text-red-300 text-[10px] font-bold transition-colors border border-red-500/20 px-3 py-1 rounded-lg hover:bg-red-500/10 uppercase tracking-wider bg-red-500/5"
+                                    class="text-red-400 hover:text-red-300 text-[10px] font-bold transition-colors uppercase tracking-wider bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg"
                                     title="Cancelar Remessa">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                                    Cancelar
                                 </button>
                             </div>
                             {% endif %}
