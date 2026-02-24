@@ -23,10 +23,12 @@
                     colors: {
                         primary: '#10b981',
                         secondary: '#6366f1',
-                        dark: '#09090b',
-                        darker: '#000000',
-                        surface: '#18181b',
-                        glass: 'rgba(24, 24, 27, 0.6)',
+                        dark: 'var(--bg-main)',
+                        darker: 'var(--bg-main)',
+                        surface: 'var(--bg-surface)',
+                        glass: 'var(--glass)',
+                        'text-main': 'var(--text-main)',
+                        'text-muted': 'var(--text-muted)',
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -43,7 +45,7 @@
 </head>
 
 <body
-    class="bg-dark text-zinc-300 font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
+    class="bg-dark text-main font-sans antialiased h-screen flex flex-col overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200 transition-colors duration-300">
 
 
     <header
