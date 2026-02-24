@@ -11,7 +11,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <!-- Total Products -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface border border-border p-5 rounded-2xl shadow-sm hover:shadow-indigo-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -32,7 +32,7 @@
 
     <!-- Recent Movements -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-emerald-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-emerald-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -53,7 +53,7 @@
 
     <!-- Workers -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-cyan-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-cyan-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -75,7 +75,7 @@
 
     <!-- Active Shipments -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-violet-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-violet-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -96,7 +96,7 @@
 
     <!-- Products To Receive -->
     <div
-        class="relative overflow-hidden group bg-surface/50 border border-white/5 p-6 rounded-2xl backdrop-blur-xl shadow-lg hover:shadow-amber-500/10 transition-all duration-300">
+        class="relative overflow-hidden group bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-amber-500/10 transition-all duration-300">
         <div
             class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         </div>
@@ -117,16 +117,16 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Movements Chart -->
-    <div class="bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg">
-        <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Movimentações (7 Dias)</h3>
+    <div class="bg-surface border border-border p-5 rounded-2xl shadow-sm">
+        <h3 class="text-xs font-bold text-muted uppercase tracking-widest mb-6">Movimentações (7 Dias)</h3>
         <div class="relative h-64 w-full">
             <canvas id="movementsChart"></canvas>
         </div>
     </div>
 
     <!-- Categories Chart -->
-    <div class="bg-surface/50 border border-white/5 p-5 rounded-2xl backdrop-blur-xl shadow-lg">
-        <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Distribuição por Categoria</h3>
+    <div class="bg-surface border border-border p-5 rounded-2xl shadow-sm">
+        <h3 class="text-xs font-bold text-muted uppercase tracking-widest mb-6">Distribuição por Categoria</h3>
         <div class="relative h-64 w-full flex justify-center">
             <canvas id="categoriesChart"></canvas>
         </div>
@@ -135,9 +135,9 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Consumption by Worker -->
-    <div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden shadow-lg backdrop-blur-xl">
-        <div class="p-5 border-b border-white/5 bg-surface/30">
-            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-5 border-b border-border bg-surface">
+            <h4 class="text-sm font-bold text-main flex items-center gap-2">
                 <svg class="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
@@ -151,26 +151,26 @@
                 {% for worker_name, quantity in worker_consumption.items() %}
                 <div class="flex flex-col gap-1.5">
                     <div class="flex justify-between text-xs font-medium">
-                        <span class="text-zinc-400">{{ worker_name }}</span>
-                        <span class="text-white font-mono">{{ quantity }} un.</span>
+                        <span class="text-muted">{{ worker_name }}</span>
+                        <span class="text-main font-mono">{{ quantity }} un.</span>
                     </div>
-                    <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="w-full bg-darker rounded-full h-1.5 overflow-hidden">
                         {% set percent = (quantity / (total_out_qty if total_out_qty > 0 else 1) * 100)|round|int %}
                         <div class="bg-gradient-to-r from-indigo-500 to-violet-500 h-full rounded-full"
                             style="width: {{ [percent, 100]|min }}%"></div>
                     </div>
                 </div>
                 {% else %}
-                <p class="text-xs text-zinc-500 italic text-center py-4">Nenhuma saída registrada.</p>
+                <p class="text-xs text-muted italic text-center py-4">Nenhuma saída registrada.</p>
                 {% endfor %}
             </div>
         </div>
     </div>
 
     <!-- Top Production -->
-    <div class="bg-surface/50 border border-white/5 rounded-2xl p-5 shadow-lg backdrop-blur-xl flex flex-col">
-        <div class="p-0 border-b border-white/5 pb-5 mb-5">
-            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+    <div class="bg-surface border border-border rounded-2xl p-5 shadow-sm flex flex-col">
+        <div class="p-0 border-b border-border pb-5 mb-5">
+            <h4 class="text-sm font-bold text-main flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -183,10 +183,10 @@
             {% for prod_name, quantity in top_production.items() %}
             <div class="flex flex-col gap-1.5">
                 <div class="flex justify-between text-xs font-medium">
-                    <span class="text-zinc-400">{{ prod_name }}</span>
-                    <span class="text-white font-mono">{{ quantity }} un.</span>
+                    <span class="text-muted">{{ prod_name }}</span>
+                    <span class="text-main font-mono">{{ quantity }} un.</span>
                 </div>
-                <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                <div class="w-full bg-darker rounded-full h-1.5 overflow-hidden">
                     {% set percent = (quantity / (total_produced_qty if total_produced_qty > 0 else 1) * 100)|round|int
                     %}
                     <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full"
@@ -194,7 +194,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="flex flex-col items-center justify-center py-6 text-zinc-500 gap-2">
+            <div class="flex flex-col items-center justify-center py-6 text-muted gap-2">
                 <svg class="w-8 h-8 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -206,30 +206,30 @@
     </div>
 </div>
 
-<div class="bg-surface/50 border border-white/5 rounded-2xl overflow-hidden mb-6 backdrop-blur-xl shadow-lg">
-    <div class="p-5 border-b border-white/5 flex justify-between items-center bg-surface/30">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Últimas Movimentações</h3>
+<div class="bg-surface border border-border rounded-2xl overflow-hidden mb-6 shadow-sm">
+    <div class="p-5 border-b border-border flex justify-between items-center bg-surface">
+        <h3 class="text-sm font-bold text-main uppercase tracking-wider">Últimas Movimentações</h3>
 
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="bg-zinc-950/30 border-b border-white/5">
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                <tr class="bg-darker/30 border-b border-border">
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                         Data</th>
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                         Produto</th>
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                         Tipo</th>
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Qtd
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Qtd
                     </th>
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                         Setor</th>
-                    <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                         Motivo</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-white/5">
+            <tbody class="divide-y divide-border">
                 {% for mov in latest_movements %}
                 <tr class="hover:bg-primary/5 transition-colors group">
                     <td class="px-5 py-2.5 text-xs font-mono text-muted group-hover:text-main">{{
@@ -247,13 +247,13 @@
                             class="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 uppercase tracking-wider">SAÍDA</span>
                         {% endif %}
                     </td>
-                    <td class="px-5 py-2.5 text-sm font-mono text-zinc-300">{{ mov.quantity }}</td>
-                    <td class="px-5 py-2.5 text-xs text-zinc-400">{{ mov.sector or '-' }}</td>
-                    <td class="px-5 py-2.5 text-xs text-zinc-500">{{ mov.reason or '-' }}</td>
+                    <td class="px-5 py-2.5 text-sm font-mono text-muted">{{ mov.quantity }}</td>
+                    <td class="px-5 py-2.5 text-xs text-muted">{{ mov.sector or '-' }}</td>
+                    <td class="px-5 py-2.5 text-xs text-muted">{{ mov.reason or '-' }}</td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhuma
+                    <td colspan="6" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma
                         movimentação
                         registrada hoje.</td>
                 </tr>
