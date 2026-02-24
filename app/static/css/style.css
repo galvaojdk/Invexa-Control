@@ -1,21 +1,23 @@
 /* Estilos Globais Invexa Control */
 
 :root {
-    /* Cores do Tema Claro (Padrão) - Refinadas para maior contraste */
+    /* Cores do Tema Claro - Estilo Clean & High Contrast */
     --primary: #10b981;
     --secondary: #6366f1;
-    --bg-main: #f1f5f9;
-    /* Slate 100 - Mais profundo para destacar cards brancos */
+    --bg-main: #f8fafc;
+    /* Slate 50 */
     --bg-surface: #ffffff;
-    --text-main: #020617;
-    /* Slate 950 - Máximo contraste */
-    --text-muted: #334155;
-    /* Slate 700 - Bem legível */
-    --border: rgba(0, 0, 0, 0.1);
-    /* Bordas mais visíveis */
-    --glass: rgba(255, 255, 255, 0.7);
+    --text-main: #0f172a;
+    /* Slate 900 */
+    --text-muted: #475569;
+    /* Slate 600 */
+    --border: #e2e8f0;
+    /* Slate 200 */
+    --glass: rgba(255, 255, 255, 0.8);
     --input-bg: #ffffff;
-    --input-text: #020617;
+    --input-text: #0f172a;
+    --input-border: #cbd5e1;
+    /* Slate 300 */
 }
 
 html.dark {
@@ -40,12 +42,12 @@ html.dark {
     height: 6px;
 }
 
-::-webkit-scrollbar-track {
+::webkit-scrollbar-track {
     background: var(--bg-main);
 }
 
-::-webkit-scrollbar-thumb {
-    background: #27272a;
+::webkit-scrollbar-thumb {
+    background: var(--border);
     border-radius: 3px;
 }
 
@@ -78,14 +80,17 @@ body {
 .input-compact {
     width: 100%;
     background-color: var(--input-bg);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    /* 12px */
-    padding: 0.625rem 1rem;
-    /* 10px 16px */
+    border: 1px solid var(--input-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
     color: var(--input-text);
+    font-size: 0.875rem;
     outline: none;
     transition: all 0.2s;
+}
+
+html.dark .input-compact {
+    border-color: var(--border);
 }
 
 .input-compact:focus {
