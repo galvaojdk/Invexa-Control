@@ -26,12 +26,12 @@
     <!-- Tabs Navigation -->
     <div class="flex gap-4 border-b border-white/5">
         <button @click="activeTab = 'products'"
-            :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'products', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'products' }"
+            :class="{ 'text-indigo-500 border-b-2 border-indigo-500': activeTab === 'products', 'text-muted hover:text-main': activeTab !== 'products' }"
             class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Produtos
         </button>
         <button @click="activeTab = 'categories'"
-            :class="{ 'text-indigo-400 border-b-2 border-indigo-500': activeTab === 'categories', 'text-zinc-500 hover:text-zinc-300': activeTab !== 'categories' }"
+            :class="{ 'text-indigo-500 border-b-2 border-indigo-500': activeTab === 'categories', 'text-muted hover:text-main': activeTab !== 'categories' }"
             class="px-4 py-1.5 text-sm font-bold transition-all uppercase tracking-wide">
             Categorias
         </button>
@@ -44,7 +44,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="relative group w-full max-w-md">
                 <input type="text" placeholder="Buscar produto..."
-                    class="pl-10 pr-4 py-2 bg-surface/50 backdrop-blur-sm border border-white/5 rounded-xl text-sm text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all group-hover:bg-surface/80">
+                    class="pl-10 pr-4 py-2 bg-surface border border-white/5 rounded-xl text-sm text-main focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-full transition-all">
                 <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-3" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -86,8 +86,8 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-zinc-950/30 border-b border-white/5">
-                            <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                        <tr class="bg-darker/30 border-b border-white/5">
+                            <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">
                                 Descrição
                             </th>
                             <th class="px-5 py-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
@@ -105,25 +105,25 @@
                     </thead>
                     <tbody class="divide-y divide-white/5">
                         {% for product in products %}
-                        <tr class="hover:bg-white/5 transition-colors group">
-                            <td <td
-                                class="px-5 py-2.5 text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                        <tr class="hover:bg-indigo-500/5 transition-colors group">
+                            <td
+                                class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                                 {{ product.name }}</td>
-                            <td class="px-5 py-2.5 text-sm text-zinc-500">{{ product.category.name if product.category
+                            <td class="px-5 py-2.5 text-sm text-muted">{{ product.category.name if product.category
                                 else
                                 '-' }}</td>
                             <td class="px-5 py-2.5 text-sm">
                                 {% if product.is_composite %}
                                 <span
-                                    class="px-2 py-1 rounded-lg bg-violet-500/10 text-violet-400 text-[10px] font-bold border border-violet-500/20 uppercase tracking-wider">COMPOSTO</span>
+                                    class="px-2 py-1 rounded-lg bg-violet-500/10 text-violet-500 font-bold border border-violet-500/20 text-[10px] uppercase tracking-wider">COMPOSTO</span>
                                 {% elif product.is_primary %}
                                 <span
-                                    class="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 text-[10px] font-bold border border-indigo-500/20 uppercase tracking-wider">PRIMÁRIO</span>
+                                    class="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 font-bold border border-indigo-500/20 text-[10px] uppercase tracking-wider">PRIMÁRIO</span>
                                 {% else %}
-                                <span class="text-zinc-600 text-[10px] font-bold uppercase tracking-wider">PADRÃO</span>
+                                <span class="text-muted text-[10px] font-bold uppercase tracking-wider">PADRÃO</span>
                                 {% endif %}
                             </td>
-                            <td class="px-5 py-2.5 text-sm font-mono text-zinc-400">
+                            <td class="px-5 py-2.5 text-sm font-mono text-muted">
                                 {{ product.unit }}
                             </td>
 

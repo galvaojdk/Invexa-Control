@@ -1,19 +1,20 @@
 /* Estilos Globais Invexa Control */
 
 :root {
-    /* Cores do Tema Claro (Padrão) */
+    /* Cores do Tema Claro (Padrão) - Refinadas para maior contraste */
     --primary: #10b981;
     --secondary: #6366f1;
-    --bg-main: #f8fafc;
-    /* Slate 50 */
+    --bg-main: #f1f5f9;
+    /* Slate 100 - Mais profundo para destacar cards brancos */
     --bg-surface: #ffffff;
     --text-main: #0f172a;
-    /* Slate 900 */
-    --text-muted: #64748b;
-    /* Slate 500 */
-    --border: rgba(0, 0, 0, 0.05);
-    --glass: rgba(255, 255, 255, 0.6);
-    --input-bg: rgba(255, 255, 255, 0.8);
+    /* Slate 900 - Quase preto para máxima leitura */
+    --text-muted: #475569;
+    /* Slate 600 - Cinza escuro legível */
+    --border: rgba(0, 0, 0, 0.1);
+    /* Bordas mais visíveis */
+    --glass: rgba(255, 255, 255, 0.7);
+    --input-bg: #ffffff;
     --input-text: #0f172a;
 }
 
