@@ -28,7 +28,7 @@ async def shipments_view(request: Request, status_filter: str = "active", user: 
     products = db.query(Product).filter(Product.company_id == user.company_id).order_by(Product.name).all()
     active_ops = db.query(ProductionOrder).filter(
         ProductionOrder.company_id == user.company_id,
-        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.LIBERADA, OPStatus.IN_PROGRESS])
+        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.RELEASED, OPStatus.IN_PROGRESS])
     ).order_by(ProductionOrder.created_at.desc()).all()
 
     return templates.TemplateResponse("shipments.html", {

@@ -23,7 +23,7 @@ async def movements_view(request: Request, db: Session = Depends(get_db), user: 
     workers = db.query(Worker).filter(Worker.company_id == user.company_id, Worker.active == True).all()
     active_ops = db.query(ProductionOrder).filter(
         ProductionOrder.company_id == user.company_id,
-        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.LIBERADA, OPStatus.IN_PROGRESS])
+        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.RELEASED, OPStatus.IN_PROGRESS])
     ).order_by(ProductionOrder.created_at.desc()).all()
     return templates.TemplateResponse("movements.html", {
         "request": request, 
