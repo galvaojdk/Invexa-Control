@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Form
+from fastapi import APIRouter, Depends, HTTPException, status, Form, Request
 from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import datetime
@@ -7,8 +8,10 @@ from app.api.dependencies import get_db, login_required
 from app.models.user import User
 from app.models.inventory import Product, Movement, MovementType, ProductComposition
 from app.models.worker import Worker, Shipment, ShipmentStatus
+from app.models.production import ProductionOrder, OPMaterial, OPStatus
 
 router = APIRouter(prefix="/production", tags=["Production"])
+templates = Jinja2Templates(directory="app/templates")
 
 @router.post("/register")
 async def register_production(
@@ -112,3 +115,82 @@ async def register_production(
         return JSONResponse(content={"message": "Produção registrada com sucesso!", "warnings": warnings}, status_code=200)
 
     return JSONResponse(content={"message": "Produção registrada com sucesso!"}, status_code=200)
+
+
+# --- OP Routes ---
+
+@router.get("/orders")
+async def list_production_orders(request: Request, db: Session = Depends(get_db), user: User = Depends(login_required)):
+    ops = db.query(ProductionOrder).filter(ProductionOrder.company_id == user.company_id).order_by(ProductionOrder.created_at.desc()).all()
+    # To create an OP, we need a list of composite products
+    composite_products = db.query(Product).filter(Product.company_id == user.company_id, Product.is_composite == True).all()
+    
+    return templates.TemplateResponse("production_orders.html", {
+        "request": request,
+        "user": user,
+        "ops": ops,
+        "composite_products": composite_products,
+        "OPStatus": OPStatus
+    })
+
+@router.post("/orders/new")
+async def create_production_order(
+    product_id: int = Form(...),
+    expected_quantity: float = Form(...),
+    notes: str = Form(""),
+    db: Session = Depends(get_db),
+    user: User = Depends(login_required)
+):
+    if expected_quantity <= 0:
+         raise HTTPException(status_code=400, detail="A quantidade esperada deve ser maior que zero.")
+    
+    product = db.query(Product).filter(Product.id == product_id, Product.company_id == user.company_id).first()
+    if not product or not product.is_composite:
+         raise HTTPException(status_code=400, detail="Produto inválido para uma OP (Deve ser composto).")
+         
+    # Generate OP Number OP-YYYYMMDD-XXXX
+    today_str = datetime.now().strftime("%Y%m%d")
+    count_today = db.query(ProductionOrder).filter(
+        ProductionOrder.company_id == user.company_id,
+        ProductionOrder.op_number.like(f"OP-{today_str}-%")
+    ).count()
+    op_num = f"OP-{today_str}-{count_today + 1:04d}"
+    
+    new_op = ProductionOrder(
+        op_number=op_num,
+        company_id=user.company_id,
+        product_id=product.id,
+        expected_quantity=expected_quantity,
+        status=OPStatus.DRAFT,
+        notes=notes
+    )
+    db.add(new_op)
+    db.flush() # get new_op.id
+    
+    # Generate needed materials
+    compositions = db.query(ProductComposition).filter(ProductComposition.composite_id == product.id).all()
+    for comp in compositions:
+        total_needed = expected_quantity * comp.quantity
+        op_mat = OPMaterial(
+            op_id=new_op.id,
+            component_id=comp.component_id,
+            expected_quantity=total_needed,
+            company_id=user.company_id
+        )
+        db.add(op_mat)
+        
+    db.commit()
+    return RedirectResponse(url="/production/orders", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/orders/{op_id}/details")
+async def view_production_order(op_id: int, request: Request, db: Session = Depends(get_db), user: User = Depends(login_required)):
+    op = db.query(ProductionOrder).filter(ProductionOrder.id == op_id, ProductionOrder.company_id == user.company_id).first()
+    if not op:
+         raise HTTPException(status_code=404, detail="OP não encontrada")
+         
+    return templates.TemplateResponse("production_order_view.html", {
+        "request": request,
+        "user": user,
+        "op": op,
+        "OPStatus": OPStatus
+    })
