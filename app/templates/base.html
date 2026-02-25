@@ -182,6 +182,9 @@
                             class="block px-4 py-2 text-[11px] lg:text-[12px] font-semibold text-muted hover:text-main hover:bg-primary/5 rounded-lg transition-colors">Backup</a>
                         <a href="/admin/support"
                             class="block px-4 py-2 text-[11px] lg:text-[12px] font-semibold text-muted hover:text-main hover:bg-primary/5 rounded-lg transition-colors">Suporte</a>
+                        <a href="/admin/guide"
+                            class="block px-4 py-2 text-[11px] lg:text-[12px] font-semibold text-muted hover:text-main hover:bg-primary/5 rounded-lg transition-colors">Guia
+                            de Ajuda</a>
 
                         <div class="h-px bg-border my-1"></div>
 
@@ -427,7 +430,32 @@
     </main>
 
     <!-- Global Help Widget -->
-    <div x-data="{ helpOpen: false }" class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
+    <div x-data="{ 
+        helpOpen: false, 
+        hasUpdate: false, 
+        content: '<div class=\'flex justify-center py-8\'><svg class=\'animate-spin h-6 w-6 text-indigo-500\' xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\'><circle class=\'opacity-25\' cx=\'12\' cy=\'12\' r=\'10\' stroke=\'currentColor\' stroke-width=\'4\'></circle><path class=\'opacity-75\' fill=\'currentColor\' d=\'M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\'></path></svg></div>',
+        init() {
+            fetch('/api/guide/status')
+                .then(r => r.json())
+                .then(data => {
+                    this.hasUpdate = data.has_update;
+                });
+        },
+        openHelp() {
+            this.helpOpen = !this.helpOpen;
+            if (this.helpOpen) {
+                fetch('/api/guide/content')
+                    .then(r => r.json())
+                    .then(data => {
+                        this.content = data.content || 'Guia Vazio';
+                    });
+                if (this.hasUpdate) {
+                    fetch('/api/guide/mark_read', { method: 'POST' });
+                    this.hasUpdate = false;
+                }
+            }
+        }
+    }" class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end">
 
         <!-- Help Panel (Modal/Popover) -->
         <div x-show="helpOpen" x-transition:enter="transition ease-out duration-200"
@@ -461,96 +489,29 @@
             </div>
 
             <!-- Content Base -->
-            <div class="p-5 space-y-6 text-sm text-muted">
-
-                <!-- 1. Cadastros Básicos -->
-                <div class="space-y-2">
-                    <h4 class="font-bold text-main flex items-center gap-2">
-                        <span
-                            class="bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            1</span>
-                        Cadastros Gerais
-                    </h4>
-                    <p class="leading-relaxed text-[12px]">
-                        Em <strong>Cadastros</strong> você registra seus Produtos e os Terceirizados (Facções).
-                        Existem produtos <strong>Simples</strong> (matéria-prima/insumos) e <strong>Compostos</strong>
-                        (Produto final que possui Ficha Técnica).
-                    </p>
+            <div class="p-5 space-y-4 text-sm text-muted" x-html="content">
+                <div class="flex justify-center py-8">
+                    <svg class="animate-spin h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
                 </div>
-
-                <!-- 2. Entradas e Saídas -->
-                <div class="space-y-2">
-                    <h4 class="font-bold text-main flex items-center gap-2">
-                        <span
-                            class="bg-sky-500/10 text-sky-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            2</span>
-                        Movimentações (Estoque)
-                    </h4>
-                    <p class="leading-relaxed text-[12px]">
-                        Na tela de <strong>Movimentações</strong> você adiciona produtos novos ao saldo (Entrada) ou
-                        retira itens (Saída).
-                        Sempre que você despachar uma <strong>Saída em Lote</strong> vinculada ao nome de um
-                        <strong>Terceirizado</strong>, o sistema "penhora" esses itens e joga eles lá no balcão de
-                        Pendências em Remessas.
-                    </p>
-                </div>
-
-                <!-- 3. Ordens de Produção -->
-                <div class="space-y-2">
-                    <h4 class="font-bold text-main flex items-center gap-2">
-                        <span
-                            class="bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            3</span>
-                        Gerando uma OP
-                    </h4>
-                    <p class="leading-relaxed text-[12px]">
-                        Decidiu fabricar um produto final composto? Crie uma <strong>Ordem de Produção (OP)</strong>
-                        definindo a Meta. Ela começa como Rascunho.
-                        Ao fazer uma Saída (Passo 2) de materiais para a Facção e apontar o ID dessa OP no final da
-                        saída, ela entra "Em Andamento" e vincula os insumos a ela de forma inteligente.
-                    </p>
-                </div>
-
-                <!-- 4. Recebimento e Remessas -->
-                <div class="space-y-2">
-                    <h4 class="font-bold text-main flex items-center gap-2">
-                        <span
-                            class="bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            4</span>
-                        Recebimento Mágico
-                    </h4>
-                    <p class="leading-relaxed text-[12px]">
-                        A facção entregou o lote? Vá em <strong>Remessas > Registrar Produção</strong>.
-                        O sistema irá:
-                    </p>
-                    <ul class="list-disc pl-4 text-[11px] leading-relaxed space-y-1">
-                        <li>Dar "Entrada" imediata da calça/produto pronto no seu estoque.</li>
-                        <li>Baixar automaticamente os botões e tecidos da <strong>Ficha Técnica</strong> na carteira de
-                            pendências daquela Facção.</li>
-                        <li>Preencher a "Barra de Progresso" da OP caso tenha selecionado. Tudo em um botão!</li>
-                    </ul>
-                </div>
-
-                <!-- 5. Inteligência -->
-                <div class="space-y-2">
-                    <h4 class="font-bold text-main flex items-center gap-2">
-                        <span
-                            class="bg-violet-500/10 text-violet-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Extra</span>
-                        Inteligência
-                    </h4>
-                    <p class="leading-relaxed text-[12px]">
-                        Explore o menu <strong>Relatórios</strong> para cruzar e investigar o desperdício das facções
-                        usando as informações das remessas ou para gerar planilhas para a contabilidade!
-                    </p>
-                </div>
-
             </div>
         </div>
 
         <!-- Float Button -->
-        <button @click="helpOpen = !helpOpen"
-            class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 pointer-events-auto shadow-indigo-500/30 border border-white/10"
+        <button @click="openHelp()"
+            class="relative bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white p-3.5 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 pointer-events-auto shadow-indigo-500/30 border border-white/10"
             title="Guia Rápido">
+            <!-- Red Notification Dot -->
+            <span x-show="hasUpdate" style="display: none;" class="absolute top-0 right-0 flex h-3.5 w-3.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500 border-2 border-surface"></span>
+            </span>
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">

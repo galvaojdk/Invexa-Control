@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Guia do Sistema - Invexa Control{% endblock %}
+{% block header_title %}Editar Guia do Sistema{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-4">
+    <div class="bg-surface border border-border rounded-2xl shadow-sm p-6">
+        <h3 class="text-lg font-bold text-main mb-2">Editor do Guia de Ajuda</h3>
+        <p class="text-sm text-muted mb-6">
+            O conteúdo inserido aqui substituirá o manual do "Guia Rápido" (ícone flutuante) para todos os usuários do
+            sistema.
+            Você pode colar conteúdo HTML (como parágrafos e spans estilizados) neste campo. Ao salvar, uma nova
+            "versão" será gerada ativando o indicador "Novo" ou bolinha vermelha para os usuários conectarem de novo.
+        </p>
+
+        <form action="/admin/guide" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Conteúdo HTML do Guia
+                    (Versão Atual: {{ guide.version }})</label>
+                <textarea name="content" rows="18"
+                    class="w-full bg-input-bg text-input-text border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all font-mono custom-scrollbar"
+                    required>{{ guide.content | safe }}</textarea>
+            </div>
+
+            <div class="flex justify-end pt-4">
+                <button type="submit"
+                    class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    Salvar Novo Guia e Disparar Aviso
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

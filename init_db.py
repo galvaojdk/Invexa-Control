@@ -11,6 +11,14 @@ from sqlalchemy.orm import Session
 print("Iniciando criação das tabelas...")
 Base.metadata.create_all(bind=engine)
 
+from sqlalchemy import text
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN guide_version_viewed INTEGER DEFAULT 0"))
+        conn.commit()
+    except Exception:
+        conn.rollback()
+
 # Criar usuário admin padrão
 db = Session(engine)
 admin = db.query(User).filter(User.email == "admin@invexa.com").first()

@@ -42,6 +42,12 @@ with engine.connect() as conn:
     except Exception:
         conn.rollback()
 
+    try:
+        conn.execute(text("ALTER TABLE users ADD COLUMN guide_version_viewed INTEGER DEFAULT 0"))
+        conn.commit()
+    except Exception:
+        conn.rollback()
+
 # Initialize multi-tenancy (ensure demo company and migrate orphaned data)
 db = SessionLocal()
 try:
@@ -89,6 +95,8 @@ from app.api.routers import shipments
 app.include_router(shipments.router)
 from app.api.routers import production
 app.include_router(production.router)
+from app.api.routers import system_guide
+app.include_router(system_guide.router)
 
 @app.get("/")
 async def root():

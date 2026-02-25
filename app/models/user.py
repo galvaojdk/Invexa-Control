@@ -20,3 +20,4 @@ class User(Base):
     subscription_plan = Column(String, default="free") # free, monthly, annual
     subscription_end_date = Column(DateTime, nullable=True)
     full_name = Column(String, nullable=True)
+    guide_version_viewed = Column(Integer, default=0)
