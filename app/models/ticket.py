@@ -27,6 +27,7 @@ class TicketMessage(Base):
     ticket_id = Column(Integer, ForeignKey("support_tickets.id"), nullable=False, index=True)
     sender_id = Column(Integer, ForeignKey("users.id"), nullable=False) # The user (admin or client) who sent
     message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships

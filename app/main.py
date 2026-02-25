@@ -19,8 +19,15 @@ from app.models.worker import Worker, Shipment
 from app.core.init_db import init_multitenancy
 
 # Create tables on startup
-# Create tables on startup
 Base.metadata.create_all(bind=engine)
+
+from sqlalchemy import text
+with engine.connect() as conn:
+    try:
+        conn.execute(text("ALTER TABLE ticket_messages ADD COLUMN is_read BOOLEAN DEFAULT 0"))
+        conn.commit()
+    except Exception:
+        pass
 
 # Initialize multi-tenancy (ensure demo company and migrate orphaned data)
 db = SessionLocal()

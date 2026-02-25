@@ -211,14 +211,23 @@
                         </path>
                     </svg>
                 </button>
-                <button class="p-2 text-muted hover:text-main hover:bg-primary/5 rounded-lg transition-colors relative">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Bell Icon -->
+                <a href="{% if user and user.is_admin %}/admin/support{% else %}/support{% endif %}"
+                    class="p-2 hover:text-main hover:bg-primary/5 rounded-lg transition-colors relative flex items-center justify-center group"
+                    :class="unread ? 'text-primary bg-primary/5' : 'text-muted'" x-data="{ unread: false }"
+                    x-init="fetch('/support/unread_count').then(r => r.json()).then(d => unread = d.unread)">
+                    <svg class="w-4 h-4 transition-transform group-hover:scale-110"
+                        :class="unread ? 'animate-pulse' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
                         </path>
                     </svg>
-                    <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-primary rounded-full"></span>
-                </button>
+                    <!-- Ping Animation Red Dot -->
+                    <span x-show="unread" x-cloak
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-ping opacity-75"></span>
+                    <span x-show="unread" x-cloak
+                        class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)] border-[1.5px] border-surface"></span>
+                </a>
                 <a href="/support"
                     class="p-2 text-muted hover:text-main hover:bg-primary/5 rounded-lg transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

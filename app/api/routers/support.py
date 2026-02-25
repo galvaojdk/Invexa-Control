@@ -12,6 +12,21 @@ from app.models.ticket import SupportTicket, TicketMessage
 router = APIRouter(prefix="/support", tags=["support"])
 templates = Jinja2Templates(directory="app/templates")
 
+@router.get("/unread_count")
+async def get_unread_count(db: Session = Depends(get_db), current_user: User = Depends(login_required)):
+    # Regular user: count unread msgs in their tickets sent by others
+    # Admin: count unread msgs in ALL tickets sent by others? 
+    # Let's focus on user logic mainly, but if admin, maybe count all.
+    unread = db.query(TicketMessage).join(SupportTicket).filter(
+        TicketMessage.is_read == False,
+        TicketMessage.sender_id != current_user.id
+    )
+    if not current_user.is_admin:
+        unread = unread.filter(SupportTicket.user_id == current_user.id)
+    
+    count = unread.count()
+    return {"unread": count > 0, "count": count}
+
 @router.get("/", response_class=HTMLResponse)
 async def help_center(request: Request, db: Session = Depends(get_db), current_user: User = Depends(login_required)):
     tickets = db.query(SupportTicket).filter(SupportTicket.user_id == current_user.id).order_by(desc(SupportTicket.created_at)).all()
@@ -56,6 +71,18 @@ async def view_ticket(ticket_id: int, request: Request, db: Session = Depends(ge
     ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id, SupportTicket.user_id == current_user.id).first()
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
+
+    # Mark all messages not sent by the current user as read
+    unread_messages = db.query(TicketMessage).filter(
+        TicketMessage.ticket_id == ticket.id,
+        TicketMessage.sender_id != current_user.id,
+        TicketMessage.is_read == False
+    ).all()
+    
+    if unread_messages:
+        for msg in unread_messages:
+            msg.is_read = True
+        db.commit()
 
     return templates.TemplateResponse("support_view.html", {
         "request": request,

@@ -414,6 +414,17 @@ async def admin_support_view(
     if not ticket:
         raise HTTPException(status_code=404, detail="Chamado não encontrado")
     
+    # Mark messages as read
+    unread_messages = db.query(TicketMessage).filter(
+        TicketMessage.ticket_id == ticket.id,
+        TicketMessage.sender_id != user.id,
+        TicketMessage.is_read == False
+    ).all()
+    if unread_messages:
+        for msg in unread_messages:
+            msg.is_read = True
+        db.commit()
+    
     return templates.TemplateResponse("admin_support_view.html", {
         "request": request,
         "user": user,
