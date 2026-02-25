@@ -7,6 +7,7 @@ from app.core.database import get_db
 from app.models.user import User
 from app.models.worker import Worker, Shipment, ShipmentStatus
 from app.models.inventory import Product, Movement, MovementType
+from app.models.production import ProductionOrder, OPStatus
 from app.api.dependencies import login_required
 
 router = APIRouter(prefix="/shipments", tags=["Shipments"])
@@ -25,6 +26,10 @@ async def shipments_view(request: Request, status_filter: str = "active", user: 
     # Fetch data for modals
     workers = db.query(Worker).filter(Worker.active == True, Worker.company_id == user.company_id).all()
     products = db.query(Product).filter(Product.company_id == user.company_id).order_by(Product.name).all()
+    active_ops = db.query(ProductionOrder).filter(
+        ProductionOrder.company_id == user.company_id,
+        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.LIBERADA, OPStatus.IN_PROGRESS])
+    ).order_by(ProductionOrder.created_at.desc()).all()
 
     return templates.TemplateResponse("shipments.html", {
         "request": request,
@@ -32,6 +37,7 @@ async def shipments_view(request: Request, status_filter: str = "active", user: 
         "shipments": shipments,
         "workers": workers,
         "products": products,
+        "active_ops": active_ops,
         "status_filter": status_filter
     })
 
@@ -42,6 +48,7 @@ async def create_shipment(
     quantity: float = Form(...),
     cost_per_unit: float = Form(0.0),
     notes: str = Form(None),
+    op_id: int = Form(None),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -65,6 +72,7 @@ async def create_shipment(
         quantity=quantity,
         cost_per_unit=cost_per_unit,
         notes=notes,
+        op_id=op_id,
         status=ShipmentStatus.PENDING,
         company_id=user.company_id
     )
@@ -74,11 +82,21 @@ async def create_shipment(
     product.current_stock -= quantity
     
     # Log Movement
+    reason_str = f"Remessa para {worker.name}"
+    if op_id:
+        # Fetch op to get number for log
+        op = db.query(ProductionOrder).filter(ProductionOrder.id == op_id).first()
+        if op:
+            reason_str += f" (OP: {op.op_number})"
+            # Update OP Status if it's draft or mapped
+            if op.status == OPStatus.DRAFT or op.status == OPStatus.RELEASED:
+                 op.status = OPStatus.IN_PROGRESS
+                 
     movement = Movement(
         product_id=product.id,
         quantity=quantity,
         type=MovementType.OUT,
-        reason=f"Remessa para {worker.name}",
+        reason=reason_str,
         user_id=user.id,
         company_id=user.company_id,
         sector="Terceirizado",

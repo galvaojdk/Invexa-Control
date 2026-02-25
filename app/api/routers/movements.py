@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.models.inventory import Product, Movement, MovementType
+from app.models.production import ProductionOrder, OPStatus
 from app.models.user import User
 from app.models.worker import Worker, Shipment, ShipmentStatus
 from app.api.dependencies import get_db, login_required
@@ -16,16 +17,20 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("")
 @router.get("/")
-async def movements_view(request: Request, user: User = Depends(login_required), db: Session = Depends(get_db)):
     movements_list = db.query(Movement).filter(Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).all()
     products = db.query(Product).filter(Product.company_id == user.company_id).all()
     workers = db.query(Worker).filter(Worker.company_id == user.company_id, Worker.active == True).all()
+    active_ops = db.query(ProductionOrder).filter(
+        ProductionOrder.company_id == user.company_id,
+        ProductionOrder.status.in_([OPStatus.DRAFT, OPStatus.LIBERADA, OPStatus.IN_PROGRESS])
+    ).order_by(ProductionOrder.created_at.desc()).all()
     return templates.TemplateResponse("movements.html", {
         "request": request, 
         "user": user, 
         "movements": movements_list,
         "products": products,
-        "workers": workers
+        "workers": workers,
+        "active_ops": active_ops
     })
 
 @router.post("")
@@ -80,6 +85,7 @@ class BatchMovementRequest(BaseModel):
     type: str # 'entrada' or 'saida'
     reason: Optional[str] = None
     sector: Optional[str] = None
+    op_id: Optional[int] = None
     items: List[MovementItem]
 
 @router.post("/batch")
@@ -91,9 +97,14 @@ async def register_batch_movements(
     mov_type_str = data.type.lower().strip()
     m_type = MovementType.IN if mov_type_str == "entrada" else MovementType.OUT
     
-    try:
         success_count = 0
         created_movements = []
+        
+        # Check if we should update an OP status
+        op_to_update = None
+        if data.op_id and m_type == MovementType.OUT:
+             op_to_update = db.query(ProductionOrder).filter(ProductionOrder.id == data.op_id, ProductionOrder.company_id == user.company_id).first()
+        
         for item in data.items:
             # Check for worker context
             final_sector = data.sector
@@ -106,6 +117,11 @@ async def register_batch_movements(
                     worker_name = parts[2]
                     final_sector = f"Terceirizado: {worker_name}"
 
+            # Append OP info to log if applicable
+            mov_reason = data.reason
+            if op_to_update:
+                mov_reason = f"{data.reason or ''} (OP: {op_to_update.op_number})".strip()
+                
             # Using Centralized Service!
             movement = InventoryService.register_stock_movement(
                 db=db,
@@ -114,7 +130,7 @@ async def register_batch_movements(
                 mov_type=m_type,
                 user_id=user.id,
                 company_id=user.company_id,
-                reason=data.reason,
+                reason=mov_reason,
                 sector=final_sector
             )
             created_movements.append(movement)
@@ -127,12 +143,16 @@ async def register_batch_movements(
                     quantity=item.quantity,
                     status=ShipmentStatus.PENDING,
                     notes=data.reason,
+                    op_id=data.op_id,
                     company_id=user.company_id
                 )
                 db.add(new_shipment)
 
             success_count += 1
             
+        if op_to_update and op_to_update.status in [OPStatus.DRAFT, OPStatus.RELEASED]:
+             op_to_update.status = OPStatus.IN_PROGRESS
+             
         db.commit()
         
         # Return IDs for printing

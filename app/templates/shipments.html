@@ -44,6 +44,8 @@
                         <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Motivo /
                             Observação</th>
                         <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
+                            OP Relacionada</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Qtd Enviada</th>
                         <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
                             Qtd Retornada</th>
@@ -62,6 +64,17 @@
                             class="px-5 py-2.5 text-sm font-medium text-main group-hover:text-primary transition-colors">
                             {{ shipment.worker.name }}</td>
                         <td class="px-5 py-2.5 text-sm text-muted">{{ shipment.notes or '-' }}</td>
+                        <td class="px-5 py-2.5 text-center">
+                            {% if shipment.op %}
+                            <a href="/production/orders/{{ shipment.op.id }}/details"
+                                class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20"
+                                title="Ver Ordem de Produção">
+                                {{ shipment.op.op_number }}
+                            </a>
+                            {% else %}
+                            <span class="text-xs text-muted">-</span>
+                            {% endif %}
+                        </td>
                         <td class="px-5 py-2.5 text-sm font-bold text-indigo-500 text-center">{{ shipment.quantity }}
                         </td>
                         <td class="px-5 py-2.5 text-sm font-bold text-emerald-600 text-center">{{
@@ -95,7 +108,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma remessa
+                        <td colspan="8" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma remessa
                             encontrada.</td>
                     </tr>
                     {% endfor %}

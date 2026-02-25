@@ -58,6 +58,29 @@
                         placeholder="Ex: Ordem de Produção #123, Remessa para conserto..." required
                         class="input-compact bg-input-bg text-input-text dark:bg-bg-main dark:text-text-main border-border dark:border-border">
                 </div>
+
+                <!-- OP Selection -->
+                <div class="space-y-2 md:col-span-2">
+                    <label class="block text-xs font-bold text-muted uppercase tracking-wider">Vincular Ordem de
+                        Produção (Opcional)</label>
+                    <div class="relative">
+                        <select id="batch_op_select"
+                            class="input-compact appearance-none cursor-pointer bg-input-bg text-input-text dark:bg-bg-main dark:text-text-main border-border dark:border-border">
+                            <option value="" class="text-muted dark:bg-bg-main dark:text-text-main">Não vincular a
+                                nenhuma OP</option>
+                            {% for op in active_ops %}
+                            <option value="{{ op.id }}" class="dark:bg-bg-main dark:text-text-main">{{ op.op_number }} -
+                                {{ op.product.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -199,6 +222,7 @@
 
         const sector = document.getElementById('batch_sector_select').value;
         const reason = document.getElementById('batch_reason').value;
+        const op_id = document.getElementById('batch_op_select').value;
 
         if (!sector) {
             alert("Por favor, selecione o Destino (Terceirizado).");
@@ -242,6 +266,7 @@
                     type: 'saida',
                     sector: sector,
                     reason: reason,
+                    op_id: op_id ? parseInt(op_id) : null,
                     items: items
                 })
             });

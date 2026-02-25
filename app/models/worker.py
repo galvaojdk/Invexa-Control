@@ -56,6 +56,9 @@ class Shipment(Base):
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     notes = Column(Text, nullable=True)
+    
+    op_id = Column(Integer, ForeignKey("production_orders.id"), nullable=True)
 
     worker = relationship("Worker", back_populates="shipments")
     product = relationship("Product")
+    op = relationship("ProductionOrder")
