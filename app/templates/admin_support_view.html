@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Chamado #{{ ticket.id }} | Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto flex flex-col h-[calc(100vh-120px)]">
+    <!-- Header Admin -->
+    <div class="flex items-center gap-4 mb-4 shrink-0 bg-surface border border-border rounded-2xl p-4 shadow-sm">
+        <a href="/admin/support"
+            class="p-2 text-muted hover:text-main hover:bg-main/5 rounded-xl transition-colors shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+        </a>
+        <div class="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-xl font-bold text-main truncate">{{ ticket.subject }}</h1>
+                    {% if ticket.status == 'open' %}
+                    <span
+                        class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">Aberto</span>
+                    {% elif ticket.status == 'in_progress' %}
+                    <span
+                        class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20">Em
+                        Análise</span>
+                    {% else %}
+                    <span
+                        class="px-2 py-0.5 rounded-md bg-main/10 text-muted text-[10px] font-bold uppercase tracking-wider border border-border">Fechado</span>
+                    {% endif %}
+                </div>
+                <div class="text-xs text-muted mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span class="font-bold">Usuário:</span> {{ ticket.user.full_name or ticket.user.email }}
+                    <span class="text-border mx-1">|</span>
+                    <span class="font-bold">Empresa:</span> {{ ticket.company.name }}
+                    <span class="text-border mx-1">|</span>
+                    <span class="font-bold">Criado em:</span> {{ ticket.created_at.strftime('%d/%m/%Y %H:%M') }}
+                </div>
+            </div>
+
+            <!-- Status Actions -->
+            <div class="flex items-center gap-2 shrink-0">
+                <form action="/admin/support/{{ ticket.id }}/status" method="POST" class="flex items-center gap-2">
+                    <select name="status_val"
+                        class="bg-input-bg border border-input-border text-input-text text-xs rounded-lg px-3 py-1.5 outline-none focus:ring-1 focus:ring-primary/50 transition-colors cursor-pointer"
+                        onchange="this.form.submit()">
+                        <option value="open" {% if ticket.status=='open' %}selected{% endif %}>Aberto</option>
+                        <option value="in_progress" {% if ticket.status=='in_progress' %}selected{% endif %}>Em Análise
+                        </option>
+                        <option value="closed" {% if ticket.status=='closed' %}selected{% endif %}>Fechado</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Area Admin View -->
+    <div class="flex-1 overflow-y-auto mb-4 custom-scrollbar rounded-2xl bg-surface border border-border p-4 space-y-4 shadow-sm"
+        id="chat-container">
+        {% for message in ticket.messages %}
+        {% if message.sender.is_admin %}
+        <!-- Message from Admin (Right side for admin view) -->
+        <div class="flex justify-end">
+            <div
+                class="max-w-[80%] bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-md">
+                <div class="flex items-center gap-2 mb-2 justify-end">
+                    <span class="text-[10px] font-bold text-indigo-100">{{ message.sender.full_name or "Admin" }}</span>
+                    <div
+                        class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
+                        {{ (message.sender.full_name or "A")[0] }}</div>
+                </div>
+                <p class="text-sm text-right whitespace-pre-wrap">{{ message.message }}</p>
+                <p class="text-[10px] text-indigo-200 text-right mt-2">{{ message.created_at.strftime('%H:%M - %d/%m')
+                    }}</p>
+            </div>
+        </div>
+        {% else %}
+        <!-- Message from User (Left side for admin view) -->
+        <div class="flex justify-start">
+            <div class="max-w-[80%] bg-main/5 border border-border text-main p-4 rounded-2xl rounded-tl-sm shadow-sm">
+                <div class="flex items-center gap-2 mb-2">
+                    <div
+                        class="w-5 h-5 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
+                        {{ (message.sender.full_name or "U")[0] }}</div>
+                    <span class="text-xs font-bold text-main">{{ message.sender.full_name or message.sender.email
+                        }}</span>
+                </div>
+                <p class="text-sm text-main/90 whitespace-pre-wrap">{{ message.message }}</p>
+                <p class="text-[10px] text-muted mt-2">{{ message.created_at.strftime('%H:%M - %d/%m') }}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Admin Reply Box -->
+    <div class="shrink-0">
+        <form action="/admin/support/{{ ticket.id }}/reply" method="POST"
+            class="bg-surface border border-indigo-500/30 rounded-2xl p-2 shadow-sm relative focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:border-indigo-500 transition-all group">
+            <textarea name="message" required rows="3"
+                class="w-full bg-transparent text-input-text rounded-xl px-4 py-3 outline-none text-sm resize-none custom-scrollbar pb-12"
+                placeholder="Escreva sua resposta para o usuário..."></textarea>
+
+            <div class="absolute bottom-3 right-3 flex items-center gap-3">
+                <span class="text-[10px] text-muted hidden sm:inline-block">Esta mensagem será visível pelo
+                    usuário.</span>
+                <button type="submit"
+                    class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold text-sm hover:opacity-90 rounded-xl transition-all shadow-md shadow-indigo-500/20 flex items-center gap-2">
+                    <span>Enviar Resposta</span>
+                    <svg class="w-4 h-4" transform="rotate(45)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Scroll to bottom of chat
+    const chatContainer = document.getElementById('chat-container');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+</script>
+{% endblock %}

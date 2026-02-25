@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Central de Ajuda | Invexa Control{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-indigo-600">
+                Central de Ajuda</h1>
+            <p class="text-sm text-muted mt-1">Acompanhe seus chamados de suporte ou abra um novo em caso de dúvidas.
+            </p>
+        </div>
+        <button onclick="document.getElementById('new-ticket-modal').classList.remove('hidden')"
+            class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-white rounded-xl font-semibold shadow-lg shadow-indigo-500/25 transition-all w-full sm:w-auto justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span class="text-sm">Abrir Novo Chamado</span>
+        </button>
+    </div>
+
+    <!-- Tickets List -->
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-border bg-main/5">
+            <h3 class="font-semibold text-main text-sm">Meus Chamados</h3>
+        </div>
+        <div class="divide-y divide-border">
+            {% if tickets %}
+            {% for ticket in tickets %}
+            <a href="/support/{{ ticket.id }}"
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 hover:bg-main/2 transition-colors group gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-3 mb-1">
+                        <h4 class="text-sm font-semibold text-main group-hover:text-primary transition-colors truncate">
+                            Chamado #{{ ticket.id }} - {{ ticket.subject }}</h4>
+                        {% if ticket.status == 'open' %}
+                        <span
+                            class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">Aberto</span>
+                        {% elif ticket.status == 'in_progress' %}
+                        <span
+                            class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20">Em
+                            Análise</span>
+                        {% else %}
+                        <span
+                            class="px-2 py-0.5 rounded-md bg-main/10 text-muted text-[10px] font-bold uppercase tracking-wider border border-border">Fechado</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-xs text-muted">Aberto em {{ ticket.created_at.strftime('%d/%m/%Y às %H:%M') }}</p>
+                </div>
+                <div class="text-muted group-hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </a>
+            {% endfor %}
+            {% else %}
+            <div class="p-8 text-center text-muted">
+                <svg class="w-12 h-12 mx-auto mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                    </path>
+                </svg>
+                <p class="text-sm">Você ainda não abriu nenhum chamado.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Chamado -->
+<div id="new-ticket-modal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flexitems-center justify-center p-4">
+    <div class="bg-surface border border-border rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.stop>
+        <div class="px-6 py-4 border-b border-border flex justify-between items-center bg-main/5">
+            <h3 class="font-bold text-main">Abrir Novo Chamado</h3>
+            <button onclick="document.getElementById('new-ticket-modal').classList.add('hidden')"
+                class="text-muted hover:text-red-500 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <form action="/support/new" method="POST" class="p-6 space-y-4">
+            <div>
+                <label class="block text-[11px] font-semibold text-muted uppercase tracking-wider mb-2">Assunto</label>
+                <input type="text" name="subject" required
+                    class="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                    placeholder="Ex: Dúvida sobre o sistema">
+            </div>
+            <div>
+                <label class="block text-[11px] font-semibold text-muted uppercase tracking-wider mb-2">Mensagem</label>
+                <textarea name="message" required rows="4"
+                    class="w-full bg-input-bg border border-input-border text-input-text rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm resize-none custom-scrollbar"
+                    placeholder="Descreva o seu problema ou dúvida com detalhes..."></textarea>
+            </div>
+            <div class="pt-2 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('new-ticket-modal').classList.add('hidden')"
+                    class="px-4 py-2 text-sm font-semibold text-muted hover:text-main bg-main/5 hover:bg-main/10 rounded-xl transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="px-5 py-2 text-sm font-bold text-white bg-primary hover:bg-emerald-400 rounded-xl transition-colors shadow-lg shadow-primary/20">
+                    Enviar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Make Modal display flex properly via script -->
+<script>
+    document.getElementById('new-ticket-modal').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+</script>
+{% endblock %}

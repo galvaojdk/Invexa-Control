@@ -12,6 +12,7 @@ from app.core.database import SessionLocal, Base, engine
 from app.models.company import Company
 from app.models.user import User
 from app.models.inventory import Product, Category, Movement
+from app.models.ticket import SupportTicket, TicketMessage
 from app.api.dependencies import get_db, login_required
 from app.api.routers import auth, inventory, movements, admin, reports
 from app.models.worker import Worker, Shipment
@@ -58,6 +59,8 @@ app.include_router(movements.router)
 
 app.include_router(admin.router)
 app.include_router(reports.router)
+from app.api.routers import support
+app.include_router(support.router)
 from app.api.routers import workers
 app.include_router(workers.router)
 from app.api.routers import dashboard

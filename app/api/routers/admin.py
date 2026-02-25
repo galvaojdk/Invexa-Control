@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.company import Company
 from app.models.inventory import AuditLog, Product, Category, ProductComposition, Movement
+from app.models.ticket import SupportTicket, TicketMessage
 from app.api.dependencies import get_db, admin_required
 from app.models.worker import Worker, Shipment
 from app.models.worker_type import WorkerType
@@ -387,3 +388,74 @@ async def admin_reset_database(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao resetar banco: {str(e)}")
+
+@router.get("/support")
+async def admin_support_list(
+    request: Request,
+    user: User = Depends(admin_required),
+    db: Session = Depends(get_db)
+):
+    from sqlalchemy import desc
+    tickets = db.query(SupportTicket).order_by(desc(SupportTicket.created_at)).all()
+    return templates.TemplateResponse("admin_support.html", {
+        "request": request,
+        "user": user,
+        "tickets": tickets
+    })
+
+@router.get("/support/{ticket_id}")
+async def admin_support_view(
+    ticket_id: int,
+    request: Request,
+    user: User = Depends(admin_required),
+    db: Session = Depends(get_db)
+):
+    ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id).first()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Chamado não encontrado")
+    
+    return templates.TemplateResponse("admin_support_view.html", {
+        "request": request,
+        "user": user,
+        "ticket": ticket
+    })
+
+@router.post("/support/{ticket_id}/reply")
+async def admin_support_reply(
+    ticket_id: int,
+    request: Request,
+    message: str = Form(...),
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(admin_required)
+):
+    ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id).first()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Chamado não encontrado")
+    
+    new_message = TicketMessage(
+        ticket_id=ticket.id,
+        sender_id=admin_user.id,
+        message=message
+    )
+    db.add(new_message)
+    
+    # If the admin replies, we can keep it open or mark as 'in_progress', let's use 'in_progress' or keep 'open'. We'll just leave it or set to open.
+    # We will assume admin changing it to answered or anything could be handled directly via status endpoint.
+    
+    db.commit()
+    return RedirectResponse(url=f"/admin/support/{ticket_id}", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/support/{ticket_id}/status")
+async def admin_support_status(
+    ticket_id: int,
+    status_val: str = Form(...),
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(admin_required)
+):
+    ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id).first()
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Chamado não encontrado")
+    
+    ticket.status = status_val
+    db.commit()
+    return RedirectResponse(url=f"/admin/support/{ticket_id}", status_code=status.HTTP_303_SEE_OTHER)
