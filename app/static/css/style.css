@@ -81,25 +81,27 @@ body {
     transition: all 0.2s;
 }
 
-html.dark .input-compact {
+.dark .input-compact {
     border-color: rgb(var(--input-border));
+    background-color: rgb(var(--bg-main));
+    color: rgb(var(--text-main));
 }
 
 /* Fix global para campos em branco no modo escuro */
-html.dark input,
-html.dark select,
-html.dark textarea {
+.dark input,
+.dark select,
+.dark textarea {
     background-color: rgb(var(--input-bg)) !important;
-    color: rgb(var(--input-text)) !important;
+    color: rgb(var(--text-main)) !important;
 }
 
-html.dark select option {
-    background-color: rgb(var(--bg-surface));
+.dark select option {
+    background-color: rgb(var(--bg-main));
     color: rgb(var(--text-main));
 }
 
 /* Ajuste específico para inputs de data que costumam bugar */
-html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
