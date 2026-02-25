@@ -29,6 +29,18 @@ with engine.connect() as conn:
         conn.commit()
     except Exception:
         pass
+    
+    try:
+        conn.execute(text("ALTER TABLE shipments ADD COLUMN op_id INTEGER REFERENCES production_orders(id)"))
+        conn.commit()
+    except Exception:
+        pass
+
+    try:
+        conn.execute(text("ALTER TABLE production_orders ADD COLUMN completed_at DATETIME"))
+        conn.commit()
+    except Exception:
+        pass
 
 # Initialize multi-tenancy (ensure demo company and migrate orphaned data)
 db = SessionLocal()
