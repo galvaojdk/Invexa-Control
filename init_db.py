@@ -5,6 +5,7 @@ from app.models.user import User
 from app.models.worker import Worker, Shipment
 from app.models.worker_type import WorkerType
 from app.models.production import ProductionOrder, OPMaterial
+from app.models.system import SystemGuide
 from app.core import security
 from sqlalchemy.orm import Session
 

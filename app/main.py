@@ -17,6 +17,7 @@ from app.api.dependencies import get_db, login_required
 from app.api.routers import auth, inventory, movements, admin, reports
 from app.models.worker import Worker, Shipment
 from app.models.production import ProductionOrder, OPMaterial
+from app.models.system import SystemGuide
 from app.core.init_db import init_multitenancy
 
 # Create tables on startup
