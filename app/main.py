@@ -28,19 +28,19 @@ with engine.connect() as conn:
         conn.execute(text("ALTER TABLE ticket_messages ADD COLUMN is_read BOOLEAN DEFAULT 0"))
         conn.commit()
     except Exception:
-        pass
+        conn.rollback()
     
     try:
         conn.execute(text("ALTER TABLE shipments ADD COLUMN op_id INTEGER REFERENCES production_orders(id)"))
         conn.commit()
     except Exception:
-        pass
+        conn.rollback()
 
     try:
         conn.execute(text("ALTER TABLE production_orders ADD COLUMN completed_at DATETIME"))
         conn.commit()
     except Exception:
-        pass
+        conn.rollback()
 
 # Initialize multi-tenancy (ensure demo company and migrate orphaned data)
 db = SessionLocal()
