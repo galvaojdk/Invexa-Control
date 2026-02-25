@@ -463,58 +463,85 @@
             <!-- Content Base -->
             <div class="p-5 space-y-6 text-sm text-muted">
 
-                <!-- Fase 1 -->
+                <!-- 1. Cadastros Básicos -->
                 <div class="space-y-2">
                     <h4 class="font-bold text-main flex items-center gap-2">
                         <span
                             class="bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
                             1</span>
-                        Metas de Produção
+                        Cadastros Gerais
                     </h4>
                     <p class="leading-relaxed text-[12px]">
-                        Crie <strong>Ordens de Produção (OP)</strong> no menu "Produção". Escolha o Produto Final que
-                        será criado. O sistema fará os cálculos do que separar no estoque usando a ficha técnica dele. A
-                        OP nasce como "Rascunho".
+                        Em <strong>Cadastros</strong> você registra seus Produtos e os Terceirizados (Facções).
+                        Existem produtos <strong>Simples</strong> (matéria-prima/insumos) e <strong>Compostos</strong>
+                        (Produto final que possui Ficha Técnica).
                     </p>
                 </div>
 
-                <!-- Fase 2 -->
+                <!-- 2. Entradas e Saídas -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-main flex items-center gap-2">
+                        <span
+                            class="bg-sky-500/10 text-sky-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
+                            2</span>
+                        Movimentações (Estoque)
+                    </h4>
+                    <p class="leading-relaxed text-[12px]">
+                        Na tela de <strong>Movimentações</strong> você adiciona produtos novos ao saldo (Entrada) ou
+                        retira itens (Saída).
+                        Sempre que você despachar uma <strong>Saída em Lote</strong> vinculada ao nome de um
+                        <strong>Terceirizado</strong>, o sistema "penhora" esses itens e joga eles lá no balcão de
+                        Pendências em Remessas.
+                    </p>
+                </div>
+
+                <!-- 3. Ordens de Produção -->
                 <div class="space-y-2">
                     <h4 class="font-bold text-main flex items-center gap-2">
                         <span
                             class="bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            2</span>
-                        Enviando Insumos
+                            3</span>
+                        Gerando uma OP
                     </h4>
                     <p class="leading-relaxed text-[12px]">
-                        Vá em <strong>"Movimentações" > "Nova Saída"</strong> para despachar os materiais da Ficha
-                        (Botão, Zíper, Fio...).
-                        <br>Selecione o <strong>Terceirizado (Remetente)</strong> e, em seguida, vincule essa remessa à
-                        sua <strong>OP Rascunho</strong>. <br>A OP agora iniciará a produção e estará como "Em
-                        Andamento".
+                        Decidiu fabricar um produto final composto? Crie uma <strong>Ordem de Produção (OP)</strong>
+                        definindo a Meta. Ela começa como Rascunho.
+                        Ao fazer uma Saída (Passo 2) de materiais para a Facção e apontar o ID dessa OP no final da
+                        saída, ela entra "Em Andamento" e vincula os insumos a ela de forma inteligente.
                     </p>
                 </div>
 
-                <!-- Fase 3 -->
+                <!-- 4. Recebimento e Remessas -->
                 <div class="space-y-2">
                     <h4 class="font-bold text-main flex items-center gap-2">
                         <span
                             class="bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Passo
-                            3</span>
-                        Recebimento Automático
+                            4</span>
+                        Recebimento Mágico
                     </h4>
                     <p class="leading-relaxed text-[12px]">
-                        Quando a Facção entregar os produtos prontos, abra as <strong>"Remessas"</strong>. <br>
-                        Pressione o botão mágico <strong>"Registrar Produção"</strong>. Selecione o Produto Composto, a
-                        Quantidade recebida e a OP.
-                        O Sistema irá:
+                        A facção entregou o lote? Vá em <strong>Remessas > Registrar Produção</strong>.
+                        O sistema irá:
                     </p>
                     <ul class="list-disc pl-4 text-[11px] leading-relaxed space-y-1">
-                        <li>Entregar o Produto Pronto no Estoque.</li>
-                        <li>Achar a remessa dos Insumos daquela Facção.</li>
-                        <li>Baixar as pendências (inadimplência) dele.</li>
-                        <li>Marcar o progresso da Ordem de Produção!</li>
+                        <li>Dar "Entrada" imediata da calça/produto pronto no seu estoque.</li>
+                        <li>Baixar automaticamente os botões e tecidos da <strong>Ficha Técnica</strong> na carteira de
+                            pendências daquela Facção.</li>
+                        <li>Preencher a "Barra de Progresso" da OP caso tenha selecionado. Tudo em um botão!</li>
                     </ul>
+                </div>
+
+                <!-- 5. Inteligência -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-main flex items-center gap-2">
+                        <span
+                            class="bg-violet-500/10 text-violet-500 px-1.5 py-0.5 rounded text-[10px] uppercase tracking-wider">Extra</span>
+                        Inteligência
+                    </h4>
+                    <p class="leading-relaxed text-[12px]">
+                        Explore o menu <strong>Relatórios</strong> para cruzar e investigar o desperdício das facções
+                        usando as informações das remessas ou para gerar planilhas para a contabilidade!
+                    </p>
                 </div>
 
             </div>
