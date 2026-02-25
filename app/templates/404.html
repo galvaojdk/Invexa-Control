@@ -13,7 +13,7 @@
             </div>
         </div>
         
-        <h1 class="text-3xl font-bold text-white mb-2">Ops! Algo deu errado.</h1>
+        <h1 class="text-3xl font-bold text-main mb-2">Ops! Algo deu errado.</h1>
         <p class="text-slate-400 mb-8">
             {% if request.state.error_msg %}
                 {{ request.state.error_msg }}
@@ -24,11 +24,11 @@
 
         <div class="space-y-3">
             <a href="javascript:history.back()" 
-               class="block w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all shadow-lg shadow-blue-500/20">
+               class="block w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-main font-medium rounded-xl transition-all shadow-lg shadow-blue-500/20">
                 Voltar para página anterior
             </a>
             <a href="/" 
-               class="block w-full py-3 px-4 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-all border border-slate-600">
+               class="block w-full py-3 px-4 bg-slate-700 hover:bg-slate-600 text-main font-medium rounded-xl transition-all border border-slate-600">
                 Ir para o Dashboard
             </a>
         </div>

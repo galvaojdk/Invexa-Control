@@ -62,7 +62,7 @@
                         <td class="px-5 py-3 text-center">
                             {% if op.status.value == 'rascunho' %}
                             <span
-                                class="px-2 py-1 rounded-lg bg-zinc-500/10 text-zinc-500 font-bold border border-zinc-500/20 text-[10px] uppercase tracking-wider">RASCUNHO</span>
+                                class="px-2 py-1 rounded-lg bg-zinc-500/10 text-muted font-bold border border-zinc-500/20 text-[10px] uppercase tracking-wider">RASCUNHO</span>
                             {% elif op.status.value == 'liberada' %}
                             <span
                                 class="px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 font-bold border border-blue-500/20 text-[10px] uppercase tracking-wider">LIBERADA</span>
@@ -85,7 +85,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhuma Ordem de
+                        <td colspan="5" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma Ordem de
                             Produção encontrada.</td>
                     </tr>
                     {% endfor %}
@@ -102,7 +102,7 @@
             <div class="p-4 border-b border-border flex justify-between items-center bg-darker/30">
                 <h3 class="text-base font-bold text-main tracking-tight">Criar Nova Ordem de Produção</h3>
                 <button type="button" onclick="closeNewOpModal()"
-                    class="text-muted hover:text-main transition-colors p-1.5 rounded-lg hover:bg-white/5">
+                    class="text-muted hover:text-main transition-colors p-1.5 rounded-lg hover:bg-primary/5">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>

@@ -130,7 +130,7 @@
                                 <img id="logo-preview" src="{{ company.logo_data }}"
                                     class="max-w-full max-h-full object-contain">
                                 {% else %}
-                                <div id="logo-placeholder" class="text-zinc-600 flex flex-col items-center gap-2">
+                                <div id="logo-placeholder" class="text-muted flex flex-col items-center gap-2">
                                     <svg class="w-8 h-8 opacity-20" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -144,15 +144,15 @@
                             </div>
 
                             <div class="flex-1 space-y-3">
-                                <p class="text-xs text-zinc-400">Envie o logo da sua empresa para que ele apareça
+                                <p class="text-xs text-muted">Envie o logo da sua empresa para que ele apareça
                                     automaticamente nos cabeçalhos dos relatórios.</p>
-                                <ul class="text-[10px] text-zinc-500 space-y-1">
+                                <ul class="text-[10px] text-muted space-y-1">
                                     <li>• Formatos aceitos: PNG, JPG ou WEBP</li>
                                     <li>• Sugestão: Imagem com fundo transparente</li>
                                     <li>• O sistema ajustará o tamanho automaticamente</li>
                                 </ul>
                                 <input type="file" name="logo" accept="image/*"
-                                    class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-500/20 file:text-indigo-400 hover:file:bg-indigo-500/30 transition-all cursor-pointer"
+                                    class="w-full text-xs text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-500/20 file:text-indigo-400 hover:file:bg-indigo-500/30 transition-all cursor-pointer"
                                     onchange="previewImage(this)">
                             </div>
                         </div>
@@ -226,7 +226,7 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Ativo
                             </span>
                             {% else %}
-                            <span class="text-zinc-500 font-bold italic">Sem assinatura ativa</span>
+                            <span class="text-muted font-bold italic">Sem assinatura ativa</span>
                             {% endif %}
                         </div>
                     </div>
@@ -247,14 +247,14 @@
                         </a>
                     </div>
                     {% else %}
-                    <div class="bg-white/5 p-8 rounded-2xl text-center border-2 border-dashed border-white/10">
+                    <div class="bg-primary/5 p-8 rounded-2xl text-center border-2 border-dashed border-border">
                         <div class="inline-flex p-3 bg-indigo-500/10 rounded-full mb-4 ring-1 ring-indigo-500/20">
                             <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
-                        <p class="text-zinc-300 font-medium mb-6">Upgrade para o plano Premium e desbloqueie recursos
+                        <p class="text-main font-medium mb-6">Upgrade para o plano Premium e desbloqueie recursos
                             ilimitados, suporte priorizado e muito mais!</p>
                         <a href="/premium/subscribe"
                             class="inline-block bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold py-3 px-10 rounded-xl shadow-xl shadow-indigo-500/20 transition-all transform hover:scale-105 active:scale-95">

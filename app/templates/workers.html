@@ -114,7 +114,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum
+                            <td colspan="5" class="px-6 py-12 text-center text-muted text-sm italic">Nenhum
                                 terceirizado cadastrado.</td>
                         </tr>
                         {% endfor %}
@@ -169,7 +169,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="2" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum tipo
+                            <td colspan="2" class="px-6 py-12 text-center text-muted text-sm italic">Nenhum tipo
                                 cadastrado.</td>
                         </tr>
                         {% endfor %}
@@ -183,11 +183,11 @@
     <div id="workerModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-all">
         <div
-            class="bg-surface border border-white/10 w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
-            <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h3 class="text-base font-bold text-white tracking-tight" id="workerModalTitle">Novo Terceirizado</h3>
+            class="bg-surface border border-border w-full max-w-md max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
+            <div class="p-4 border-b border-border flex justify-between items-center bg-primary/5">
+                <h3 class="text-base font-bold text-main tracking-tight" id="workerModalTitle">Novo Terceirizado</h3>
                 <button onclick="closeWorkerModal()"
-                    class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10">
+                    class="text-muted hover:text-main transition-colors p-1.5 rounded-lg hover:bg-primary/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -248,12 +248,12 @@
     <div id="workerTypeModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div
-            class="bg-surface border border-white/10 w-full max-w-sm max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all">
-            <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h3 class="text-base font-bold text-white tracking-tight" id="workerTypeModalTitle">Novo Tipo de
+            class="bg-surface border border-border w-full max-w-sm max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="p-4 border-b border-border flex justify-between items-center bg-primary/5">
+                <h3 class="text-base font-bold text-main tracking-tight" id="workerTypeModalTitle">Novo Tipo de
                     Terceirizado</h3>
                 <button onclick="closeWorkerTypeModal()"
-                    class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10">
+                    class="text-muted hover:text-main transition-colors p-1.5 rounded-lg hover:bg-primary/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -263,9 +263,9 @@
             <form id="workerTypeForm" action="/workers/types/create" method="POST"
                 class="p-4 space-y-4 overflow-y-auto">
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Nome do Tipo</label>
+                    <label class="text-xs font-bold text-muted uppercase tracking-wider">Nome do Tipo</label>
                     <input type="text" name="name" id="wt_name" required
-                        class="w-full bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-zinc-700"
+                        class="w-full bg-input-bg text-input-text border border-border rounded-lg px-3 py-2 text-sm  outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-muted"
                         placeholder="Ex: Costureira">
                 </div>
                 <div class="pt-2">

@@ -75,7 +75,7 @@
                                 class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 uppercase tracking-wide">EXCLUIR</span>
                             {% else %}
                             <span
-                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 uppercase tracking-wide">{{
+                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-500/10 text-muted border border-zinc-500/20 uppercase tracking-wide">{{
                                 log.action }}</span>
                             {% endif %}
                         </td>
@@ -84,7 +84,7 @@
                             <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">{{ log.company.name
                                 }}</span>
                             {% else %}
-                            <span class="text-xs text-zinc-600 italic">Global</span>
+                            <span class="text-xs text-muted italic">Global</span>
                             {% endif %}
                         </td>
                         <td class="px-5 py-2.5 text-sm text-muted group-hover:text-main transition-colors max-w-xs truncate"
@@ -94,9 +94,9 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="px-5 py-10 text-center text-zinc-500 text-sm italic">
+                        <td colspan="5" class="px-5 py-10 text-center text-muted text-sm italic">
                             <div class="flex flex-col items-center gap-2">
-                                <svg class="w-12 h-12 text-zinc-700" fill="none" stroke="currentColor"
+                                <svg class="w-12 h-12 text-muted" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">

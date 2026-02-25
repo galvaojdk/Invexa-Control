@@ -19,7 +19,7 @@
                     {{ op.op_number }}
                     {% if op.status.value == 'rascunho' %}
                     <span
-                        class="px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-500 text-[10px] uppercase font-bold tracking-wider border border-zinc-500/20">RASCUNHO</span>
+                        class="px-2 py-0.5 rounded bg-zinc-500/10 text-muted text-[10px] uppercase font-bold tracking-wider border border-zinc-500/20">RASCUNHO</span>
                     {% elif op.status.value == 'liberada' %}
                     <span
                         class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 text-[10px] uppercase font-bold tracking-wider border border-blue-500/20">LIBERADA</span>
@@ -77,6 +77,8 @@
                     <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Insumo</th>
                     <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">Qtd.
                         Total Estimada</th>
+                    <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-right">Qtd.
+                        Consumida (Baixada)</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-border">
@@ -89,10 +91,14 @@
                         {{ mat.expected_quantity }} <span class="text-xs font-normal text-muted">{{
                             mat.component.unit }}</span>
                     </td>
+                    <td class="px-5 py-3 text-sm font-bold text-emerald-500 text-right">
+                        {{ mat.consumed_quantity }} <span class="text-xs font-normal text-muted">{{ mat.component.unit
+                            }}</span>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="2" class="px-6 py-12 text-center text-zinc-500 text-sm italic">Nenhum componente
+                    <td colspan="2" class="px-6 py-12 text-center text-muted text-sm italic">Nenhum componente
                         necessário. (Produto não possui ficha técnica?)</td>
                 </tr>
                 {% endfor %}
@@ -101,18 +107,61 @@
     </div>
 </div>
 
-<div class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 mt-4">
-    <h4 class="text-indigo-400 font-bold text-sm mb-2 flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!-- Related Shipments -->
+<div class="mt-8 flex flex-col gap-4">
+    <div class="flex items-center gap-2 px-2">
+        <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
         </svg>
-        Integração com Remessas Concluída
-    </h4>
-    <p class="text-xs text-indigo-300">
-        Você já pode vincular as Saídas em Lote criadas na tela de Movimentações (ou diretamente em Remessas) para a OP
-        desta Ficha Técnica.
-    </p>
+        <h3 class="text-lg font-bold text-main tracking-tight">Registro de Movimentações Atreladas (Remessas)</h3>
+    </div>
+
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-darker/30 border-b border-border">
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Data</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest">Terceirizado
+                        </th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
+                            Insumo / Aviamento</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
+                            Qtd. Enviada</th>
+                        <th class="px-5 py-3 text-[10px] font-bold text-muted uppercase tracking-widest text-center">
+                            Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                    {% for shipment in shipments %}
+                    <tr class="hover:bg-primary/5 transition-colors group">
+                        <td class="px-5 py-2.5 text-xs text-muted font-mono">{{ shipment.created_at.strftime('%d/%m/%Y
+                            %H:%M') }}</td>
+                        <td class="px-5 py-2.5 text-sm font-medium text-main">{{ shipment.worker.name }}</td>
+                        <td class="px-5 py-2.5 text-sm text-muted text-center">{{ shipment.product.name }}</td>
+                        <td class="px-5 py-2.5 text-sm font-bold text-indigo-500 text-center">{{ shipment.quantity }} {{
+                            shipment.product.unit }}</td>
+                        <td class="px-5 py-2.5 text-center">
+                            <span class="px-2 py-1 rounded-lg text-[10px] font-bold border uppercase tracking-wider
+                                {% if shipment.status.value == 'pendente' %}bg-yellow-500/10 text-yellow-500 border-yellow-500/20
+                                {% elif shipment.status.value == 'parcial' %}bg-blue-500/10 text-blue-400 border-blue-500/20
+                                {% elif shipment.status.value == 'finalizado' %}bg-emerald-500/10 text-emerald-400 border-emerald-500/20
+                                {% else %}bg-zinc-500/10 text-muted border-zinc-500/20{% endif %}">
+                                {{ shipment.status.value|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-muted text-sm italic">Nenhuma remessa
+                            (envio) atrelada a esta OP ainda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </div>
 {% endblock %}

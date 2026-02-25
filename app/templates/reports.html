@@ -118,7 +118,7 @@
 
             <div class="flex items-center gap-2 w-full md:w-auto ml-auto">
                 <button type="submit"
-                    class="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                    class="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-main font-bold rounded-xl shadow-lg shadow-primary/20 transition-all text-sm w-full md:w-auto flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
@@ -147,17 +147,17 @@
                 <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
                 {% else %}
                 <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
-                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                    <span class="text-muted text-[10px] font-bold uppercase">Logo</span>
                 </div>
                 {% endif %}
                 <div>
                     <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest">Sistema Invexa Control</p>
                 </div>
             </div>
             <div class="text-right">
                 <h2 class="text-lg font-bold text-zinc-900">Relatório de Estoque</h2>
-                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+                <p class="text-xs text-muted">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -213,7 +213,7 @@
                                 <span
                                     class="text-sm font-bold text-main group-hover:text-primary transition-colors print:text-black">{{
                                     p.name }}</span>
-                                <span class="text-[10px] font-mono text-muted print:text-zinc-600">{{ p.sku }}</span>
+                                <span class="text-[10px] font-mono text-muted print:text-muted">{{ p.sku }}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-muted print:text-black">{{ p.category.name if p.category
@@ -239,17 +239,17 @@
                 <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
                 {% else %}
                 <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
-                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                    <span class="text-muted text-[10px] font-bold uppercase">Logo</span>
                 </div>
                 {% endif %}
                 <div>
                     <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest">Sistema Invexa Control</p>
                 </div>
             </div>
             <div class="text-right">
                 <h2 class="text-lg font-bold text-zinc-900">Saídas por Terceirizado</h2>
-                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+                <p class="text-xs text-muted">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -262,7 +262,7 @@
             </div>
             <div class="flex gap-3 print:hidden">
                 <button onclick="window.print()"
-                    class="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-xl text-xs font-bold border border-white/10 transition-all flex items-center gap-2 uppercase tracking-wider">
+                    class="px-4 py-2 bg-primary/5 hover:bg-primary/10 text-main rounded-xl text-xs font-bold border border-border transition-all flex items-center gap-2 uppercase tracking-wider">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2-2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2-2v4h10z">
@@ -333,7 +333,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic print:text-black">
+                        <td colspan="7" class="px-6 py-12 text-center text-muted text-sm italic print:text-black">
                             Nenhum registro
                             encontrado.</td>
                     </tr>
@@ -374,17 +374,17 @@
                 <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
                 {% else %}
                 <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
-                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                    <span class="text-muted text-[10px] font-bold uppercase">Logo</span>
                 </div>
                 {% endif %}
                 <div>
                     <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest">Sistema Invexa Control</p>
                 </div>
             </div>
             <div class="text-right">
                 <h2 class="text-lg font-bold text-zinc-900">Review de Terceirizados</h2>
-                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+                <p class="text-xs text-muted">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -438,15 +438,15 @@
                             </thead>
                             <tbody class="divide-y divide-border print:divide-zinc-200">
                                 {% for item in worker_data.materials %}
-                                <tr class="hover:bg-white/5 transition-colors">
-                                    <td class="px-4 py-2 text-xs text-zinc-200 print:text-black">{{ item.product }}</td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                <tr class="hover:bg-primary/5 transition-colors">
+                                    <td class="px-4 py-2 text-xs text-main print:text-black">{{ item.product }}</td>
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-muted print:text-black">
                                         {{
                                         item.last_sent_date.strftime('%d/%m/%Y') }}</td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-muted print:text-black">
                                         {{ item.sent }}
                                     </td>
-                                    <td class="px-4 py-2 text-xs font-mono text-center text-zinc-400 print:text-black">
+                                    <td class="px-4 py-2 text-xs font-mono text-center text-muted print:text-black">
                                         {{ item.returned
                                         }}</td>
                                     <td
@@ -456,7 +456,7 @@
                                 {% else %}
                                 <tr>
                                     <td colspan="5"
-                                        class="px-4 py-6 text-center text-[10px] text-zinc-500 italic print:text-black">
+                                        class="px-4 py-6 text-center text-[10px] text-muted italic print:text-black">
                                         Nenhum material pendente.</td>
                                 </tr>
                                 {% endfor %}
@@ -513,7 +513,7 @@
                                 {% else %}
                                 <tr>
                                     <td colspan="4"
-                                        class="px-4 py-6 text-center text-[10px] text-zinc-500 italic print:text-black">
+                                        class="px-4 py-6 text-center text-[10px] text-muted italic print:text-black">
                                         Nenhuma produção entregue no período.</td>
                                 </tr>
                                 {% endfor %}
@@ -540,17 +540,17 @@
                 <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
                 {% else %}
                 <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
-                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                    <span class="text-muted text-[10px] font-bold uppercase">Logo</span>
                 </div>
                 {% endif %}
                 <div>
                     <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest">Sistema Invexa Control</p>
                 </div>
             </div>
             <div class="text-right">
                 <h2 class="text-lg font-bold text-zinc-900">Entregas por Terceirizado</h2>
-                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+                <p class="text-xs text-muted">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -606,7 +606,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="4" class="px-6 py-12 text-center text-zinc-500 text-sm italic print:text-black">
+                        <td colspan="4" class="px-6 py-12 text-center text-muted text-sm italic print:text-black">
                             Nenhum registro
                             encontrado.</td>
                     </tr>
@@ -626,17 +626,17 @@
                 <img src="{{ user.company.logo_data }}" class="h-16 w-auto object-contain">
                 {% else %}
                 <div class="h-16 w-16 bg-zinc-100 flex items-center justify-center rounded-lg border-2 border-zinc-200">
-                    <span class="text-zinc-400 text-[10px] font-bold uppercase">Logo</span>
+                    <span class="text-muted text-[10px] font-bold uppercase">Logo</span>
                 </div>
                 {% endif %}
                 <div>
                     <h1 class="text-2xl font-black text-black tracking-tighter uppercase">{{ user.company.name }}</h1>
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Sistema Invexa Control</p>
+                    <p class="text-[10px] text-muted font-bold uppercase tracking-widest">Sistema Invexa Control</p>
                 </div>
             </div>
             <div class="text-right">
                 <h2 class="text-lg font-bold text-zinc-900">Histórico de Movimentações</h2>
-                <p class="text-xs text-zinc-500">Gerado em: <span class="gen-date"></span></p>
+                <p class="text-xs text-muted">Gerado em: <span class="gen-date"></span></p>
             </div>
         </div>
 
@@ -716,7 +716,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-zinc-500 text-sm italic print:text-black">
+                        <td colspan="7" class="px-6 py-12 text-center text-muted text-sm italic print:text-black">
                             Nenhum registro
                             encontrado.</td>
                     </tr>
@@ -822,10 +822,10 @@
         .text-main,
         .text-muted,
         .text-white,
-        .text-zinc-200,
-        .text-zinc-300,
-        .text-zinc-400,
-        .text-zinc-500,
+        .text-main,
+        .text-main,
+        .text-muted,
+        .text-muted,
         .text-emerald-400,
         .text-emerald-500,
         .text-red-400,

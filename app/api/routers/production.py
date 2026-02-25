@@ -18,6 +18,7 @@ async def register_production(
     worker_id: int = Form(...),
     product_id: int = Form(...),
     quantity: float = Form(...),
+    op_id: int = Form(None),
     db: Session = Depends(get_db),
     user: User = Depends(login_required)
 ):
@@ -58,13 +59,18 @@ async def register_production(
         
         # Find active shipments for this component and worker
         # Order by created_at ASC (FIFO)
-        shipments = db.query(Shipment).filter(
+        query = db.query(Shipment).filter(
             Shipment.worker_id == worker_id,
             Shipment.product_id == comp.component_id,
             Shipment.status.in_([ShipmentStatus.PENDING, ShipmentStatus.PARTIAL]),
             (Shipment.quantity - Shipment.returned_quantity) > 0, # Has balance
             Shipment.company_id == user.company_id
-        ).order_by(Shipment.created_at.asc()).all()
+        )
+        
+        if op_id:
+             query = query.filter((Shipment.op_id == op_id) | (Shipment.op_id.is_(None)))
+             
+        shipments = query.order_by(Shipment.created_at.asc()).all()
         
         remaining_to_deduct = required_qty
         
@@ -90,12 +96,40 @@ async def register_production(
         if remaining_to_deduct > 0:
             warnings.append(f"Atencao: Saldo insuficiente de '{component_product.name}' com {worker.name}. Faltou baixar {remaining_to_deduct} {component_product.unit}.")
 
-    # 4. Register Entry Movement for Finished Good
+    # 4. Filter and update OP
+    if op_id:
+        op = db.query(ProductionOrder).filter(ProductionOrder.id == op_id, ProductionOrder.company_id == user.company_id).first()
+        if not op:
+             return JSONResponse(content={"detail": "Ordem de Produção não encontrada."}, status_code=404)
+        
+        if op.product_id != product_id:
+             warnings.append(f"Atenção: A OP {op.op_number} é do produto {op.product.name}, mas a entrada foi registrada para {product.name}.")
+             
+        # Update produced amount
+        op.produced_quantity += quantity
+        
+        if op.produced_quantity >= op.expected_quantity:
+             op.status = OPStatus.COMPLETED
+             op.end_date = datetime.now()
+        elif op.status in [OPStatus.DRAFT, OPStatus.RELEASED]:
+             op.status = OPStatus.IN_PROGRESS
+             
+        # Deduce components consumed from OPMaterial
+        for comp in components:
+             op_mat = next((m for m in op.materials if m.component_id == comp.component_id), None)
+             if op_mat:
+                  op_mat.consumed_quantity += quantity * comp.quantity
+                  
+    # 5. Register Entry Movement for Finished Good
+    mov_reason = f"Produção Recebida de {worker.name}"
+    if op_id and op:
+         mov_reason += f" (OP: {op.op_number})"
+         
     movement = Movement(
         product_id=product_id,
         quantity=quantity,
         type=MovementType.IN,
-        reason=f"Produção Recebida de {worker.name}",
+        reason=mov_reason,
         user_id=user.id,
         company_id=user.company_id,
         timestamp=datetime.now()
@@ -188,9 +222,12 @@ async def view_production_order(op_id: int, request: Request, db: Session = Depe
     if not op:
          raise HTTPException(status_code=404, detail="OP não encontrada")
          
+    shipments = db.query(Shipment).filter(Shipment.op_id == op_id, Shipment.company_id == user.company_id).order_by(Shipment.created_at.desc()).all()
+         
     return templates.TemplateResponse("production_order_view.html", {
         "request": request,
         "user": user,
         "op": op,
+        "shipments": shipments,
         "OPStatus": OPStatus
     })
