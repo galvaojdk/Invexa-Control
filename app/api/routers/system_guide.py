@@ -110,6 +110,10 @@ async def admin_edit_guide(request: Request, user: User = Depends(login_required
         db.add(guide)
         db.commit()
         db.refresh(guide)
+    elif guide.content == "<p>Guia Vazio</p>":
+        guide.content = DEFAULT_GUIDE_CONTENT
+        db.commit()
+        db.refresh(guide)
         
     return templates.TemplateResponse("admin_guide.html", {"request": request, "user": user, "guide": guide})
 
