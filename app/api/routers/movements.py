@@ -17,6 +17,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("")
 @router.get("/")
+async def movements_view(request: Request, db: Session = Depends(get_db), user: User = Depends(login_required)):
     movements_list = db.query(Movement).filter(Movement.company_id == user.company_id).order_by(Movement.timestamp.desc()).all()
     products = db.query(Product).filter(Product.company_id == user.company_id).all()
     workers = db.query(Worker).filter(Worker.company_id == user.company_id, Worker.active == True).all()
@@ -97,6 +98,7 @@ async def register_batch_movements(
     mov_type_str = data.type.lower().strip()
     m_type = MovementType.IN if mov_type_str == "entrada" else MovementType.OUT
     
+    try:
         success_count = 0
         created_movements = []
         
