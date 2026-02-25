@@ -92,14 +92,12 @@
                             {% if shipment.status.value != 'finalizado' and shipment.status.value != 'cancelado' %}
                             <div class="flex items-center justify-end gap-2">
                                 <button
-                                    onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name | replace(\"'\", \"\\\\'
-                                    \") }}', {{ shipment.quantity - shipment.returned_quantity }})"
+                                    onclick="openReturnModal('{{ shipment.id }}', '{{ shipment.product.name }}', {{ shipment.quantity - shipment.returned_quantity }})"
                                     class="text-emerald-400 hover:text-emerald-300 text-[10px] font-bold transition-colors uppercase tracking-wider bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1 rounded-lg">
                                     Receber
                                 </button>
                                 <button
-                                    onclick="cancelShipment('{{ shipment.id }}', '{{ shipment.product.name | replace(\"'\", \"\\\\'
-                                    \") }}', '{{ shipment.worker.name | replace(\"' \", \"\\\\'\") }}')"
+                                    onclick="cancelShipment('{{ shipment.id }}', '{{ shipment.product.name }}', '{{ shipment.worker.name }}')"
                                     class="text-red-400 hover:text-red-300 text-[10px] font-bold transition-colors uppercase tracking-wider bg-red-500/10 hover:bg-red-500/20 px-3 py-1 rounded-lg"
                                     title="Cancelar Remessa">
                                     Cancelar
