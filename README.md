@@ -9,6 +9,10 @@
   <img src="https://img.shields.io/badge/Donate-Crypto-yellow?style=for-the-badge&logo=ethereum&logoColor=white" alt="Donate Crypto" />
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard Invexa Control" width="100%" />
+</p>
+
 O **Invexa Control** é uma solução completa de gestão operacional e controle de estoque voltada para confecções, indústrias leves e empresas com fluxo terceirizado (faccionistas/trabalhadores externos). O sistema conta com arquitetura **Multi-Tenancy** (múltiplas empresas), gestão de insumos, ordens de produção, relatórios gerenciais e central de suporte.
 
 ---
@@ -39,6 +43,10 @@ O sistema é dividido em módulos com interfaces dinâmicas desenvolvidas em Jin
 - Autenticação segura via **JWT** armazenado em cookies `HttpOnly`.
 - Criação de contas com vinculação automática ou seleção de empresa (*Multi-Tenancy*).
 - Gerenciamento de perfil do usuário e alteração de senha.
+
+<p align="center">
+  <img src="docs/screenshots/login.jpg" alt="Tela de Login" width="500" />
+</p>
 
 ### 2. 📊 Dashboard Gerencial (`/dashboard`)
 - Indicadores em tempo real (KPIs de estoque, ordens de produção ativas, saldo financeiro e peças em trânsito).
