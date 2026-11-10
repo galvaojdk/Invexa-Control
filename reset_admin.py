@@ -11,6 +11,9 @@ from app.models.company import Company
 from app.models.inventory import Category, Product, Movement # Load these
 from app.models.worker import Worker, Shipment              # Load these
 from app.models.worker_type import WorkerType               # Load these
+from app.models.production import ProductionOrder, OPMaterial
+from app.models.ticket import SupportTicket, TicketMessage
+from app.models.system import SystemGuide
 from app.core.security import get_password_hash
 
 def reset_admin(email, password):
@@ -50,4 +53,6 @@ def reset_admin(email, password):
         db.close()
 
 if __name__ == "__main__":
-    reset_admin("admin@invexa.com", "admin123")
+    email = sys.argv[1] if len(sys.argv) > 1 else "admin@invexa.com"
+    pwd = sys.argv[2] if len(sys.argv) > 2 else "admin123"
+    reset_admin(email, pwd)
